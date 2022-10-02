@@ -1,6 +1,6 @@
 ﻿namespace SE_Semester_Project
 {
-    partial class Outgoing
+    partial class Main
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,24 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.btnSend = new System.Windows.Forms.Button();
             this.cboAddresses = new System.Windows.Forms.ComboBox();
             this.txtOutgoing = new System.Windows.Forms.RichTextBox();
             this.cboFileList = new System.Windows.Forms.ComboBox();
             this.btnCompose = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.btnUpload = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.tmrMain = new System.Windows.Forms.Timer(this.components);
+            this.btnMessages = new System.Windows.Forms.Button();
+            this.btnStartTime = new System.Windows.Forms.Button();
+            this.btnFinishTime = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnSend
             // 
-            this.btnSend.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.btnSend.BackColor = System.Drawing.Color.LightGreen;
             this.btnSend.Enabled = false;
+            this.btnSend.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.btnSend.ForeColor = System.Drawing.Color.Black;
-            this.btnSend.Location = new System.Drawing.Point(221, 427);
+            this.btnSend.Location = new System.Drawing.Point(445, 17);
             this.btnSend.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(100, 28);
+            this.btnSend.Size = new System.Drawing.Size(75, 50);
             this.btnSend.TabIndex = 1;
             this.btnSend.Text = "SEND";
             this.btnSend.UseVisualStyleBackColor = false;
@@ -53,11 +59,12 @@
             // 
             // cboAddresses
             // 
+            this.cboAddresses.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.cboAddresses.FormattingEnabled = true;
-            this.cboAddresses.Location = new System.Drawing.Point(12, 38);
+            this.cboAddresses.Location = new System.Drawing.Point(12, 17);
             this.cboAddresses.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboAddresses.Name = "cboAddresses";
-            this.cboAddresses.Size = new System.Drawing.Size(150, 28);
+            this.cboAddresses.Size = new System.Drawing.Size(175, 28);
             this.cboAddresses.TabIndex = 6;
             this.cboAddresses.Text = "To:";
             // 
@@ -66,77 +73,112 @@
             this.txtOutgoing.BackColor = System.Drawing.SystemColors.Window;
             this.txtOutgoing.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtOutgoing.Enabled = false;
-            this.txtOutgoing.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtOutgoing.Location = new System.Drawing.Point(11, 72);
+            this.txtOutgoing.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.txtOutgoing.Location = new System.Drawing.Point(12, 50);
             this.txtOutgoing.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtOutgoing.Name = "txtOutgoing";
             this.txtOutgoing.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.txtOutgoing.Size = new System.Drawing.Size(310, 350);
+            this.txtOutgoing.Size = new System.Drawing.Size(425, 175);
             this.txtOutgoing.TabIndex = 0;
-            this.txtOutgoing.Text = "\"User can type directly to textbox\"";
+            this.txtOutgoing.Text = "";
+            this.txtOutgoing.ContentsResized += new System.Windows.Forms.ContentsResizedEventHandler(this.txtOutgoing_ContentsResized);
             // 
             // cboFileList
             // 
             this.cboFileList.BackColor = System.Drawing.SystemColors.Window;
             this.cboFileList.Enabled = false;
+            this.cboFileList.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.cboFileList.FormattingEnabled = true;
-            this.cboFileList.Location = new System.Drawing.Point(12, 428);
+            this.cboFileList.Location = new System.Drawing.Point(12, 232);
             this.cboFileList.Name = "cboFileList";
             this.cboFileList.Size = new System.Drawing.Size(175, 28);
             this.cboFileList.TabIndex = 7;
-            this.cboFileList.Text = "\"Select existing file\"";
+            this.cboFileList.Text = "\"Select file\"";
             // 
             // btnCompose
             // 
             this.btnCompose.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnCompose.Location = new System.Drawing.Point(291, 35);
+            this.btnCompose.Location = new System.Drawing.Point(407, 17);
             this.btnCompose.Name = "btnCompose";
             this.btnCompose.Size = new System.Drawing.Size(30, 30);
             this.btnCompose.TabIndex = 9;
             this.btnCompose.UseVisualStyleBackColor = true;
             this.btnCompose.Click += new System.EventHandler(this.btnCompose_Click);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(185, 38);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 20);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "\"Compose->\"";
-            // 
             // btnUpload
             // 
             this.btnUpload.Enabled = false;
-            this.btnUpload.Location = new System.Drawing.Point(12, 462);
+            this.btnUpload.Location = new System.Drawing.Point(193, 232);
             this.btnUpload.Name = "btnUpload";
-            this.btnUpload.Size = new System.Drawing.Size(175, 28);
+            this.btnUpload.Size = new System.Drawing.Size(125, 28);
             this.btnUpload.TabIndex = 11;
             this.btnUpload.Text = "\"Browse\"";
             this.btnUpload.UseVisualStyleBackColor = true;
             this.btnUpload.Click += new System.EventHandler(this.btnUpload_Click);
             // 
-            // Outgoing
+            // btnClear
+            // 
+            this.btnClear.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.btnClear.Enabled = false;
+            this.btnClear.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.btnClear.ForeColor = System.Drawing.Color.Black;
+            this.btnClear.Location = new System.Drawing.Point(445, 75);
+            this.btnClear.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(75, 50);
+            this.btnClear.TabIndex = 12;
+            this.btnClear.Text = "CLEAR";
+            this.btnClear.UseVisualStyleBackColor = false;
+            // 
+            // btnMessages
+            // 
+            this.btnMessages.Location = new System.Drawing.Point(339, 232);
+            this.btnMessages.Name = "btnMessages";
+            this.btnMessages.Size = new System.Drawing.Size(100, 28);
+            this.btnMessages.TabIndex = 13;
+            this.btnMessages.Text = "\"Messages\"";
+            this.btnMessages.UseVisualStyleBackColor = true;
+            // 
+            // btnStartTime
+            // 
+            this.btnStartTime.Location = new System.Drawing.Point(445, 154);
+            this.btnStartTime.Name = "btnStartTime";
+            this.btnStartTime.Size = new System.Drawing.Size(75, 50);
+            this.btnStartTime.TabIndex = 14;
+            this.btnStartTime.Text = "\"Start\"";
+            this.btnStartTime.UseVisualStyleBackColor = true;
+            // 
+            // btnFinishTime
+            // 
+            this.btnFinishTime.Location = new System.Drawing.Point(445, 210);
+            this.btnFinishTime.Name = "btnFinishTime";
+            this.btnFinishTime.Size = new System.Drawing.Size(75, 50);
+            this.btnFinishTime.TabIndex = 15;
+            this.btnFinishTime.Text = "\"Finish\"";
+            this.btnFinishTime.UseVisualStyleBackColor = true;
+            // 
+            // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(332, 503);
+            this.ClientSize = new System.Drawing.Size(532, 278);
+            this.Controls.Add(this.btnFinishTime);
+            this.Controls.Add(this.btnStartTime);
+            this.Controls.Add(this.btnMessages);
+            this.Controls.Add(this.btnClear);
             this.Controls.Add(this.btnUpload);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.btnCompose);
             this.Controls.Add(this.cboFileList);
             this.Controls.Add(this.cboAddresses);
             this.Controls.Add(this.txtOutgoing);
             this.Controls.Add(this.btnSend);
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.Name = "Outgoing";
+            this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "OUTGOING";
-            this.Load += new System.EventHandler(this.Outgoing_Load);
+            this.Text = "\"Product Name\"";
+            this.Load += new System.EventHandler(this.Main_Load);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -146,7 +188,11 @@
         private RichTextBox txtOutgoing;
         private ComboBox cboFileList;
         private Button btnCompose;
-        private Label label1;
         private Button btnUpload;
+        private Button btnClear;
+        private System.Windows.Forms.Timer tmrMain;
+        private Button btnMessages;
+        private Button btnStartTime;
+        private Button btnFinishTime;
     }
 }

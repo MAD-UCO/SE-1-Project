@@ -2,11 +2,11 @@ using System.Collections;
 
 namespace SE_Semester_Project
 {
-    public partial class Outgoing : Form
+    public partial class Main : Form
     {
         private List<String> outgoingFilepaths = new List<String>();
 
-        public Outgoing()
+        public Main()
         {
             InitializeComponent();
         }
@@ -14,7 +14,7 @@ namespace SE_Semester_Project
 
         //Run immediately when form loads
         //***note!*** do not modify class constructor. Use this event handler for initialization contents
-        private void Outgoing_Load(object sender, EventArgs e)
+        private void Main_Load(object sender, EventArgs e)
         {
             //Add test IP to address combo box for presentation
             cboAddresses.Items.Add("Coleman");
@@ -22,10 +22,16 @@ namespace SE_Semester_Project
             cboAddresses.Items.Add("Tyler");
             cboAddresses.Items.Add("Victor");
 
+            //Hide file dropdown box and file browser button
+            //cboFileList.Visible = false;
+            //btnUpload.Visible = false;
+            
+
             //store compose symbol and display on btnCompose
             int i = 11036;
             char c = (char)i;
             btnCompose.Text = c.ToString();
+
         }
 
         private void btnSend_Click(object sender, EventArgs e)
@@ -65,7 +71,31 @@ namespace SE_Semester_Project
             btnUpload.Enabled = true;
             cboFileList.Enabled = true;
 
+            //Change file combo box and file browser button visibility to true
+            cboFileList.Visible = true;
+            btnUpload.Visible = true;
         }
 
+        private void txtOutgoing_ContentsResized(object sender, ContentsResizedEventArgs e)
+        {
+            /*
+            const int MAX_TEXTBOX_HEIGHT = 125;
+            String message;
+            String textBoxContents;
+            if (txtOutgoing.Height < MAX_TEXTBOX_HEIGHT)
+            {
+                txtOutgoing.Height = e.NewRectangle.Height + 2;
+            }
+            else
+            {
+                txtOutgoing.Enabled = false;
+                textBoxContents = txtOutgoing.Text;
+                txtOutgoing.MaxLength = textBoxContents.Length;
+                message = "Character Limit Reached!";
+                MessageBox.Show(message);
+                txtOutgoing.Enabled = true;
+            }
+            */
+        }
     }
 }
