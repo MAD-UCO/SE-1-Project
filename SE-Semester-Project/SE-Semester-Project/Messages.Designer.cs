@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Messages));
             this.cboMessages = new System.Windows.Forms.ComboBox();
             this.txtMessages = new System.Windows.Forms.RichTextBox();
@@ -35,13 +36,14 @@
             this.btnBack = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnEnd = new System.Windows.Forms.Button();
+            this.tmrMessages = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.picSound)).BeginInit();
             this.SuspendLayout();
             // 
             // cboMessages
             // 
             this.cboMessages.FormattingEnabled = true;
-            this.cboMessages.Location = new System.Drawing.Point(12, 17);
+            this.cboMessages.Location = new System.Drawing.Point(4, 17);
             this.cboMessages.Name = "cboMessages";
             this.cboMessages.Size = new System.Drawing.Size(175, 28);
             this.cboMessages.TabIndex = 0;
@@ -60,7 +62,7 @@
             // 
             this.picSound.ErrorImage = ((System.Drawing.Image)(resources.GetObject("picSound.ErrorImage")));
             this.picSound.Image = ((System.Drawing.Image)(resources.GetObject("picSound.Image")));
-            this.picSound.Location = new System.Drawing.Point(14, 51);
+            this.picSound.Location = new System.Drawing.Point(4, 51);
             this.picSound.Name = "picSound";
             this.picSound.Size = new System.Drawing.Size(481, 175);
             this.picSound.TabIndex = 2;
@@ -68,7 +70,7 @@
             // 
             // btnBack
             // 
-            this.btnBack.Location = new System.Drawing.Point(445, 232);
+            this.btnBack.Location = new System.Drawing.Point(435, 232);
             this.btnBack.Name = "btnBack";
             this.btnBack.Size = new System.Drawing.Size(50, 40);
             this.btnBack.TabIndex = 3;
@@ -78,7 +80,7 @@
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(12, 237);
+            this.btnStart.Location = new System.Drawing.Point(4, 243);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(94, 29);
             this.btnStart.TabIndex = 4;
@@ -87,19 +89,20 @@
             // 
             // btnEnd
             // 
-            this.btnEnd.Location = new System.Drawing.Point(112, 238);
+            this.btnEnd.Location = new System.Drawing.Point(104, 243);
             this.btnEnd.Name = "btnEnd";
             this.btnEnd.Size = new System.Drawing.Size(94, 29);
             this.btnEnd.TabIndex = 5;
             this.btnEnd.Text = "\"End\"";
             this.btnEnd.UseVisualStyleBackColor = true;
+            this.btnEnd.Click += new System.EventHandler(this.btnEnd_Click);
             // 
             // Messages
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.SlateGray;
-            this.ClientSize = new System.Drawing.Size(507, 278);
+            this.ClientSize = new System.Drawing.Size(497, 278);
             this.Controls.Add(this.btnEnd);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.btnBack);
@@ -122,5 +125,6 @@
         private Button btnBack;
         private Button btnStart;
         private Button btnEnd;
+        private System.Windows.Forms.Timer tmrMessages;
     }
 }

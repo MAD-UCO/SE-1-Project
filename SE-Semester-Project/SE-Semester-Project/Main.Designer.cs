@@ -28,13 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.cboAddresses = new System.Windows.Forms.ComboBox();
             this.txtOutgoing = new System.Windows.Forms.RichTextBox();
             this.cboFileList = new System.Windows.Forms.ComboBox();
             this.btnCompose = new System.Windows.Forms.Button();
             this.btnUpload = new System.Windows.Forms.Button();
-            this.tmrMain = new System.Windows.Forms.Timer(this.components);
             this.btnMessages = new System.Windows.Forms.Button();
             this.btnSend = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
@@ -61,7 +59,7 @@
             this.txtOutgoing.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtOutgoing.Name = "txtOutgoing";
             this.txtOutgoing.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.txtOutgoing.Size = new System.Drawing.Size(425, 175);
+            this.txtOutgoing.Size = new System.Drawing.Size(400, 175);
             this.txtOutgoing.TabIndex = 0;
             this.txtOutgoing.Text = "";
             this.txtOutgoing.ContentsResized += new System.Windows.Forms.ContentsResizedEventHandler(this.txtOutgoing_ContentsResized);
@@ -81,7 +79,7 @@
             // btnCompose
             // 
             this.btnCompose.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnCompose.Location = new System.Drawing.Point(407, 17);
+            this.btnCompose.Location = new System.Drawing.Point(382, 17);
             this.btnCompose.Name = "btnCompose";
             this.btnCompose.Size = new System.Drawing.Size(30, 30);
             this.btnCompose.TabIndex = 9;
@@ -91,7 +89,7 @@
             // btnUpload
             // 
             this.btnUpload.Enabled = false;
-            this.btnUpload.Location = new System.Drawing.Point(312, 232);
+            this.btnUpload.Location = new System.Drawing.Point(287, 232);
             this.btnUpload.Name = "btnUpload";
             this.btnUpload.Size = new System.Drawing.Size(125, 28);
             this.btnUpload.TabIndex = 11;
@@ -101,9 +99,9 @@
             // 
             // btnMessages
             // 
-            this.btnMessages.Location = new System.Drawing.Point(443, 191);
+            this.btnMessages.Location = new System.Drawing.Point(420, 210);
             this.btnMessages.Name = "btnMessages";
-            this.btnMessages.Size = new System.Drawing.Size(75, 34);
+            this.btnMessages.Size = new System.Drawing.Size(75, 50);
             this.btnMessages.TabIndex = 13;
             this.btnMessages.UseVisualStyleBackColor = true;
             this.btnMessages.Click += new System.EventHandler(this.btnMessages_Click);
@@ -111,31 +109,33 @@
             // btnSend
             // 
             this.btnSend.BackColor = System.Drawing.Color.LightGreen;
-            this.btnSend.Location = new System.Drawing.Point(443, 17);
+            this.btnSend.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.btnSend.Location = new System.Drawing.Point(420, 17);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(75, 50);
             this.btnSend.TabIndex = 16;
-            this.btnSend.Text = "SEND";
+            this.btnSend.Text = "send";
             this.btnSend.UseVisualStyleBackColor = false;
             // 
             // button2
             // 
             this.button2.BackColor = System.Drawing.Color.Silver;
-            this.button2.Location = new System.Drawing.Point(443, 73);
+            this.button2.Location = new System.Drawing.Point(420, 73);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 50);
             this.button2.TabIndex = 17;
-            this.button2.Text = "CLEAR";
+            this.button2.Text = "delete";
             this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.SlateGray;
-            this.ClientSize = new System.Drawing.Size(532, 278);
-            this.Controls.Add(this.button2);
+            this.ClientSize = new System.Drawing.Size(507, 278);
             this.Controls.Add(this.btnSend);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.btnMessages);
             this.Controls.Add(this.btnUpload);
             this.Controls.Add(this.btnCompose);
@@ -158,7 +158,6 @@
         private ComboBox cboFileList;
         private Button btnCompose;
         private Button btnUpload;
-        private System.Windows.Forms.Timer tmrMain;
         private Button btnMessages;
         private Button btnSend;
         private Button button2;

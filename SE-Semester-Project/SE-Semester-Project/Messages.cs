@@ -72,5 +72,10 @@ namespace SE_Semester_Project
             frmMain.Location = this.Location;
             this.Hide();
         }
+
+        private void btnEnd_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

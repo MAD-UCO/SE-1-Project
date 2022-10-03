@@ -37,6 +37,11 @@ namespace SE_Semester_Project
             char msgChar = (char)j;
             btnMessages.Text = msgChar.ToString();
 
+            //store compose symbol and display on btnMessages
+            int k = 8628;
+            char sndChar = (char)k;
+            btnSend.Text = sndChar.ToString();
+
         }
 
         private void btnSend_Click(object sender, EventArgs e)
@@ -110,6 +115,11 @@ namespace SE_Semester_Project
             frmMessages.Show();
             frmMessages.Location = this.Location;
             this.Hide();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
