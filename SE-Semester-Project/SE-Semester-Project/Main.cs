@@ -18,7 +18,7 @@ namespace SE_Semester_Project
         {
             //Add test IP to address combo box for presentation
             cboAddresses.Items.Add("Coleman");
-            cboAddresses.Items.Add("Mitchell");
+            cboAddresses.Items.Add("Mitchell ");
             cboAddresses.Items.Add("Tyler");
             cboAddresses.Items.Add("Victor");
 
@@ -31,6 +31,11 @@ namespace SE_Semester_Project
             int i = 11036;
             char c = (char)i;
             btnCompose.Text = c.ToString();
+
+            //store compose symbol and display on btnMessages
+            int j = 0x00002709;
+            char msgChar = (char)j;
+            btnMessages.Text = msgChar.ToString();
 
         }
 
@@ -78,6 +83,7 @@ namespace SE_Semester_Project
 
         private void txtOutgoing_ContentsResized(object sender, ContentsResizedEventArgs e)
         {
+            //Working code for resizing text box as needed
             /*
             const int MAX_TEXTBOX_HEIGHT = 125;
             String message;
@@ -96,6 +102,14 @@ namespace SE_Semester_Project
                 txtOutgoing.Enabled = true;
             }
             */
+        }
+
+        private void btnMessages_Click(object sender, EventArgs e)
+        {
+            Messages frmMessages = new Messages();
+            frmMessages.Show();
+            frmMessages.Location = this.Location;
+            this.Hide();
         }
     }
 }

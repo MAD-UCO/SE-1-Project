@@ -36,3 +36,4 @@ C:\OCCC_UCO\Fall 2022\Software Engineering I\SE-1-Semester-Project\SE-Semester-P
 C:\OCCC_UCO\Fall 2022\Software Engineering I\SE-1-Semester-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\SE-Semester-Project.genruntimeconfig.cache
 C:\OCCC_UCO\Fall 2022\Software Engineering I\SE-1-Semester-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\ref\SE-Semester-Project.dll
 C:\OCCC_UCO\Fall 2022\Software Engineering I\SE-1-Semester-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\SE_Semester_Project.Main.resources
+C:\OCCC_UCO\Fall 2022\Software Engineering I\SE-1-Semester-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\SE_Semester_Project.Messages.resources

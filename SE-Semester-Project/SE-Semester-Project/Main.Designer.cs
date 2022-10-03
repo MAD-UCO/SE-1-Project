@@ -29,33 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.btnSend = new System.Windows.Forms.Button();
             this.cboAddresses = new System.Windows.Forms.ComboBox();
             this.txtOutgoing = new System.Windows.Forms.RichTextBox();
             this.cboFileList = new System.Windows.Forms.ComboBox();
             this.btnCompose = new System.Windows.Forms.Button();
             this.btnUpload = new System.Windows.Forms.Button();
-            this.btnClear = new System.Windows.Forms.Button();
             this.tmrMain = new System.Windows.Forms.Timer(this.components);
             this.btnMessages = new System.Windows.Forms.Button();
-            this.btnStartTime = new System.Windows.Forms.Button();
-            this.btnFinishTime = new System.Windows.Forms.Button();
+            this.btnSend = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
-            // btnSend
-            // 
-            this.btnSend.BackColor = System.Drawing.Color.LightGreen;
-            this.btnSend.Enabled = false;
-            this.btnSend.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnSend.ForeColor = System.Drawing.Color.Black;
-            this.btnSend.Location = new System.Drawing.Point(445, 17);
-            this.btnSend.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(75, 50);
-            this.btnSend.TabIndex = 1;
-            this.btnSend.Text = "SEND";
-            this.btnSend.UseVisualStyleBackColor = false;
-            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
             // cboAddresses
             // 
@@ -64,7 +47,7 @@
             this.cboAddresses.Location = new System.Drawing.Point(12, 17);
             this.cboAddresses.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboAddresses.Name = "cboAddresses";
-            this.cboAddresses.Size = new System.Drawing.Size(175, 28);
+            this.cboAddresses.Size = new System.Drawing.Size(225, 28);
             this.cboAddresses.TabIndex = 6;
             this.cboAddresses.Text = "To:";
             // 
@@ -91,7 +74,7 @@
             this.cboFileList.FormattingEnabled = true;
             this.cboFileList.Location = new System.Drawing.Point(12, 232);
             this.cboFileList.Name = "cboFileList";
-            this.cboFileList.Size = new System.Drawing.Size(175, 28);
+            this.cboFileList.Size = new System.Drawing.Size(225, 28);
             this.cboFileList.TabIndex = 7;
             this.cboFileList.Text = "\"Select file\"";
             // 
@@ -108,7 +91,7 @@
             // btnUpload
             // 
             this.btnUpload.Enabled = false;
-            this.btnUpload.Location = new System.Drawing.Point(193, 232);
+            this.btnUpload.Location = new System.Drawing.Point(312, 232);
             this.btnUpload.Name = "btnUpload";
             this.btnUpload.Size = new System.Drawing.Size(125, 28);
             this.btnUpload.TabIndex = 11;
@@ -116,63 +99,50 @@
             this.btnUpload.UseVisualStyleBackColor = true;
             this.btnUpload.Click += new System.EventHandler(this.btnUpload_Click);
             // 
-            // btnClear
-            // 
-            this.btnClear.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.btnClear.Enabled = false;
-            this.btnClear.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnClear.ForeColor = System.Drawing.Color.Black;
-            this.btnClear.Location = new System.Drawing.Point(445, 75);
-            this.btnClear.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(75, 50);
-            this.btnClear.TabIndex = 12;
-            this.btnClear.Text = "CLEAR";
-            this.btnClear.UseVisualStyleBackColor = false;
-            // 
             // btnMessages
             // 
-            this.btnMessages.Location = new System.Drawing.Point(339, 232);
+            this.btnMessages.Location = new System.Drawing.Point(443, 191);
             this.btnMessages.Name = "btnMessages";
-            this.btnMessages.Size = new System.Drawing.Size(100, 28);
+            this.btnMessages.Size = new System.Drawing.Size(75, 34);
             this.btnMessages.TabIndex = 13;
-            this.btnMessages.Text = "\"Messages\"";
             this.btnMessages.UseVisualStyleBackColor = true;
+            this.btnMessages.Click += new System.EventHandler(this.btnMessages_Click);
             // 
-            // btnStartTime
+            // btnSend
             // 
-            this.btnStartTime.Location = new System.Drawing.Point(445, 154);
-            this.btnStartTime.Name = "btnStartTime";
-            this.btnStartTime.Size = new System.Drawing.Size(75, 50);
-            this.btnStartTime.TabIndex = 14;
-            this.btnStartTime.Text = "\"Start\"";
-            this.btnStartTime.UseVisualStyleBackColor = true;
+            this.btnSend.BackColor = System.Drawing.Color.LightGreen;
+            this.btnSend.Location = new System.Drawing.Point(443, 17);
+            this.btnSend.Name = "btnSend";
+            this.btnSend.Size = new System.Drawing.Size(75, 50);
+            this.btnSend.TabIndex = 16;
+            this.btnSend.Text = "SEND";
+            this.btnSend.UseVisualStyleBackColor = false;
             // 
-            // btnFinishTime
+            // button2
             // 
-            this.btnFinishTime.Location = new System.Drawing.Point(445, 210);
-            this.btnFinishTime.Name = "btnFinishTime";
-            this.btnFinishTime.Size = new System.Drawing.Size(75, 50);
-            this.btnFinishTime.TabIndex = 15;
-            this.btnFinishTime.Text = "\"Finish\"";
-            this.btnFinishTime.UseVisualStyleBackColor = true;
+            this.button2.BackColor = System.Drawing.Color.Silver;
+            this.button2.Location = new System.Drawing.Point(443, 73);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 50);
+            this.button2.TabIndex = 17;
+            this.button2.Text = "CLEAR";
+            this.button2.UseVisualStyleBackColor = false;
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.BackColor = System.Drawing.Color.SlateGray;
             this.ClientSize = new System.Drawing.Size(532, 278);
-            this.Controls.Add(this.btnFinishTime);
-            this.Controls.Add(this.btnStartTime);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.btnSend);
             this.Controls.Add(this.btnMessages);
-            this.Controls.Add(this.btnClear);
             this.Controls.Add(this.btnUpload);
             this.Controls.Add(this.btnCompose);
             this.Controls.Add(this.cboFileList);
             this.Controls.Add(this.cboAddresses);
             this.Controls.Add(this.txtOutgoing);
-            this.Controls.Add(this.btnSend);
+            this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -183,16 +153,14 @@
         }
 
         #endregion
-        private Button btnSend;
         private ComboBox cboAddresses;
         private RichTextBox txtOutgoing;
         private ComboBox cboFileList;
         private Button btnCompose;
         private Button btnUpload;
-        private Button btnClear;
         private System.Windows.Forms.Timer tmrMain;
         private Button btnMessages;
-        private Button btnStartTime;
-        private Button btnFinishTime;
+        private Button btnSend;
+        private Button button2;
     }
 }
