@@ -8,35 +8,30 @@
     "net6.0-windows7.0": []
   },
   "packageFolders": {
-    "C:\\Users\\ty2ou\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
-    "C:\\Microsoft\\Xamarin\\NuGet\\": {}
+    "C:\\Users\\Bruddah\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\OCCC_UCO\\Fall 2022\\Software Engineering I\\Local Repositories\\SE-Semester-Project\\SE-Semester-Project\\SE-Semester-Project.csproj",
+      "projectUniqueName": "D:\\School\\git\\SE-1-Project\\SE-1-Project\\SE-Semester-Project\\SE-Semester-Project\\SE-Semester-Project.csproj",
       "projectName": "SE-Semester-Project",
-      "projectPath": "C:\\OCCC_UCO\\Fall 2022\\Software Engineering I\\Local Repositories\\SE-Semester-Project\\SE-Semester-Project\\SE-Semester-Project.csproj",
-      "packagesPath": "C:\\Users\\ty2ou\\.nuget\\packages\\",
-      "outputPath": "C:\\OCCC_UCO\\Fall 2022\\Software Engineering I\\Local Repositories\\SE-Semester-Project\\SE-Semester-Project\\obj\\",
+      "projectPath": "D:\\School\\git\\SE-1-Project\\SE-1-Project\\SE-Semester-Project\\SE-Semester-Project\\SE-Semester-Project.csproj",
+      "packagesPath": "C:\\Users\\Bruddah\\.nuget\\packages\\",
+      "outputPath": "D:\\School\\git\\SE-1-Project\\SE-1-Project\\SE-Semester-Project\\SE-Semester-Project\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-        "C:\\Microsoft\\Xamarin\\NuGet\\"
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\ty2ou\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        "C:\\Users\\Bruddah\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net6.0-windows"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -73,7 +68,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "MoveBit-Server/1.0.0": {
+        "dependencies": {
+          "MoveBitMessaging": "1.0.0.0"
+        },
+        "runtime": {
+          "MoveBit-Server.dll": {}
+        }
+      },
+      "MoveBitMessaging/1.0.0.0": {
+        "runtime": {
+          "MoveBitMessaging.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "MoveBit-Server/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MoveBitMessaging/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

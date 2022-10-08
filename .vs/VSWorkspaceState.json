@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\MoveBit-Server",
+    "\\MoveBit-Server\\MoveBit-Server",
+    "\\SE-Semester-Project\\SE-Semester-Project"
   ],
-  "SelectedNode": "\\C:\\OCCC_UCO\\Fall 2022\\Software Engineering I\\Local Repositories",
+  "SelectedNode": "\\MoveBit-Server\\MoveBit-Server\\LoginService.cs",
   "PreviewInSolutionExplorer": false
 }

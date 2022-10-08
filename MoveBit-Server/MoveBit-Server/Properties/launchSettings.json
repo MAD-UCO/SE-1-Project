@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MoveBit-Server": {
+      "commandName": "Project",
+      "commandLineArgs": "acceptOnlyLocal false"
+    }
+  }
+}
