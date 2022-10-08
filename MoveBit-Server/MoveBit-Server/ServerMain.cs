@@ -74,6 +74,7 @@ class MoveBitServer
         TcpClient client = (TcpClient)clientObj;
         NetworkStream netStream = client.GetStream();
         UserAccount user = null;
+        BinaryFormatter formatter = new BinaryFormatter();
         try
         {
             string name = userLogin(netStream);
@@ -81,6 +82,52 @@ class MoveBitServer
             {
                 user = UserDatabase.GetTheDatabase().getUser(name);
                 user.setOnline();
+
+                bool endConnetion = false;
+                while (!endConnetion)
+                {
+                    if (netStream.DataAvailable)
+                    {
+                        Message m = MessageOperator.netStreamToMessage(netStream);
+                        if (m.GetType() == typeof(TestListActiveUsersRequest))
+                        {
+                            List<string> activeUsers;
+                            TestListActiveUsersResponse response = new TestListActiveUsersResponse(UserDatabase.GetTheDatabase().getActiveUsers());
+                            formatter.Serialize(netStream, response);
+                        }
+                        else if(m.GetType() == typeof(SimpleTextMessage))
+                        {
+                            SimpleTextMessage message = (SimpleTextMessage)m;
+                            SimpleTextMessageResult result;
+                            UserDatabase userDatabase = UserDatabase.GetTheDatabase();
+                            if (userDatabase.userExists(message.recipient))
+                            {
+                                UserAccount userAccount = userDatabase.getUser(message.recipient);
+                                userAccount.addMessageToInbox(message);
+                                result = new SimpleTextMessageResult(SendResult.sendSuccess);
+                            }
+                            else
+                                result = new SimpleTextMessageResult(SendResult.sendFailure);
+
+                            formatter.Serialize(netStream, result);
+                        }
+                    }
+                    else if (client.Client.Poll(1000, SelectMode.SelectRead)) 
+                    {
+                        endConnetion = true;
+                        Console.WriteLine($"\t{user.userName} disconnected");
+                        netStream.Close();
+                    }
+                    else if (user.hasUnreadMessages() && netStream.CanWrite)
+                    {
+                        List<Message> messages = user.getUnreadMessages();
+                        Console.Write($"\tSending {user.userName} their {messages.Count()} new messages");
+                        InboxListUpdate update = new InboxListUpdate(messages);
+                        formatter.Serialize(netStream, update);
+                    }
+
+                    Thread.Sleep(250);
+                }
             }
         }
         catch(Exception exception)
@@ -90,10 +137,8 @@ class MoveBitServer
         }
         finally
         {
-            if(user != null)
+            if (user != null)
                 user.setOffline();
-
-            Console.WriteLine("\tSession with client ended");
             client.Close();
         }
 
@@ -110,7 +155,7 @@ class MoveBitServer
         // User didn't provide a username or password...
         if (connectRequest.userName == "" || connectRequest.password == "")
         {
-            connectResponse = new ClientConnectResponse(-1, serverConnectResponse.invalidCredentials);
+            connectResponse = new ClientConnectResponse(serverConnectResponse.invalidCredentials);
         }
         // User trying to create a new account
         else if (connectRequest.createAccountFlag)
@@ -118,7 +163,7 @@ class MoveBitServer
             // Username taken
             if (db.userExists(connectRequest.userName))
             {
-                connectResponse = new ClientConnectResponse(-1, serverConnectResponse.usernameTaken);
+                connectResponse = new ClientConnectResponse(serverConnectResponse.usernameTaken);
             }
 
             // Insert additional cases here...
@@ -128,14 +173,14 @@ class MoveBitServer
             else if(db.insertUserIfNotTaken(connectRequest.userName, connectRequest.password))
             {
                 // Inserted into database
-                connectResponse = new ClientConnectResponse(0, serverConnectResponse.success);
+                connectResponse = new ClientConnectResponse(serverConnectResponse.success);
                 Console.WriteLine($"\tRegistered new user: {connectRequest.userName}");
                 loggedUser = connectRequest.userName;
             }
             // Unable to insert... 
             else
             {
-                connectResponse = new ClientConnectResponse(-1, serverConnectResponse.usernameTaken);
+                connectResponse = new ClientConnectResponse(serverConnectResponse.usernameTaken);
             }
         }
         // User trying to log into existing account
@@ -144,13 +189,13 @@ class MoveBitServer
             // Check if username or password invalid
             if(!db.userExists(connectRequest.userName) || !db.passwordValid(connectRequest.userName, connectRequest.password))
             {
-                connectResponse = new ClientConnectResponse(-1, serverConnectResponse.invalidCredentials);
+                connectResponse = new ClientConnectResponse(serverConnectResponse.invalidCredentials);
             }
 
             // Check explicitly for username and password match
             else if(db.userExists(connectRequest.userName) && db.passwordValid(connectRequest.userName, connectRequest.password))
             {
-                connectResponse = new ClientConnectResponse(0, serverConnectResponse.success);
+                connectResponse = new ClientConnectResponse(serverConnectResponse.success);
                 loggedUser = connectRequest.userName; 
             }
 
@@ -158,7 +203,7 @@ class MoveBitServer
             else
             {
                 // TODO change return code to something legit
-                connectResponse = new ClientConnectResponse(-1, serverConnectResponse.serverBusy);
+                connectResponse = new ClientConnectResponse(serverConnectResponse.serverBusy);
             }
 
         }

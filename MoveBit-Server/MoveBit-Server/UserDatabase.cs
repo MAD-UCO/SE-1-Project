@@ -69,5 +69,16 @@ namespace MoveBit_Server
             return userTable[userName];
         }
 
+        public List<string> getActiveUsers()
+        {
+            List<string> active = new List<string>();
+            foreach(KeyValuePair<string, UserAccount> entry in userTable)
+            {
+                if(entry.Value.online)
+                    active.Add(entry.Key);
+            }
+            return active;
+        }
+
     }
 }
