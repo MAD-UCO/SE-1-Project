@@ -13,17 +13,23 @@ namespace MoveBitMessaging
 {
 
     [Serializable]
-    public enum messageIdentifier
+    public enum MessageIdentifier
     {
         ID_ClientConnectRequest,
         ID_ClientConnectResponse,
+        ID_TestListUsersRequest,
+        ID_TestListUsersResponse,
+        ID_SimpleTextMessage,
+        ID_SimpleTextMessageResult,
+        ID_InboxListUpdate,
 
         ID_UndefinedMessage,
     }
 
     [Serializable]
-    public abstract class Message
+    public class Message
     {
+        public MessageIdentifier id;
     }
 
     [Serializable]
@@ -33,28 +39,23 @@ namespace MoveBitMessaging
         invalidCredentials,
         serverBusy,
         usernameTaken,
+        unknownError,
     }
 
     [Serializable, XmlRoot("ClientRequest")]
     public class ClientConnectRequest : Message
     {
-        
         public string userName;
         public string password;
         public bool createAccountFlag;
 
         public ClientConnectRequest(string userName, string password, bool createAccountFlag = false)
         {
+            id = MessageIdentifier.ID_ClientConnectRequest;
             this.userName = userName;
             this.password = password;
             this.createAccountFlag = createAccountFlag;
-        }
-
-        public ClientConnectRequest()
-        {
-            this.userName = "Default";
-            this.password = "Default";
-            this.createAccountFlag = false;
+            
         }
     }
 
@@ -62,44 +63,111 @@ namespace MoveBitMessaging
     public class ClientConnectResponse : Message
     {
         public serverConnectResponse response;
-        public int servicerPortNumber;
 
-        public ClientConnectResponse(int servicerPortNumber, serverConnectResponse response)
+        public ClientConnectResponse(serverConnectResponse response)
         {
+            id = MessageIdentifier.ID_ClientConnectResponse;
             this.response = response;
-            this.servicerPortNumber = servicerPortNumber;
         }
     }
 
     [Serializable]
-    public class SystemMessage
+    public class TestListActiveUsersRequest : Message
     {
-        public int messageId;
-        public Message msg;
-
-        public SystemMessage(Message msg)
+        public TestListActiveUsersRequest() 
         {
-            messageId = messageToId(msg);
-            this.msg = msg;
+            id = MessageIdentifier.ID_TestListUsersRequest;
         }
-
-        public SystemMessage(int messageIdentifier, Message msg)
-        {
-            this.messageId = messageIdentifier;
-            this.msg = msg;
-        }
-
-        private int messageToId(Message msg)
-        {
-            messageIdentifier id = messageIdentifier.ID_UndefinedMessage;
-            if (msg.GetType() == typeof(MoveBitMessaging.ClientConnectRequest))
-                id = messageIdentifier.ID_ClientConnectRequest;
-            else if (msg.GetType() == typeof(MoveBitMessaging.ClientConnectResponse))
-                id = messageIdentifier.ID_ClientConnectResponse;
-
-            return (int)id;
-        }
-
-
     }
+
+    [Serializable]
+    public class TestListActiveUsersResponse : Message
+    {
+        public List<string> activeUsers;
+        public TestListActiveUsersResponse(List<string> activeUsers)
+        {
+            id = MessageIdentifier.ID_ClientConnectResponse;
+            this.activeUsers = activeUsers; 
+        }
+    }
+
+    [Serializable]
+    public class SimpleTextMessage : Message
+    {
+        public string recipient;
+        public string sender;
+        public string message;
+
+        public SimpleTextMessage(string recipient, string sender, string message)
+        {
+            id = MessageIdentifier.ID_SimpleTextMessage;
+            this.recipient = recipient;
+            this.sender = sender;
+            this.message = message;
+        }
+    }
+
+    [Serializable]
+    public enum SendResult
+    {
+        sendSuccess,
+        sendFailure,
+    }
+
+    [Serializable]
+    public class SimpleTextMessageResult : Message
+    {
+        public SendResult sendResult;
+
+        public SimpleTextMessageResult(SendResult result)
+        {
+            id = MessageIdentifier.ID_SimpleTextMessageResult;
+            sendResult = result;
+        }
+    }
+
+
+    [Serializable]
+    public class InboxListUpdate : Message
+    {
+        public List<Message> messages;
+
+        public InboxListUpdate(List<Message> messages)
+        {
+            id = MessageIdentifier.ID_InboxListUpdate;
+            this.messages = messages;
+        }
+    }
+
+
+    public class MessageOperator
+    {
+        public static Message netStreamToMessage(NetworkStream stream)
+        {
+            IFormatter formatter = new BinaryFormatter();
+            Message msg = (Message)formatter.Deserialize(stream);
+            Message deserialzed = null;
+
+            if (msg.id == MessageIdentifier.ID_ClientConnectRequest)
+                deserialzed = (ClientConnectRequest)msg;
+            else if (msg.id == MessageIdentifier.ID_ClientConnectResponse)
+                deserialzed = (ClientConnectResponse)msg;
+            else if (msg.id == MessageIdentifier.ID_TestListUsersRequest)
+                deserialzed = (TestListActiveUsersRequest)msg;
+            else if (msg.id == MessageIdentifier.ID_TestListUsersResponse)
+                deserialzed = (TestListActiveUsersResponse)msg;
+            else if (msg.id == MessageIdentifier.ID_SimpleTextMessage)
+                deserialzed = (SimpleTextMessage)msg;
+            else if (msg.id == MessageIdentifier.ID_SimpleTextMessageResult)
+                deserialzed = (SimpleTextMessageResult)msg;
+            else if (msg.id == MessageIdentifier.ID_InboxListUpdate)
+                deserialzed = (InboxListUpdate)msg;
+            else
+                throw new InvalidDataException($"No handle for message with ID '{msg.id.ToString()}'");
+
+
+            return deserialzed;
+        }
+    }
+
 }
