@@ -11,6 +11,7 @@ namespace SE_Semester_Project
     internal static class Program
     {
         // TODO Merge winforms stuff with app stuff later
+        // TODO probably put this elsewhere to avoid mixing frontend and backend stuff
         /*
         /// <summary>
         ///  The main entry point for the application.
@@ -25,25 +26,34 @@ namespace SE_Semester_Project
         }
         */
 
+        // Lock for accessing the same stream for reading and writing
         private static Object streamLock = new object();
         public static TcpClient client;
         public static NetworkStream netStream;
+        // Semaphore for when the messsage listener should exit
         private static bool listenerSemaphore = true;
         static void Main(string[] args)
         {
+            // TODO: This is okay for now... Make configuration in the future?
             // Change this ip address to server host
             string ipAddress = "127.0.0.1";
             int port = 5005;
+            // TODO: currently user has to be connected to the server for the lower line to work
+            //  but in the future we'll need them to get farther. It also makes more sense to connect
+            //  and then send the message, not connect then wait on the client to type...
             client = new TcpClient(ipAddress, port);
             netStream = client.GetStream();
+            // Get the username from loginClient Function
             String userName = loginClient(netStream);
             if (userName != "")
             {
                 Console.WriteLine("Successfully connected to server");
                 bool exit = false;
                 string? input;
+                // Start the message listener thread
                 Thread messageListenThread = new Thread(messageListener);
                 messageListenThread.Start();
+
                 while (!exit)
                 {
                     Thread.Sleep(1000);
@@ -56,6 +66,7 @@ namespace SE_Semester_Project
                         netStream.Close();
                         client.Close();
                     }
+                    // TODO: function has more redundate formatters and the like. Clean.
                     else if (input == "listusers")
                     {
                         lock (streamLock)
@@ -93,7 +104,7 @@ namespace SE_Semester_Project
 
                 }
 
-                //messageListenThread.Interrupt();
+                // Tell the listener thread to stop
                 listenerSemaphore = false;
                 client.Close();
             }
@@ -101,6 +112,13 @@ namespace SE_Semester_Project
         }
 
 
+        // TODO: Function is kinda broken, and honestly this whole file needs a revisit
+        //  returning a string to indicate validity of logging in is jank
+        /// <summary>
+        /// Function for logging in a client to the server
+        /// </summary>
+        /// <param name="netStream"></param>
+        /// <returns>If successful, the function will return the valid username</returns>
         static string loginClient(NetworkStream netStream)
         {
 
@@ -123,16 +141,19 @@ namespace SE_Semester_Project
                     string? password = Console.ReadLine();
                     if (userName != null && password != null)
                     {
+                        // Create a login request from the info we have gathered
                         ClientConnectRequest loginRequest = new ClientConnectRequest(userName, password, userIsNew);
                         IFormatter formatter = new BinaryFormatter();
                         formatter.Serialize(netStream, loginRequest);
                         Console.WriteLine("Sending data...");
+                        // Wait for a response from the server...
                         ClientConnectResponse resp = (ClientConnectResponse)formatter.Deserialize(netStream);
 
                         if (resp != null)
                         {
                             if (resp.response == serverConnectResponse.success)
                             {
+                                // TODO delete these braces
                                 _continue = false;
                             }
                             else if (resp.response == serverConnectResponse.invalidCredentials)
@@ -162,11 +183,24 @@ namespace SE_Semester_Project
 
         }
 
+
+        // TODO: method name is ambiguous... Fix
+        /// <summary>
+        /// Function for executing on a separate thread. Simply checks to see if we
+        /// have any messages for this user.
+        /// </summary>
         static void messageListener()
         {
             Console.WriteLine("Starting listener...");
             while (listenerSemaphore)
             {
+                // TODO: looking at this now I'm not sure the below will work... What if
+                //  we get a different message from the server -> us? Could this function
+                //  thet that message, robbing the primary function of it? Something to consider
+                //  I think this whole implementation is a mess so find ways to better 
+                //  manage it
+
+                // If we can read the stream and something is there to read...
                 if (netStream.CanRead && netStream.DataAvailable)
                 {
                     MoveBitMessaging.Message msg = null;
