@@ -6,20 +6,33 @@ using System.Threading.Tasks;
 
 namespace MoveBit_Server
 { 
-    
+    /// <summary>
+    /// Class for managing functions for parinsing command line arguments.
+    /// Meant to help wiht simple configuration variables set at launch time.
+    /// </summary>
     internal class CommandLineManager
     {
+        // Flag for if the program should only accept localhost connections
         public bool acceptOnlyLocal = true;
+        // The port number the server will operate on.
         public int listeningPort = 5005;
 
+        /// <summary>
+        /// Function meant to parse the command line and extract variables being set from it. 
+        /// If a variable is unknown or invalid, this function returns false.
+        /// </summary>
+        /// <param name="commandLineArgs"></param>
+        /// <returns></returns>
         public bool parseCommandLine(string []commandLineArgs)
         {
             bool expectArgument = false;
             bool nextShouldBeAcceptOnlyLocal = false;
             bool nextShouldBeListeningPort = false;
             string activeKey = null;
+            // Iterate over every word in the command line
             foreach(string command in commandLineArgs)
             {
+                // We are looking for keywords right now
                 if (!expectArgument) 
                 {
                     activeKey = command;
@@ -39,6 +52,7 @@ namespace MoveBit_Server
                         return false;
                     }
                 }
+                // We are looking for an argument and found something that is not an empty string
                 else if (command != "")
                 {
                     string lower = command.ToLower();
@@ -75,6 +89,10 @@ namespace MoveBit_Server
             return true;
         }
     
+        /// <summary>
+        /// Function for displaying each of the command line variables
+        /// and what they are set to.
+        /// </summary>
         public void echoSettings()
         {
             Console.WriteLine("The program is operating with the following variables set:");
