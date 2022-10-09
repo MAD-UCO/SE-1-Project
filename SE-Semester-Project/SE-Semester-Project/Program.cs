@@ -66,15 +66,14 @@ namespace SE_Semester_Project
                         netStream.Close();
                         client.Close();
                     }
-                    // TODO: function has more redundate formatters and the like. Clean.
+
                     else if (input == "listusers")
                     {
                         lock (streamLock)
                         {
                             TestListActiveUsersRequest listUsers = new TestListActiveUsersRequest();
-                            IFormatter formatter = new BinaryFormatter();
-                            formatter.Serialize(netStream, listUsers);
-                            TestListActiveUsersResponse resp = (TestListActiveUsersResponse)formatter.Deserialize(netStream);
+
+                            TestListActiveUsersResponse resp = (TestListActiveUsersResponse)MessageManager.writeAndRecieveMessage(listUsers, netStream);
                             Console.WriteLine("Active users: ");
                             foreach (string activeUser in resp.activeUsers)
                                 Console.WriteLine($"\t{activeUser}");
@@ -92,9 +91,8 @@ namespace SE_Semester_Project
 
                         lock (streamLock)
                         {
-                            IFormatter formatter = new BinaryFormatter();
-                            formatter.Serialize(netStream, smtm);
-                            SimpleTextMessageResult smtr = (SimpleTextMessageResult)MessageOperator.netStreamToMessage(netStream);
+
+                            SimpleTextMessageResult smtr = (SimpleTextMessageResult)MessageManager.writeAndRecieveMessage(smtm, netStream);
                             if (smtr.sendResult == SendResult.sendSuccess)
                                 Console.WriteLine("Message sent");
                             else if (smtr.sendResult == SendResult.sendFailure)
@@ -143,19 +141,15 @@ namespace SE_Semester_Project
                     {
                         // Create a login request from the info we have gathered
                         ClientConnectRequest loginRequest = new ClientConnectRequest(userName, password, userIsNew);
-                        IFormatter formatter = new BinaryFormatter();
-                        formatter.Serialize(netStream, loginRequest);
-                        Console.WriteLine("Sending data...");
+
                         // Wait for a response from the server...
-                        ClientConnectResponse resp = (ClientConnectResponse)formatter.Deserialize(netStream);
+                        ClientConnectResponse resp = (ClientConnectResponse)MessageManager.writeAndRecieveMessage(loginRequest, netStream);
 
                         if (resp != null)
                         {
                             if (resp.response == serverConnectResponse.success)
-                            {
                                 // TODO delete these braces
                                 _continue = false;
-                            }
                             else if (resp.response == serverConnectResponse.invalidCredentials)
                                 Console.WriteLine("Your credentials are invalid, please try again");
                             else if (resp.response == serverConnectResponse.serverBusy)
@@ -203,10 +197,10 @@ namespace SE_Semester_Project
                 // If we can read the stream and something is there to read...
                 if (netStream.CanRead && netStream.DataAvailable)
                 {
-                    MoveBitMessaging.Message msg = null;
+                    MoveBitMessage msg = null;
                     lock (netStream)
                     {
-                        msg = MessageOperator.netStreamToMessage(netStream);
+                        msg = MessageManager.netStreamToMessage(netStream);
                     }
 
 
@@ -224,7 +218,7 @@ namespace SE_Semester_Project
 
                 }
                 else
-                    Thread.Sleep(300);
+                    Thread.Sleep(250);
             }
         }
     }

@@ -17,7 +17,7 @@ namespace MoveBit_Server
         public string password;
         public bool online;
         // List of messages for the user
-        private List<Message> inbox;
+        private List<MoveBitMessage> inbox;
         // Lock for accessing user's ibox
         private Object userLock = new Object();
 
@@ -32,7 +32,7 @@ namespace MoveBit_Server
             this.userName = userName;
             this.password = password;
             online = false;
-            inbox = new List<Message>();
+            inbox = new List<MoveBitMessage>();
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace MoveBit_Server
         /// Adds a new message to a user's inbox
         /// </summary>
         /// <param name="message"></param>
-        public void addMessageToInbox(Message message)
+        public void addMessageToInbox(MoveBitMessage message)
         {
             lock(userLock)
             {
@@ -87,12 +87,12 @@ namespace MoveBit_Server
         /// clears the user's inbox
         /// </summary>
         /// <returns>A list of all the messages in a user's inbox</returns>
-        public List<Message> getUnreadMessages()
+        public List<MoveBitMessage> getUnreadMessages()
         {
-            List<Message> messages;
+            List<MoveBitMessage> messages;
             lock (userLock)
             {
-                messages = new List<Message>(inbox);
+                messages = new List<MoveBitMessage>(inbox);
                 inbox.Clear();
             }
             return messages;

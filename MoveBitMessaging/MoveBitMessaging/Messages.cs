@@ -34,12 +34,11 @@ namespace MoveBitMessaging
     }
 
     /// <summary>
-    /// Generic Message object meant to be inherited by all other messages
+    /// Generic Message class meant to be inherited by all other messages
     /// </summary>
     [Serializable]
-    public class Message
+    public class MoveBitMessage
     {
-        // TODO: Change to MoveBitMessage to eliminate ambiguity with .NET 'Message'
         public MessageIdentifier id;
     }
 
@@ -63,7 +62,7 @@ namespace MoveBitMessaging
     /// Client --> Server
     /// </summary>
     [Serializable]
-    public class ClientConnectRequest : Message
+    public class ClientConnectRequest : MoveBitMessage
     {
         public string userName;
         public string password;
@@ -88,7 +87,7 @@ namespace MoveBitMessaging
     /// Serever --> Client
     /// </summary>
     [Serializable]
-    public class ClientConnectResponse : Message
+    public class ClientConnectResponse : MoveBitMessage
     {
         // Enum for what the server's response is
         public serverConnectResponse response;
@@ -107,7 +106,7 @@ namespace MoveBitMessaging
     /// Client --> Server
     /// </summary>
     [Serializable]
-    public class TestListActiveUsersRequest : Message
+    public class TestListActiveUsersRequest : MoveBitMessage
     {
         // Message is practically empty, just the instance is enough to
         //  initiate the logic
@@ -124,13 +123,13 @@ namespace MoveBitMessaging
     /// Server --> Client
     /// </summary>
     [Serializable]
-    public class TestListActiveUsersResponse : Message
+    public class TestListActiveUsersResponse : MoveBitMessage
     {
         // List of all usernames connected to the server at query time
         public List<string> activeUsers;
         public TestListActiveUsersResponse(List<string> activeUsers)
         {
-            id = MessageIdentifier.ID_ClientConnectResponse;
+            id = MessageIdentifier.ID_TestListUsersResponse;
             this.activeUsers = activeUsers; 
         }
     }
@@ -141,7 +140,7 @@ namespace MoveBitMessaging
     /// Client --> Server
     /// </summary>
     [Serializable]
-    public class SimpleTextMessage : Message
+    public class SimpleTextMessage : MoveBitMessage
     {
         // User(name) we are sending the message to
         public string recipient;
@@ -175,7 +174,7 @@ namespace MoveBitMessaging
     /// Server --> Client
     /// </summary>
     [Serializable]
-    public class SimpleTextMessageResult : Message
+    public class SimpleTextMessageResult : MoveBitMessage
     {
         // Result telling us how our send request went
         public SendResult sendResult;
@@ -194,11 +193,11 @@ namespace MoveBitMessaging
     /// Server --> Client
     /// </summary>
     [Serializable]
-    public class InboxListUpdate : Message
+    public class InboxListUpdate : MoveBitMessage
     {
-        public List<Message> messages;
+        public List<MoveBitMessage> messages;
 
-        public InboxListUpdate(List<Message> messages)
+        public InboxListUpdate(List<MoveBitMessage> messages)
         {
             id = MessageIdentifier.ID_InboxListUpdate;
             this.messages = messages;
@@ -206,10 +205,14 @@ namespace MoveBitMessaging
     }
 
 
-    // TODO the only point of this class is because I can't declare a function inside
-    //  the namespace... Find a better alternative.
-    public class MessageOperator
+    public class MessageManager
     {
+
+        // TODO: BinaryFormatter.Deserialize() is deprecated... However, using the XML Deserializer was not working
+        //  Find a replacement to avoid warning
+        private static IFormatter binaryFormatter = new BinaryFormatter();
+
+
         /// <summary>
         /// Function returns a Deserialized message object from a network stream that
         /// is being used to converse between the client and server application.
@@ -219,13 +222,10 @@ namespace MoveBitMessaging
         /// server</param>
         /// <returns>A deserialized message from the networkStream</returns>
         /// <exception cref="InvalidDataException"></exception>
-        public static Message netStreamToMessage(NetworkStream stream)
+        public static MoveBitMessage netStreamToMessage(NetworkStream stream)
         {
-            IFormatter formatter = new BinaryFormatter();
-            // TODO: BinaryFormatter.Deserialize() is deprecated... However, using the XML Deserializer was not working
-            //  Find a replacement to avoid warning
-            Message msg = (Message)formatter.Deserialize(stream);
-            Message deserialzed = null;
+            MoveBitMessage msg = (MoveBitMessage)binaryFormatter.Deserialize(stream);
+            MoveBitMessage deserialzed = null;
 
             if (msg.id == MessageIdentifier.ID_ClientConnectRequest)
                 deserialzed = (ClientConnectRequest)msg;
@@ -246,6 +246,31 @@ namespace MoveBitMessaging
 
 
             return deserialzed;
+        }
+    
+
+        /// <summary>
+        /// Function for writing a given message to the network.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="netStream"></param>
+        public static void writeMessageToNetStream(MoveBitMessage message, NetworkStream netStream)
+        {
+            // Though this function ius extremly short, the static formatter helps reduce clutter in other areas
+            binaryFormatter.Serialize(netStream, message);
+        }
+
+        /// <summary>
+        /// Function that writes a given message and then returns a new message
+        /// from the stream. Useful for serial back and forth messaging
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="netStream"></param>
+        /// <returns></returns>
+        public static MoveBitMessage writeAndRecieveMessage(MoveBitMessage message, NetworkStream netStream)
+        {
+            writeMessageToNetStream(message,netStream);
+            return netStreamToMessage(netStream);
         }
     }
 

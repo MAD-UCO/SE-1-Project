@@ -11,6 +11,9 @@ using System.Diagnostics.Tracing;
 /// </summary>
 class MoveBitServer
 {
+
+    private static Object svrLock = new Object();
+    private static int clientId = 0;
     /// <summary>
     /// Main execution function
     /// </summary>
@@ -84,12 +87,17 @@ class MoveBitServer
     /// <param name="clientObj"></param>
     public static void processUser(Object clientObj)
     {
-        Console.WriteLine($"\tNew client connected");
+        int thisClientId = 0;
+        lock (svrLock) 
+        {
+            clientId++;
+            thisClientId = clientId;
+        }
+        Console.WriteLine($"\tNew client connected ({thisClientId})");
         TcpClient client = (TcpClient)clientObj;
-        // TODO: Redundant netstreams and formatters... Get rid of & clean up
         NetworkStream netStream = client.GetStream();
         UserAccount user = null;
-        BinaryFormatter formatter = new BinaryFormatter();
+
         try
         {
             // Get users name from login function
@@ -109,21 +117,22 @@ class MoveBitServer
                     if (netStream.DataAvailable)
                     {
                         // We got a new message... Read it.
-                        // TODO: change from single character variable
-                        Message m = MessageOperator.netStreamToMessage(netStream);
+                        MoveBitMessage msg = MessageManager.netStreamToMessage(netStream);
+
                         // User wants a list of all users.
-                        if (m.GetType() == typeof(TestListActiveUsersRequest))
+                        if (msg.GetType() == typeof(TestListActiveUsersRequest))
                         {
                             List<string> activeUsers;
                             // Create & send response for active users
                             TestListActiveUsersResponse response = new TestListActiveUsersResponse(UserDatabase.GetTheDatabase().getActiveUsers());
-                            formatter.Serialize(netStream, response);
+                            MessageManager.writeMessageToNetStream(response, netStream);
+                            //formatter.Serialize(netStream, response);
                         }
 
                         // User wants to send a text messsage
-                        else if(m.GetType() == typeof(SimpleTextMessage))
+                        else if(msg.GetType() == typeof(SimpleTextMessage))
                         {
-                            SimpleTextMessage message = (SimpleTextMessage)m;
+                            SimpleTextMessage message = (SimpleTextMessage)msg;
                             SimpleTextMessageResult result;
                             UserDatabase userDatabase = UserDatabase.GetTheDatabase();
                             // Target user does in fact exist
@@ -141,9 +150,11 @@ class MoveBitServer
                                 result = new SimpleTextMessageResult(SendResult.sendFailure);
 
                             // Send the message
-                            formatter.Serialize(netStream, result);
+                            MessageManager.writeMessageToNetStream(result, netStream);
+                            //formatter.Serialize(netStream, result);
                         }
                     }
+
                     // Test if client port has been abandoned...
                     else if (client.Client.Poll(1000, SelectMode.SelectRead)) 
                     {
@@ -151,18 +162,20 @@ class MoveBitServer
                         Console.WriteLine($"\t{user.userName} disconnected");
                         netStream.Close();
                     }
+
                     // User has unread messages and we can tell them!
                     else if (user.hasUnreadMessages() && netStream.CanWrite)
                     {
-                        List<Message> messages = user.getUnreadMessages();
+                        List<MoveBitMessage> messages = user.getUnreadMessages();
                         Console.Write($"\tSending {user.userName} their {messages.Count()} new messages");
                         InboxListUpdate update = new InboxListUpdate(messages);
-                        formatter.Serialize(netStream, update);
+                        MessageManager.writeMessageToNetStream(update, netStream);
+                        //formatter.Serialize(netStream, update);
                     }
 
-                    // TODO make 'else'
                     // Nothing to do, sleep for a bit and wait for something to happen
-                    Thread.Sleep(250);
+                    else
+                        Thread.Sleep(250);
                 }
             }
         }
@@ -170,7 +183,7 @@ class MoveBitServer
         catch(Exception exception)
         {
             string clientName = (user == null) ? "Unknown User" : user.userName;
-            Console.WriteLine($"\tAn exception occured whilst communicating with {clientName}: {exception.ToString()}");
+            Console.WriteLine($"\tAn exception occured while communicating with {clientName} ({thisClientId}): {exception}");
         }
         finally
         {
@@ -178,6 +191,7 @@ class MoveBitServer
             if (user != null)
                 user.setOffline();
             client.Close();
+            Console.WriteLine($"\tClient connection ended ({thisClientId})");
         }
 
     }
@@ -189,29 +203,30 @@ class MoveBitServer
     /// <returns></returns>
     public static string userLogin(NetworkStream netStream)
     {
+
+        // BUG FIXME TODO - Don't know how I missed this initially but if you enter the wrong credentials, the server will
+        //  return a failed login response correctly but then immediately end the connection. 
+        //  *However*, the client doesn't close their side and may retry the connection. This can lead the client to 
+        //  think that they logged in correctly because an error occurs... The client needs its own fix for this,
+        //  but to fix it here, don't exit while the client is active or we don't have a valid login.
+
         string loggedUser = null;
-        // TODO: *MORE* redundant formatters! Get rid of these!
-        BinaryFormatter formatter = new BinaryFormatter();
-        ClientConnectRequest connectRequest = (ClientConnectRequest)formatter.Deserialize(netStream);
+        ClientConnectRequest connectRequest = (ClientConnectRequest)MessageManager.netStreamToMessage(netStream);
         ClientConnectResponse connectResponse;
 
         UserDatabase db = UserDatabase.GetTheDatabase();
         // TODO: Probably make a general 'validInput' function for the connectionRequest
         // User didn't provide a username or password...
         if (connectRequest.userName == "" || connectRequest.password == "")
-        {
             connectResponse = new ClientConnectResponse(serverConnectResponse.invalidCredentials);
-        }
+
         // User trying to create a new account
         else if (connectRequest.createAccountFlag)
         {
-            // TODO Delete some of these unnecessary braces.
 
             // Username taken
             if (db.userExists(connectRequest.userName))
-            {
                 connectResponse = new ClientConnectResponse(serverConnectResponse.usernameTaken);
-            }
 
             // Insert additional cases here...
             // else if() ...
@@ -224,20 +239,17 @@ class MoveBitServer
                 Console.WriteLine($"\tRegistered new user: {connectRequest.userName}");
                 loggedUser = connectRequest.userName;
             }
+
             // Unable to insert... 
             else
-            {
                 connectResponse = new ClientConnectResponse(serverConnectResponse.usernameTaken);
-            }
         }
         // User trying to log into existing account
         else
         {
             // Check if username or password invalid
             if(!db.userExists(connectRequest.userName) || !db.passwordValid(connectRequest.userName, connectRequest.password))
-            {
                 connectResponse = new ClientConnectResponse(serverConnectResponse.invalidCredentials);
-            }
 
             // Check explicitly for username and password match
             else if(db.userExists(connectRequest.userName) && db.passwordValid(connectRequest.userName, connectRequest.password))
@@ -248,14 +260,11 @@ class MoveBitServer
 
             // Unknown issue with login
             else
-            {
-                // TODO change return code to something legit
-                connectResponse = new ClientConnectResponse(serverConnectResponse.serverBusy);
-            }
+                connectResponse = new ClientConnectResponse(serverConnectResponse.unknownError);
 
         }
         // Send the connect response message
-        formatter.Serialize(netStream, connectResponse);
+        MessageManager.writeMessageToNetStream(connectResponse, netStream);
 
         // Return the user name, if we got it
         return loggedUser;
