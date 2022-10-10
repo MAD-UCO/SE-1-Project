@@ -16,6 +16,7 @@ namespace MoveBit_Server
         public string userName;
         public string password;
         public bool online;
+        public bool isBanned = false;
         // List of messages for the user
         private List<MoveBitMessage> inbox;
         // Lock for accessing user's ibox

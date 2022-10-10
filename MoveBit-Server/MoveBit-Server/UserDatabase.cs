@@ -134,8 +134,8 @@ namespace MoveBit_Server
             List<string> active = new List<string>();
             foreach(KeyValuePair<string, UserAccount> entry in userTable)
             {
-                if(entry.Value.online)
-                    active.Add(entry.Key);
+                string status= entry.Value.online ? "Online" : "Offline";
+                active.Add($"{entry.Key} ({status})");
             }
             return active;
         }

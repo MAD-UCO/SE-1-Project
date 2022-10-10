@@ -14,6 +14,7 @@ class MoveBitServer
 
     private static Object svrLock = new Object();
     private static int clientId = 0;
+    private static int maxIntervalsIdle = 100;
     /// <summary>
     /// Main execution function
     /// </summary>
@@ -97,6 +98,7 @@ class MoveBitServer
         TcpClient client = (TcpClient)clientObj;
         NetworkStream netStream = client.GetStream();
         UserAccount user = null;
+        int idleIntervals = 0;
 
         try
         {
@@ -116,6 +118,7 @@ class MoveBitServer
                     // Don't read from the stream unless there is actually something there...
                     if (netStream.DataAvailable)
                     {
+                        idleIntervals = 0;
                         // We got a new message... Read it.
                         MoveBitMessage msg = MessageManager.netStreamToMessage(netStream);
 
@@ -175,7 +178,18 @@ class MoveBitServer
 
                     // Nothing to do, sleep for a bit and wait for something to happen
                     else
-                        Thread.Sleep(250);
+                    {
+                        if(idleIntervals++ < maxIntervalsIdle)
+                            Thread.Sleep(250);
+                        else
+                        {
+                            Console.WriteLine($"\t{user.userName} has been idle for too long... Disconnecting...");
+                            MessageManager.writeMessageToNetStream(new ServerToClientLogoffCommand(), netStream);
+                            endConnetion = true;
+                            netStream.Close();
+                        }
+                    }
+                        
                 }
             }
         }
@@ -214,6 +228,7 @@ class MoveBitServer
         ClientConnectRequest connectRequest = (ClientConnectRequest)MessageManager.netStreamToMessage(netStream);
         ClientConnectResponse connectResponse;
 
+        
         UserDatabase db = UserDatabase.GetTheDatabase();
         // TODO: Probably make a general 'validInput' function for the connectionRequest
         // User didn't provide a username or password...
