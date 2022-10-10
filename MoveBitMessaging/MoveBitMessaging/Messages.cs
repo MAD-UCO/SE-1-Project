@@ -28,6 +28,7 @@ namespace MoveBitMessaging
         ID_SimpleTextMessage,
         ID_SimpleTextMessageResult,
         ID_InboxListUpdate,
+        ID_ServerToClientLogoffCommand,
 
 
         ID_UndefinedMessage,
@@ -53,6 +54,7 @@ namespace MoveBitMessaging
         invalidCredentials,
         serverBusy,
         usernameTaken,
+        userBanned,
         unknownError,
     }
 
@@ -187,6 +189,16 @@ namespace MoveBitMessaging
     }
 
 
+    [Serializable]
+    public class ServerToClientLogoffCommand : MoveBitMessage
+    {
+        public ServerToClientLogoffCommand()
+        {
+            id = MessageIdentifier.ID_ServerToClientLogoffCommand;
+        }
+    }
+
+
     /// <summary>
     /// Inbox List Update Message:
     /// Message containing messages that are in the user's inbox on the server
@@ -216,36 +228,13 @@ namespace MoveBitMessaging
         /// <summary>
         /// Function returns a Deserialized message object from a network stream that
         /// is being used to converse between the client and server application.
-        /// If the message type is unknown, an Exception is thrown
         /// </summary>
         /// <param name="stream">The network stream being used to converse between the client and 
         /// server</param>
         /// <returns>A deserialized message from the networkStream</returns>
-        /// <exception cref="InvalidDataException"></exception>
         public static MoveBitMessage netStreamToMessage(NetworkStream stream)
         {
-            MoveBitMessage msg = (MoveBitMessage)binaryFormatter.Deserialize(stream);
-            MoveBitMessage deserialzed = null;
-
-            if (msg.id == MessageIdentifier.ID_ClientConnectRequest)
-                deserialzed = (ClientConnectRequest)msg;
-            else if (msg.id == MessageIdentifier.ID_ClientConnectResponse)
-                deserialzed = (ClientConnectResponse)msg;
-            else if (msg.id == MessageIdentifier.ID_TestListUsersRequest)
-                deserialzed = (TestListActiveUsersRequest)msg;
-            else if (msg.id == MessageIdentifier.ID_TestListUsersResponse)
-                deserialzed = (TestListActiveUsersResponse)msg;
-            else if (msg.id == MessageIdentifier.ID_SimpleTextMessage)
-                deserialzed = (SimpleTextMessage)msg;
-            else if (msg.id == MessageIdentifier.ID_SimpleTextMessageResult)
-                deserialzed = (SimpleTextMessageResult)msg;
-            else if (msg.id == MessageIdentifier.ID_InboxListUpdate)
-                deserialzed = (InboxListUpdate)msg;
-            else
-                throw new InvalidDataException($"No handle for message with ID '{msg.id.ToString()}'");
-
-
-            return deserialzed;
+            return (MoveBitMessage)binaryFormatter.Deserialize(stream);
         }
     
 
