@@ -235,6 +235,7 @@ namespace MoveBitMessaging
         public static MoveBitMessage netStreamToMessage(NetworkStream stream)
         {
             return (MoveBitMessage)binaryFormatter.Deserialize(stream);
+            stream.Flush();
         }
     
 
@@ -247,6 +248,7 @@ namespace MoveBitMessaging
         {
             // Though this function ius extremly short, the static formatter helps reduce clutter in other areas
             binaryFormatter.Serialize(netStream, message);
+            netStream.FlushAsync();
         }
 
         /// <summary>

@@ -216,6 +216,7 @@ namespace SE_Semester_Project
 
         private static void terminateConnection()
         {
+            connectedToServer = false;
             lock (streamLock)
             {
                 if (netStream != null)
@@ -228,7 +229,6 @@ namespace SE_Semester_Project
                     client.Close();
                     client = null;
                 }
-                connectedToServer = false;
             }
         }
     

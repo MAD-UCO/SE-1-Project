@@ -15,6 +15,9 @@ class MoveBitServer
     private static Object svrLock = new Object();
     private static int clientId = 0;
     private static int maxIntervalsIdle = 100;
+    private static bool kickIdle = false;
+    private static bool continueMaintain = true;
+    private static List<UserAccount> connectedusers = new List<UserAccount>();
     /// <summary>
     /// Main execution function
     /// </summary>
@@ -31,6 +34,7 @@ class MoveBitServer
         if (clim.parseCommandLine(args))
         {
             clim.echoSettings();
+            kickIdle = clim.kickIdleUsers;
             Console.WriteLine("//Starting MoveBit Server//");
             bool runServer = true;
             TcpListener server;
@@ -56,19 +60,27 @@ class MoveBitServer
             {
                 // TODO: 'runServer' only set to false when exception reaches this high... May want to make some kind of disconnect
                 //      message in order to control the shutdown.
+                Thread t = new Thread(maintainStreams);
                 while (runServer)
                 {
+                    //if (t.ThreadState != ThreadState.Running)
+                    //    t.Start();
                     // Accept a new client and relegate processing to a new thread
                     client = server.AcceptTcpClient();
                     ThreadPool.QueueUserWorkItem(processUser, client);
                 }
+                
             }
             // Something went horribly wrong...
             catch(Exception exception)
             {
-                Console.WriteLine($"An error occured while running the server: {exception.Message}");
+                Console.WriteLine($"An error occured while running the server: {exception}");
                 runServer = false;
                 // TODO: try to save databases, safely disconnect users, and other last minute things...
+            }
+            finally
+            {
+                continueMaintain = false;
             }
 
         }
@@ -79,6 +91,15 @@ class MoveBitServer
         // TODO: If the server crashes, send all the clients a message telling them to disconnect so
         //      they are in a safe state
         Console.WriteLine("Shutting down the server...");
+    }
+
+    public static void maintainStreams()
+    {
+        while (continueMaintain)
+        {
+            Thread.Sleep(1000);
+            Console.WriteLine("Working super hard...");
+        }
     }
 
     /// <summary>
@@ -133,7 +154,7 @@ class MoveBitServer
                         }
 
                         // User wants to send a text messsage
-                        else if(msg.GetType() == typeof(SimpleTextMessage))
+                        else if (msg.GetType() == typeof(SimpleTextMessage))
                         {
                             SimpleTextMessage message = (SimpleTextMessage)msg;
                             SimpleTextMessageResult result;
@@ -159,7 +180,7 @@ class MoveBitServer
                     }
 
                     // Test if client port has been abandoned...
-                    else if (client.Client.Poll(1000, SelectMode.SelectRead)) 
+                    else if (client.Client.Poll(1000, SelectMode.SelectRead))
                     {
                         endConnetion = true;
                         Console.WriteLine($"\t{user.userName} disconnected");
@@ -176,10 +197,12 @@ class MoveBitServer
                         //formatter.Serialize(netStream, update);
                     }
 
+                    else if (!netStream.CanRead && !netStream.CanWrite)
+                        Console.WriteLine($"Connection with {user.userName} has degraded");
                     // Nothing to do, sleep for a bit and wait for something to happen
                     else
                     {
-                        if(idleIntervals++ < maxIntervalsIdle)
+                        if (idleIntervals++ < maxIntervalsIdle || !kickIdle)
                             Thread.Sleep(250);
                         else
                         {

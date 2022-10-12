@@ -9,4 +9,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="MoveBitMessaging">
+      <HintPath>..\..\MoveBitMessaging\MoveBitMessaging\bin\Debug\net6.0\MoveBitMessaging.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

@@ -16,6 +16,8 @@ namespace MoveBit_Server
         public bool acceptOnlyLocal = true;
         // The port number the server will operate on.
         public int listeningPort = 5005;
+        // TEST variable for kicking inactive users
+        public bool kickIdleUsers = false;
 
         /// <summary>
         /// Function meant to parse the command line and extract variables being set from it. 
@@ -28,6 +30,7 @@ namespace MoveBit_Server
             bool expectArgument = false;
             bool nextShouldBeAcceptOnlyLocal = false;
             bool nextShouldBeListeningPort = false;
+            bool nextShouldBeKick = false;
             string activeKey = null;
             // Iterate over every word in the command line
             foreach(string command in commandLineArgs)
@@ -45,6 +48,11 @@ namespace MoveBit_Server
                     {
                         expectArgument = true;
                         nextShouldBeListeningPort = true;
+                    }
+                    else if(command == "kickIdle")
+                    {
+                        expectArgument = true;
+                        nextShouldBeKick = true;
                     }
                     else
                     {
@@ -66,13 +74,25 @@ namespace MoveBit_Server
                                 acceptOnlyLocal = false;
                             else
                                 throw new ArgumentException($"Invalid argument for keyword '{activeKey}' - {lower}");
+                            nextShouldBeAcceptOnlyLocal = false;
                         }
                         else if (nextShouldBeListeningPort)
                         {
                             int temp = Int16.Parse(lower);
                             if (temp < 1 || temp > 65535)
                                 throw new ArgumentException($"{lower} is an invalid port number! Must be in the range of [1,65535]");
-                            listeningPort = temp; 
+                            listeningPort = temp;
+
+                            nextShouldBeListeningPort = false;
+                        }
+                        else if (nextShouldBeKick)
+                        {
+                            if (lower == "true")
+                                kickIdleUsers = true;
+                            else if (lower == "false")
+                                ;
+                            else
+                                throw new ArgumentException($"Invalid argument for keyword '{activeKey}' - {lower}");
                         }
                         else
                             throw new ArgumentException($"No processing routine for key '{activeKey}'");
@@ -98,9 +118,11 @@ namespace MoveBit_Server
             Console.WriteLine("The program is operating with the following variables set:");
             Console.WriteLine($"\tNetworking on localHost only: {acceptOnlyLocal}");
             Console.WriteLine($"\tListening on port #{listeningPort}");
-            
-            
-            
+            Console.WriteLine($"\tKicking idle users: {kickIdleUsers}");
+
+
+
+
             Console.WriteLine("\n");
         }
     }

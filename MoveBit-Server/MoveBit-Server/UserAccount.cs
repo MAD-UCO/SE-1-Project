@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using MoveBitMessaging;
@@ -19,6 +20,8 @@ namespace MoveBit_Server
         public bool isBanned = false;
         // List of messages for the user
         private List<MoveBitMessage> inbox;
+        public TcpClient client;
+        public NetworkStream clientNetStream;
         // Lock for accessing user's ibox
         private Object userLock = new Object();
 
@@ -42,9 +45,8 @@ namespace MoveBit_Server
         public void setOnline()
         {
             online = true;
-            // Todo remove below here
-            Console.WriteLine($"\t{userName} logged in");
-            Thread.Sleep(1000);
+            //this.client = client;
+            //clientNetStream = client.GetStream();
         }
         
 
@@ -54,9 +56,6 @@ namespace MoveBit_Server
         public void setOffline()
         {
             online = false;
-            // Todo remove below here
-            Console.WriteLine($"\t{userName} logged out");
-            Thread.Sleep(1000);
         }
 
 
