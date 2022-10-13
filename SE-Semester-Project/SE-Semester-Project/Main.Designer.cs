@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cboAddresses = new System.Windows.Forms.ComboBox();
             this.txtOutgoing = new System.Windows.Forms.RichTextBox();
             this.cboFileList = new System.Windows.Forms.ComboBox();
@@ -35,7 +36,10 @@
             this.btnUpload = new System.Windows.Forms.Button();
             this.btnMessages = new System.Windows.Forms.Button();
             this.btnSend = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnDelete = new System.Windows.Forms.Button();
+            this.btnStartTime = new System.Windows.Forms.Button();
+            this.btnFinishTime = new System.Windows.Forms.Button();
+            this.tmrStartEnd = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // cboAddresses
@@ -70,7 +74,7 @@
             this.cboFileList.Enabled = false;
             this.cboFileList.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.cboFileList.FormattingEnabled = true;
-            this.cboFileList.Location = new System.Drawing.Point(12, 232);
+            this.cboFileList.Location = new System.Drawing.Point(12, 229);
             this.cboFileList.Name = "cboFileList";
             this.cboFileList.Size = new System.Drawing.Size(225, 28);
             this.cboFileList.TabIndex = 7;
@@ -89,7 +93,7 @@
             // btnUpload
             // 
             this.btnUpload.Enabled = false;
-            this.btnUpload.Location = new System.Drawing.Point(287, 232);
+            this.btnUpload.Location = new System.Drawing.Point(287, 229);
             this.btnUpload.Name = "btnUpload";
             this.btnUpload.Size = new System.Drawing.Size(125, 28);
             this.btnUpload.TabIndex = 11;
@@ -99,7 +103,7 @@
             // 
             // btnMessages
             // 
-            this.btnMessages.Location = new System.Drawing.Point(420, 210);
+            this.btnMessages.Location = new System.Drawing.Point(420, 207);
             this.btnMessages.Name = "btnMessages";
             this.btnMessages.Size = new System.Drawing.Size(75, 50);
             this.btnMessages.TabIndex = 13;
@@ -116,17 +120,37 @@
             this.btnSend.TabIndex = 16;
             this.btnSend.Text = "send";
             this.btnSend.UseVisualStyleBackColor = false;
+            this.btnSend.Click += new System.EventHandler(this.btnSend_Click_1);
             // 
-            // button2
+            // btnDelete
             // 
-            this.button2.BackColor = System.Drawing.Color.Silver;
-            this.button2.Location = new System.Drawing.Point(420, 73);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 50);
-            this.button2.TabIndex = 17;
-            this.button2.Text = "delete";
-            this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnDelete.BackColor = System.Drawing.Color.Silver;
+            this.btnDelete.Location = new System.Drawing.Point(420, 75);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(75, 50);
+            this.btnDelete.TabIndex = 17;
+            this.btnDelete.Text = "delete";
+            this.btnDelete.UseVisualStyleBackColor = false;
+            // 
+            // btnStartTime
+            // 
+            this.btnStartTime.Location = new System.Drawing.Point(420, 133);
+            this.btnStartTime.Name = "btnStartTime";
+            this.btnStartTime.Size = new System.Drawing.Size(75, 29);
+            this.btnStartTime.TabIndex = 18;
+            this.btnStartTime.Text = "start";
+            this.btnStartTime.UseVisualStyleBackColor = true;
+            this.btnStartTime.Click += new System.EventHandler(this.btnStartTime_Click);
+            // 
+            // btnFinishTime
+            // 
+            this.btnFinishTime.Location = new System.Drawing.Point(420, 170);
+            this.btnFinishTime.Name = "btnFinishTime";
+            this.btnFinishTime.Size = new System.Drawing.Size(75, 29);
+            this.btnFinishTime.TabIndex = 19;
+            this.btnFinishTime.Text = "end";
+            this.btnFinishTime.UseVisualStyleBackColor = true;
+            this.btnFinishTime.Click += new System.EventHandler(this.btnFinishTime_Click);
             // 
             // Main
             // 
@@ -134,8 +158,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.SlateGray;
             this.ClientSize = new System.Drawing.Size(507, 278);
+            this.Controls.Add(this.btnFinishTime);
+            this.Controls.Add(this.btnStartTime);
             this.Controls.Add(this.btnSend);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnMessages);
             this.Controls.Add(this.btnUpload);
             this.Controls.Add(this.btnCompose);
@@ -160,6 +186,9 @@
         private Button btnUpload;
         private Button btnMessages;
         private Button btnSend;
-        private Button button2;
+        private Button btnDelete;
+        private Button btnStartTime;
+        private Button btnFinishTime;
+        private System.Windows.Forms.Timer tmrStartEnd;
     }
 }
