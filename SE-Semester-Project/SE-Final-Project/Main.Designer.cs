@@ -40,6 +40,7 @@
             this.cboFileList = new System.Windows.Forms.ComboBox();
             this.btnUpload = new System.Windows.Forms.Button();
             this.playerMain = new AxWMPLib.AxWindowsMediaPlayer();
+            this.btnLogout = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.playerMain)).BeginInit();
             this.SuspendLayout();
             // 
@@ -57,7 +58,7 @@
             // btnCompose
             // 
             this.btnCompose.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCompose.Location = new System.Drawing.Point(670, 56);
+            this.btnCompose.Location = new System.Drawing.Point(668, 91);
             this.btnCompose.Name = "btnCompose";
             this.btnCompose.Size = new System.Drawing.Size(98, 52);
             this.btnCompose.TabIndex = 1;
@@ -78,7 +79,7 @@
             // 
             this.btnSend.BackColor = System.Drawing.Color.LightGreen;
             this.btnSend.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSend.Location = new System.Drawing.Point(668, 142);
+            this.btnSend.Location = new System.Drawing.Point(668, 160);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(100, 50);
             this.btnSend.TabIndex = 3;
@@ -90,7 +91,7 @@
             // 
             this.btnDelete.BackColor = System.Drawing.Color.Silver;
             this.btnDelete.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDelete.Location = new System.Drawing.Point(668, 198);
+            this.btnDelete.Location = new System.Drawing.Point(668, 227);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(100, 50);
             this.btnDelete.TabIndex = 4;
@@ -100,7 +101,7 @@
             // btnStart
             // 
             this.btnStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStart.Location = new System.Drawing.Point(668, 292);
+            this.btnStart.Location = new System.Drawing.Point(668, 294);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(100, 50);
             this.btnStart.TabIndex = 5;
@@ -111,7 +112,7 @@
             // btnEnd
             // 
             this.btnEnd.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEnd.Location = new System.Drawing.Point(668, 348);
+            this.btnEnd.Location = new System.Drawing.Point(668, 361);
             this.btnEnd.Name = "btnEnd";
             this.btnEnd.Size = new System.Drawing.Size(100, 50);
             this.btnEnd.TabIndex = 6;
@@ -161,12 +162,24 @@
             this.playerMain.Size = new System.Drawing.Size(650, 425);
             this.playerMain.TabIndex = 10;
             // 
+            // btnLogout
+            // 
+            this.btnLogout.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLogout.Location = new System.Drawing.Point(668, 22);
+            this.btnLogout.Name = "btnLogout";
+            this.btnLogout.Size = new System.Drawing.Size(98, 52);
+            this.btnLogout.TabIndex = 11;
+            this.btnLogout.Text = "Logout";
+            this.btnLogout.UseVisualStyleBackColor = true;
+            this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.MidnightBlue;
             this.ClientSize = new System.Drawing.Size(782, 503);
+            this.Controls.Add(this.btnLogout);
             this.Controls.Add(this.playerMain);
             this.Controls.Add(this.btnUpload);
             this.Controls.Add(this.cboFileList);
@@ -200,6 +213,7 @@
         private System.Windows.Forms.ComboBox cboFileList;
         private System.Windows.Forms.Button btnUpload;
         private AxWMPLib.AxWindowsMediaPlayer playerMain;
+        private System.Windows.Forms.Button btnLogout;
     }
 }
 

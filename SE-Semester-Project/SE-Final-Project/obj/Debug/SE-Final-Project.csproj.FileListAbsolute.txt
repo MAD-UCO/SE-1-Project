@@ -17,3 +17,4 @@ C:\OCCC_UCO\Fall 2022\Software Engineering I\SE-1-Semester-Project\SE-Semester-P
 C:\OCCC_UCO\Fall 2022\Software Engineering I\SE-1-Semester-Project\SE-Semester-Project\SE-Final-Project\obj\Debug\SE-Final-Project.pdb
 C:\OCCC_UCO\Fall 2022\Software Engineering I\SE-1-Semester-Project\SE-Semester-Project\SE-Final-Project\obj\Debug\SE_Final_Project.EndTimeDialog.resources
 C:\OCCC_UCO\Fall 2022\Software Engineering I\SE-1-Semester-Project\SE-Semester-Project\SE-Final-Project\obj\Debug\SE_Final_Project.StartTimeDialog.resources
+C:\OCCC_UCO\Fall 2022\Software Engineering I\SE-1-Semester-Project\SE-Semester-Project\SE-Final-Project\obj\Debug\SE_Final_Project.Login.resources

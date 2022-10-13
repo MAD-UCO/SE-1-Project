@@ -145,5 +145,12 @@ namespace SE_Final_Project
                 playerMain.Visible = false;
             }
         }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            Login frmLogin = new Login();
+            frmLogin.Show();
+            this.Hide();
+        }
     }
 }
