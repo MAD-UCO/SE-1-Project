@@ -1,4 +1,7 @@
-﻿using MoveBitMessaging;
+﻿//#define SIMULATE_LAG      // Uncomment to simulate random server processing and connection lag
+
+
+using MoveBitMessaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,32 +18,14 @@ namespace MoveBitMessaging
 {
 
     /// <summary>
-    /// Enum serving as an identifier for what specific type of message
-    /// a generic message object should be cast to.
-    /// </summary>
-    [Serializable]
-    public enum MessageIdentifier
-    {
-        ID_ClientConnectRequest,
-        ID_ClientConnectResponse,
-        ID_TestListUsersRequest,
-        ID_TestListUsersResponse,
-        ID_SimpleTextMessage,
-        ID_SimpleTextMessageResult,
-        ID_InboxListUpdate,
-        ID_ServerToClientLogoffCommand,
-
-
-        ID_UndefinedMessage,
-    }
-
-    /// <summary>
     /// Generic Message class meant to be inherited by all other messages
     /// </summary>
     [Serializable]
     public class MoveBitMessage
     {
-        public MessageIdentifier id;
+        // TODO
+        //  Add user name
+        //  Add session ID
     }
 
     /// <summary>
@@ -67,14 +52,13 @@ namespace MoveBitMessaging
     public class ClientConnectRequest : MoveBitMessage
     {
         public string userName;
-        public string password;
+        public byte[] password;
         // If flag is true, then the user is attempting to
         //      create the account specified
         public bool createAccountFlag;
 
-        public ClientConnectRequest(string userName, string password, bool createAccountFlag = false)
+        public ClientConnectRequest(string userName, byte[] password, bool createAccountFlag = false)
         {
-            id = MessageIdentifier.ID_ClientConnectRequest;
             this.userName = userName;
             this.password = password;
             this.createAccountFlag = createAccountFlag;
@@ -93,11 +77,12 @@ namespace MoveBitMessaging
     {
         // Enum for what the server's response is
         public serverConnectResponse response;
+        public byte[] assignedSessionID;
 
-        public ClientConnectResponse(serverConnectResponse response)
+        public ClientConnectResponse(serverConnectResponse response, byte[]? assignedSessionID = null)
         {
-            id = MessageIdentifier.ID_ClientConnectResponse;
             this.response = response;
+            this.assignedSessionID = assignedSessionID;
         }
     }
 
@@ -114,7 +99,6 @@ namespace MoveBitMessaging
         //  initiate the logic
         public TestListActiveUsersRequest() 
         {
-            id = MessageIdentifier.ID_TestListUsersRequest;
         }
     }
 
@@ -131,7 +115,6 @@ namespace MoveBitMessaging
         public List<string> activeUsers;
         public TestListActiveUsersResponse(List<string> activeUsers)
         {
-            id = MessageIdentifier.ID_TestListUsersResponse;
             this.activeUsers = activeUsers; 
         }
     }
@@ -153,7 +136,6 @@ namespace MoveBitMessaging
 
         public SimpleTextMessage(string recipient, string sender, string message)
         {
-            id = MessageIdentifier.ID_SimpleTextMessage;
             this.recipient = recipient;
             this.sender = sender;
             this.message = message;
@@ -183,7 +165,6 @@ namespace MoveBitMessaging
 
         public SimpleTextMessageResult(SendResult result)
         {
-            id = MessageIdentifier.ID_SimpleTextMessageResult;
             sendResult = result;
         }
     }
@@ -194,7 +175,6 @@ namespace MoveBitMessaging
     {
         public ServerToClientLogoffCommand()
         {
-            id = MessageIdentifier.ID_ServerToClientLogoffCommand;
         }
     }
 
@@ -211,14 +191,66 @@ namespace MoveBitMessaging
 
         public InboxListUpdate(List<MoveBitMessage> messages)
         {
-            id = MessageIdentifier.ID_InboxListUpdate;
             this.messages = messages;
+        }
+    }
+
+    /// <summary>
+    /// Class for sending another user a media message
+    /// Contains fields for SMIL/XML string data as well as binary
+    /// file data
+    /// Client --> Server
+    /// </summary>
+    [Serializable]
+    public class MediaMessage   : MoveBitMessage
+    {
+        public string senderName;
+        public string recipientName;
+        public string smilData;
+        public Dictionary<string, byte[]> mediaFileData;
+        public MediaMessage(string senderName, string recipientName, string smilData, Dictionary<string, byte[]> mediaFileData = null)
+        {
+            this.senderName = senderName;
+            this.recipientName = recipientName;
+            this.smilData = smilData;
+            this.mediaFileData = mediaFileData;
+        }
+
+        public void AddNecessaryFile(string fileName, byte[] fileData)
+        {
+            // TODO: may need to make this data structure more robust in order to 
+            //  handle instances where two different files have the same name
+            mediaFileData[fileName] = fileData;
+        }
+    }
+
+    /// <summary>
+    /// Class meant to serve as a response from the server 
+    /// on if our media message was sent successfully
+    /// Server --> Client
+    /// </summary>
+    [Serializable]
+    public class MediaMessageResponse : MoveBitMessage
+    {
+        public SendResult result;
+        
+        public MediaMessageResponse(SendResult result)
+        {
+            this.result =   result;
         }
     }
 
 
     public class MessageManager
     {
+
+#if SIMULATE_LAG
+
+        private static int minLagMilliseconds = 0;
+        private static int maxLagMilliseconds = 1500;
+        private static Random randLag = new Random();
+
+#endif
 
         // TODO: BinaryFormatter.Deserialize() is deprecated... However, using the XML Deserializer was not working
         //  Find a replacement to avoid warning
@@ -232,10 +264,17 @@ namespace MoveBitMessaging
         /// <param name="stream">The network stream being used to converse between the client and 
         /// server</param>
         /// <returns>A deserialized message from the networkStream</returns>
-        public static MoveBitMessage netStreamToMessage(NetworkStream stream)
+        public static MoveBitMessage GetMessageFromStream(NetworkStream stream)
         {
-            return (MoveBitMessage)binaryFormatter.Deserialize(stream);
-            stream.Flush();
+#if SIMULATE_LAG
+            Thread.Sleep(randLag.Next(minLagMilliseconds, maxLagMilliseconds));
+            MoveBitMessage message = (MoveBitMessage)binaryFormatter.Deserialize(stream);
+            Thread.Sleep(randLag.Next(minLagMilliseconds, maxLagMilliseconds));
+#else
+            MoveBitMessage message = (MoveBitMessage)binaryFormatter.Deserialize(stream);
+#endif
+            stream.FlushAsync();
+            return message;
         }
     
 
@@ -244,24 +283,31 @@ namespace MoveBitMessaging
         /// </summary>
         /// <param name="message"></param>
         /// <param name="netStream"></param>
-        public static void writeMessageToNetStream(MoveBitMessage message, NetworkStream netStream)
+        public static void WriteMessageToNetStream(MoveBitMessage message, NetworkStream netStream)
         {
-            // Though this function ius extremly short, the static formatter helps reduce clutter in other areas
+            // Though this function is extremly short, the static formatter helps reduce clutter in other areas
+#if SIMULATE_LAG
+            Thread.Sleep(randLag.Next(minLagMilliseconds, maxLagMilliseconds));
             binaryFormatter.Serialize(netStream, message);
+            Thread.Sleep(randLag.Next(minLagMilliseconds, maxLagMilliseconds));
+#else
+            binaryFormatter.Serialize(netStream, message);
+#endif
             netStream.FlushAsync();
         }
 
         /// <summary>
         /// Function that writes a given message and then returns a new message
-        /// from the stream. Useful for serial back and forth messaging
+        /// from the stream. Useful for serial back and forth messaging when an immediate
+        /// response is required
         /// </summary>
         /// <param name="message"></param>
         /// <param name="netStream"></param>
         /// <returns></returns>
-        public static MoveBitMessage writeAndRecieveMessage(MoveBitMessage message, NetworkStream netStream)
+        public static MoveBitMessage WriteAndRecieveMessage(MoveBitMessage message, NetworkStream netStream)
         {
-            writeMessageToNetStream(message,netStream);
-            return netStreamToMessage(netStream);
+            WriteMessageToNetStream(message,netStream);
+            return GetMessageFromStream(netStream);
         }
     }
 
