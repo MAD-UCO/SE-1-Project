@@ -12,12 +12,13 @@ namespace MoveBit_Server
     /// </summary>
     internal class CommandLineManager
     {
-        // Flag for if the program should only accept localhost connections
-        public bool acceptOnlyLocal = true;
-        // The port number the server will operate on.
-        public int listeningPort = 5005;
-        // TEST variable for kicking inactive users
-        public bool kickIdleUsers = false;
+        public bool acceptOnlyLocal = true;                 // Flag for if the program should only accept localhost connections
+        public int listeningPort = 5005;                    // The port number the server will operate on.
+        public bool kickIdleUsers = false;                  // TEST variable for kicking inactive users
+        public string logLevel = "TRACE";                   // Log level string to tell what log level we are at in echo
+        public LogLevel level = LogLevel.level_trace;       // The log level we set from the CLI
+
+        private static ServerLogger logger = ServerLogger.GetTheLogger();
 
         /// <summary>
         /// Function meant to parse the command line and extract variables being set from it. 
@@ -25,11 +26,12 @@ namespace MoveBit_Server
         /// </summary>
         /// <param name="commandLineArgs"></param>
         /// <returns></returns>
-        public bool parseCommandLine(string []commandLineArgs)
+        public bool ParseCommandLine(string []commandLineArgs)
         {
             bool expectArgument = false;
             bool nextShouldBeAcceptOnlyLocal = false;
             bool nextShouldBeListeningPort = false;
+            bool nextShouldBeLogLevel = false;
             bool nextShouldBeKick = false;
             string activeKey = null;
             // Iterate over every word in the command line
@@ -54,9 +56,14 @@ namespace MoveBit_Server
                         expectArgument = true;
                         nextShouldBeKick = true;
                     }
+                    else if (command == "loglevel")
+                    {
+                        expectArgument = true;
+                        nextShouldBeLogLevel = true;
+                    }
                     else
                     {
-                        Console.WriteLine($"Unexpected command line keyword: {command}");
+                        logger.Error($"Unexpected command line keyword: {command}");
                         return false;
                     }
                 }
@@ -79,7 +86,7 @@ namespace MoveBit_Server
                         else if (nextShouldBeListeningPort)
                         {
                             int temp = Int16.Parse(lower);
-                            if (temp < 1 || temp > 65535)
+                            if (temp < 1 || temp > Int16.MaxValue)
                                 throw new ArgumentException($"{lower} is an invalid port number! Must be in the range of [1,65535]");
                             listeningPort = temp;
 
@@ -90,9 +97,56 @@ namespace MoveBit_Server
                             if (lower == "true")
                                 kickIdleUsers = true;
                             else if (lower == "false")
-                                ;
+                                kickIdleUsers = false;
                             else
                                 throw new ArgumentException($"Invalid argument for keyword '{activeKey}' - {lower}");
+                        }
+                        else if (nextShouldBeLogLevel)
+                        {
+                            if(lower == "trace")
+                            {
+                                level = LogLevel.level_trace;
+                                logLevel = "TRACE";
+                            }
+                            else if(lower == "debug")
+                            {
+                                level = LogLevel.level_debug;
+                                logLevel = "DEBUG";
+                            }
+                            else if (lower == "info")
+                            {
+                                level = LogLevel.level_info;
+                                logLevel = "INFO";
+                            }
+                            else if (lower == "important")
+                            {
+                                level = LogLevel.level_important;
+                                logLevel = "IMPORTANT";
+                            }
+                            else if (lower == "warning")
+                            {
+                                level = LogLevel.level_warning;
+                                logLevel = "WARNING";
+                            }
+                            else if (lower == "error")
+                            {
+                                level = LogLevel.level_error;
+                                logLevel = "ERROR";
+                            }
+                            else if (lower == "critical")
+                            {
+                                level = LogLevel.level_critical;
+                                logLevel = "CRITICAL";
+                            }
+                            else if (lower == "off" || lower == "none" || lower == "disable")
+                            {
+                                level = LogLevel.level_off;
+                                logLevel = "OFF";
+                            }
+                            else
+                                throw new ArgumentException($"Invalid argument for keyword '{activeKey}' - {lower}");
+
+                            logger.SetLevel(level);
                         }
                         else
                             throw new ArgumentException($"No processing routine for key '{activeKey}'");
@@ -101,7 +155,7 @@ namespace MoveBit_Server
                     }
                     catch(Exception err)
                     {
-                        Console.WriteLine($"During command processing, an error occured: {err.Message}");
+                        logger.Error($"During command processing, an error occured: {err.Message}");
                         return false;
                     }
                 }
@@ -113,17 +167,13 @@ namespace MoveBit_Server
         /// Function for displaying each of the command line variables
         /// and what they are set to.
         /// </summary>
-        public void echoSettings()
+        public void EchoSettings()
         {
-            Console.WriteLine("The program is operating with the following variables set:");
-            Console.WriteLine($"\tNetworking on localHost only: {acceptOnlyLocal}");
-            Console.WriteLine($"\tListening on port #{listeningPort}");
-            Console.WriteLine($"\tKicking idle users: {kickIdleUsers}");
-
-
-
-
-            Console.WriteLine("\n");
+            logger.Info("The program is operating with the following variables set:");
+            logger.Info($"Networking on localHost only: {acceptOnlyLocal}");
+            logger.Info($"Listening on port #{listeningPort}");
+            logger.Info($"Kicking idle users: {kickIdleUsers}");
+            logger.Info($"Set Log level: {logLevel}\n");
         }
     }
 }

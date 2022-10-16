@@ -5,306 +5,385 @@ using System.Runtime.Serialization.Formatters.Binary;
 using MoveBitMessaging;
 using System.Diagnostics.Tracing;
 
+
+
 /// <summary>
 /// Main class for the MoveBitServer. The server is meant to coordinate messaging
 /// between all the connected clients
 /// </summary>
 class MoveBitServer
 {
+    private static Object svrLock = new Object();           // Lock for accessing/modifying shared server resources
+    private static bool runServer = false;                  // Flag for if we should continue server operations
+    private static ServerDatabase serverDatabase;           // Local instance of the database
+    private static ServerLogger logger;                     // Local instance of the logger
+    private static bool kickIdle = false;                   // (experimental/unused) if we should kick idle users
+    private static bool loginServiceRunning = false;        // If the login service is/should continue to run
+    private static TcpListener server;                      // The TCP listener that clients connect through
+    private static int usersToProcess = 0;                  // How many users we have to process
+    private static double allocatedUserTime = 1.0;          // How many seconds allowed per user for processing before we report it as an issue
 
-    private static Object svrLock = new Object();
-    private static int clientId = 0;
-    private static int maxIntervalsIdle = 100;
-    private static bool kickIdle = false;
-    private static bool continueMaintain = true;
-    private static List<UserAccount> connectedusers = new List<UserAccount>();
     /// <summary>
-    /// Main execution function
+    /// Main execution method for the server
     /// </summary>
     /// <param name="args"></param>
     public static void Main(string[] args)
     {
-        // Load local databases
-        UserDatabase userDatabase = UserDatabase.GetTheDatabase();
-        userDatabase.loadDatabase();
-
+        logger = ServerLogger.GetTheLogger();
+        serverDatabase = ServerDatabase.GetTheDatabase();
         CommandLineManager clim = new CommandLineManager();
 
-        // Try to parse any/all command line arguments
-        if (clim.parseCommandLine(args))
+        // Parse the command line for any arguments
+        if (clim.ParseCommandLine(args))
         {
-            clim.echoSettings();
+            clim.EchoSettings();
             kickIdle = clim.kickIdleUsers;
-            Console.WriteLine("//Starting MoveBit Server//");
-            bool runServer = true;
-            TcpListener server;
-            TcpClient client;
+            logger.Important("Starting the MoveBit Server...");
 
             // Run in localhost mode
             if (clim.acceptOnlyLocal)
             {
                 server = new TcpListener(System.Net.IPAddress.Loopback, clim.listeningPort);
-                Console.WriteLine("Server listening on loopback only");
+                logger.Debug("Server listening on loopback only");
             }
 
             // Accept any IP connection
             else
             {
                 server = new TcpListener(System.Net.IPAddress.Any, clim.listeningPort);
-                Console.WriteLine("Server listening on all interfaces");
+                logger.Debug("Server listening on all interfaces");
             }
 
-            // Start up the server
-            server.Start();
+            runServer = true;
+
+        }
+        else
+            logger.Error("The command line arguments could not be set");
+
+        if (runServer)
+        {
             try
             {
-                // TODO: 'runServer' only set to false when exception reaches this high... May want to make some kind of disconnect
-                //      message in order to control the shutdown.
-                Thread t = new Thread(maintainStreams);
-                while (runServer)
-                {
-                    //if (t.ThreadState != ThreadState.Running)
-                    //    t.Start();
-                    // Accept a new client and relegate processing to a new thread
-                    client = server.AcceptTcpClient();
-                    ThreadPool.QueueUserWorkItem(processUser, client);
-                }
-                
+                server.Start();
+                // Send login service to its own thread
+                Thread loginThread = new Thread(LoginService);
+                loginThread.Start();
+                // Begin working to process connected users
+                MaintainUserConnections();
             }
-            // Something went horribly wrong...
-            catch(Exception exception)
+            catch (Exception exception)
             {
-                Console.WriteLine($"An error occured while running the server: {exception}");
-                runServer = false;
-                // TODO: try to save databases, safely disconnect users, and other last minute things...
+                logger.Critical($"Fatal exception caused server to terminate: {exception}");
             }
             finally
             {
-                continueMaintain = false;
+                // Stop databse, stop services, prepare for shutdown
+                serverDatabase.SaveDataBase();
+                runServer = false;
+                loginServiceRunning = false;
             }
-
         }
-        // Something went wrong while parsing the command line...
-        else
-            Console.WriteLine("The command line arguments could not be set");
 
-        // TODO: If the server crashes, send all the clients a message telling them to disconnect so
-        //      they are in a safe state
-        Console.WriteLine("Shutting down the server...");
-    }
-
-    public static void maintainStreams()
-    {
-        while (continueMaintain)
-        {
-            Thread.Sleep(1000);
-            Console.WriteLine("Working super hard...");
-        }
+        logger.Important("Server shut down");
     }
 
     /// <summary>
-    /// Function for handling a user. The lifetime of this function is bound
-    /// to that of a user's session
+    /// Function for processing and handling any users that are
+    /// currently connected to the server. This function works continuously
+    /// until told to shutdown, monitoring user connections and handling
+    /// any requests from users.
     /// </summary>
-    /// <param name="clientObj"></param>
-    public static void processUser(Object clientObj)
+    public static void MaintainUserConnections()
     {
-        int thisClientId = 0;
-        lock (svrLock) 
-        {
-            clientId++;
-            thisClientId = clientId;
-        }
-        Console.WriteLine($"\tNew client connected ({thisClientId})");
-        TcpClient client = (TcpClient)clientObj;
-        NetworkStream netStream = client.GetStream();
-        UserAccount user = null;
-        int idleIntervals = 0;
-
+        logger.Trace($"Beginning the user connection processing function");
         try
         {
-            // Get users name from login function
-            string name = userLogin(netStream);
-            // TODO: If name is not null user should be in the database...
-            //      However, we should still check... Fix this.
-            if (name != null)
+            int idleCycles = 0;
+            while (runServer)
             {
-                // Get the userAccount object tied to the username
-                user = UserDatabase.GetTheDatabase().getUser(name);
-                user.setOnline();
-
-                bool endConnetion = false;
-                while (!endConnetion)
+                List<UserAccount> connectedUsers = serverDatabase.GetConnectedUsers();
+                if (connectedUsers.Count() == 0)
                 {
-                    // Don't read from the stream unless there is actually something there...
-                    if (netStream.DataAvailable)
-                    {
-                        idleIntervals = 0;
-                        // We got a new message... Read it.
-                        MoveBitMessage msg = MessageManager.netStreamToMessage(netStream);
-
-                        // User wants a list of all users.
-                        if (msg.GetType() == typeof(TestListActiveUsersRequest))
-                        {
-                            List<string> activeUsers;
-                            // Create & send response for active users
-                            TestListActiveUsersResponse response = new TestListActiveUsersResponse(UserDatabase.GetTheDatabase().getActiveUsers());
-                            MessageManager.writeMessageToNetStream(response, netStream);
-                            //formatter.Serialize(netStream, response);
-                        }
-
-                        // User wants to send a text messsage
-                        else if (msg.GetType() == typeof(SimpleTextMessage))
-                        {
-                            SimpleTextMessage message = (SimpleTextMessage)msg;
-                            SimpleTextMessageResult result;
-                            UserDatabase userDatabase = UserDatabase.GetTheDatabase();
-                            // Target user does in fact exist
-                            if (userDatabase.userExists(message.recipient))
-                            {
-                                // Get user account and add to their inbox
-                                UserAccount userAccount = userDatabase.getUser(message.recipient);
-                                userAccount.addMessageToInbox(message);
-                                // Tell user we sent the message
-                                result = new SimpleTextMessageResult(SendResult.sendSuccess);
-                            }
-
-                            // Target user couldn't be found... Tell them something went wrong
-                            else
-                                result = new SimpleTextMessageResult(SendResult.sendFailure);
-
-                            // Send the message
-                            MessageManager.writeMessageToNetStream(result, netStream);
-                            //formatter.Serialize(netStream, result);
-                        }
-                    }
-
-                    // Test if client port has been abandoned...
-                    else if (client.Client.Poll(1000, SelectMode.SelectRead))
-                    {
-                        endConnetion = true;
-                        Console.WriteLine($"\t{user.userName} disconnected");
-                        netStream.Close();
-                    }
-
-                    // User has unread messages and we can tell them!
-                    else if (user.hasUnreadMessages() && netStream.CanWrite)
-                    {
-                        List<MoveBitMessage> messages = user.getUnreadMessages();
-                        Console.Write($"\tSending {user.userName} their {messages.Count()} new messages");
-                        InboxListUpdate update = new InboxListUpdate(messages);
-                        MessageManager.writeMessageToNetStream(update, netStream);
-                        //formatter.Serialize(netStream, update);
-                    }
-
-                    else if (!netStream.CanRead && !netStream.CanWrite)
-                        Console.WriteLine($"Connection with {user.userName} has degraded");
-                    // Nothing to do, sleep for a bit and wait for something to happen
-                    else
-                    {
-                        if (idleIntervals++ < maxIntervalsIdle || !kickIdle)
-                            Thread.Sleep(250);
-                        else
-                        {
-                            Console.WriteLine($"\t{user.userName} has been idle for too long... Disconnecting...");
-                            MessageManager.writeMessageToNetStream(new ServerToClientLogoffCommand(), netStream);
-                            endConnetion = true;
-                            netStream.Close();
-                        }
-                    }
-                        
+                    idleCycles++;
+                    if(idleCycles % 100 == 0)
+                        logger.Info($"Connection processer has been idle for {idleCycles} cycles");
+                    Thread.Sleep(200);
                 }
+                else
+                {
+                    // Set how many users we must process
+                    // NOTE: (see warning message concerning lock below)
+                    //  message has printed once, so this method probably isn't great.
+                    //  works for quick implementation but we'll need to revisist and make more roboust
+                    //  The reason for this is to wait until all work items are completed before we 
+                    //  continue with the rest of processing
+                    lock (svrLock)
+                        usersToProcess = connectedUsers.Count();
+
+                    idleCycles = 0;
+                    double timeStart = ((DateTimeOffset)(DateTime.Now)).ToUnixTimeSeconds();
+
+                    // Start a new work item for each user
+                    foreach (UserAccount userAccount in connectedUsers)
+                        ThreadPool.QueueUserWorkItem(ProcessActiveUser, userAccount);
+
+                    double deltaTime = 0.0;
+                    bool reported = false;
+                    while (usersToProcess > 0) 
+                    {
+
+#if !THREAD_DEBUG       // directive here so if we are debugging across threads, we don't suddenly have the console print hundreds of these messages
+
+                        // Allow n second(s) of processing time per user connected before we start complaining
+                        double diff = ((DateTimeOffset)(DateTime.Now)).ToUnixTimeSeconds() - timeStart;
+                        if (diff >= allocatedUserTime*connectedUsers.Count && diff >= deltaTime)
+                        {
+                            logger.Warning($"User processing is taking exceptionally long ({diff} seconds)");
+                            logger.Warning($"{usersToProcess} users remain in processing and are holding up the Processing service");
+                            deltaTime = diff + 1.0; // Ensures we don't hammer the reporting
+                            reported = true;
+                        }
+
+#endif
+                    };  // Spin 
+
+                    if (reported)
+                        logger.Important($"Previous blockage ended, resuming connection processing service");
+
+                    if (usersToProcess < 0)
+                    {
+                        logger.Warning($"'usersToProcess' set to {usersToProcess}, implies lock mechanism is not working as intended");
+                        usersToProcess = 0;
+                    }
+
+                }
+                // Now that we have handled all messags, tell the DB to update if it needs to
+                serverDatabase.UpdateUserInfo();
             }
         }
-        // Something went wrong while handling the user...
-        catch(Exception exception)
+        catch (Exception exception)
         {
-            string clientName = (user == null) ? "Unknown User" : user.userName;
-            Console.WriteLine($"\tAn exception occured while communicating with {clientName} ({thisClientId}): {exception}");
+            runServer = false;
+            logger.Critical($"User maintainence loop forced to quit by exception: {exception}");
+            throw;
         }
-        finally
-        {
-            // Tidy before we leave
-            if (user != null)
-                user.setOffline();
-            client.Close();
-            Console.WriteLine($"\tClient connection ended ({thisClientId})");
-        }
-
     }
 
     /// <summary>
-    /// Function for handling the initial step of ensureing a valid user is logging in
+    /// Function begins the login service, which listnes for any connections
+    /// and attempts to log in any new connections.
     /// </summary>
-    /// <param name="netStream"></param>
-    /// <returns></returns>
-    public static string userLogin(NetworkStream netStream)
+    public static void LoginService()
     {
+        logger.Trace("Starting the login service");
+        TcpClient client;
+        loginServiceRunning = false;
+        try
+        {
+            while (runServer)
+            {
+                // TODO: make async.  Currently this function will hang forever unless 
+                // the server adds a new job and runsServer is set to false
+                // (or an exception occurs)
+                client = server.AcceptTcpClient();
+                ThreadPool.QueueUserWorkItem(LoginUser, client);
+            }
+        }
+        catch(Exception exception)
+        {
+            loginServiceRunning = false;
+            logger.Critical($"Login service was forced to quit by exception: {exception}");
+            throw;
+        }
 
-        // BUG FIXME TODO - Don't know how I missed this initially but if you enter the wrong credentials, the server will
-        //  return a failed login response correctly but then immediately end the connection. 
-        //  *However*, the client doesn't close their side and may retry the connection. This can lead the client to 
-        //  think that they logged in correctly because an error occurs... The client needs its own fix for this,
-        //  but to fix it here, don't exit while the client is active or we don't have a valid login.
+        logger.Trace("Login service exiting");
+        return;
+    }
 
-        string loggedUser = null;
-        ClientConnectRequest connectRequest = (ClientConnectRequest)MessageManager.netStreamToMessage(netStream);
+    /// <summary>
+    /// Function for logging in a new user connecting to the server. 
+    /// Meant to executed by a worker thread
+    /// </summary>
+    /// <param name="clientObj"></param>
+    public static void LoginUser(Object clientObj)
+    {
+        logger.Trace("Logging in new user");
+        TcpClient client = (TcpClient)clientObj;
+        NetworkStream netStream = client.GetStream();
+        // Assumes first message will be ClientConnectRequest... May need to make more robust in the future
+        ClientConnectRequest connectRequest = (ClientConnectRequest)MessageManager.GetMessageFromStream(netStream);
         ClientConnectResponse connectResponse;
 
-        
-        UserDatabase db = UserDatabase.GetTheDatabase();
-        // TODO: Probably make a general 'validInput' function for the connectionRequest
-        // User didn't provide a username or password...
-        if (connectRequest.userName == "" || connectRequest.password == "")
+        // User sent one or both fields as empty, dissallow
+        if(connectRequest.userName == "" || connectRequest.password.Count() == 0)
             connectResponse = new ClientConnectResponse(serverConnectResponse.invalidCredentials);
 
-        // User trying to create a new account
-        else if (connectRequest.createAccountFlag)
+        // User is creating new account
+        else if(connectRequest.createAccountFlag)
         {
-
-            // Username taken
-            if (db.userExists(connectRequest.userName))
+            if (serverDatabase.UserExists(connectRequest.userName))
                 connectResponse = new ClientConnectResponse(serverConnectResponse.usernameTaken);
 
             // Insert additional cases here...
             // else if() ...
 
-            // User able to create account
-            else if(db.insertUserIfNotTaken(connectRequest.userName, connectRequest.password))
+            else if(serverDatabase.InsertUserIfNotExist(connectRequest.userName, connectRequest.password))
             {
                 // Inserted into database
-                connectResponse = new ClientConnectResponse(serverConnectResponse.success);
-                Console.WriteLine($"\tRegistered new user: {connectRequest.userName}");
-                loggedUser = connectRequest.userName;
+                byte[] sessionID = serverDatabase.GenerateAndAddUserSession(connectRequest.userName, client);
+                connectResponse = new ClientConnectResponse(serverConnectResponse.success, sessionID);
             }
 
-            // Unable to insert... 
             else
-                connectResponse = new ClientConnectResponse(serverConnectResponse.usernameTaken);
+                connectResponse = new ClientConnectResponse(serverConnectResponse.unknownError);
         }
+
         // User trying to log into existing account
         else
         {
+
+            bool letUserLogin = serverDatabase.UserExists(connectRequest.userName)
+                && serverDatabase.UserPasswordIsValid(connectRequest.userName, connectRequest.password);
+
             // Check if username or password invalid
-            if(!db.userExists(connectRequest.userName) || !db.passwordValid(connectRequest.userName, connectRequest.password))
+            if (!letUserLogin)
                 connectResponse = new ClientConnectResponse(serverConnectResponse.invalidCredentials);
 
-            // Check explicitly for username and password match
-            else if(db.userExists(connectRequest.userName) && db.passwordValid(connectRequest.userName, connectRequest.password))
+            else if (letUserLogin)
             {
+                // TODO: Send session ID back
+                byte[] sessionID = serverDatabase.GenerateAndAddUserSession(connectRequest.userName, client);
                 connectResponse = new ClientConnectResponse(serverConnectResponse.success);
-                loggedUser = connectRequest.userName; 
             }
 
-            // Unknown issue with login
             else
                 connectResponse = new ClientConnectResponse(serverConnectResponse.unknownError);
-
         }
-        // Send the connect response message
-        MessageManager.writeMessageToNetStream(connectResponse, netStream);
 
-        // Return the user name, if we got it
-        return loggedUser;
+        MessageManager.WriteMessageToNetStream(connectResponse, netStream);
+        logger.Trace("Finished with user login");
+    }
+    
+    /// <summary>
+    /// Function for processing a connected user
+    /// Meant to be executed from a worker thread
+    /// </summary>
+    /// <param name="userObj"></param>
+    public static void ProcessActiveUser(Object userObj)
+    {
+
+        UserAccount user = (UserAccount)userObj;
+        logger.Trace($"Starting new processing service for {user.userName}");
+        if (user.IsOnline())
+        {
+            List<MoveBitMessage> messages = CheckForNewMessagesFromUser(user);  // Get incoming
+            messages = ProcessIncomingUserMessages(messages, user);             // Process incoming
+            ProcessOutgoingMessages(messages, user);                            // Process outgoing
+        }
+        else
+            logger.Trace($"{user.userName} is no longer online");
+
+        // Decrement how many users we have left to process
+        lock (svrLock)
+            usersToProcess--;
+    }
+
+    /// <summary>
+    /// Returns a list of messages the user has sent us (if any)
+    /// Checks each connection with a user is checked
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    public static List<MoveBitMessage> CheckForNewMessagesFromUser(UserAccount user)
+    {
+        List<MoveBitMessage> incomingMessages = new List<MoveBitMessage>();
+        // Get and iterate over each connection individually
+        List<UserConnection> userConnections = serverDatabase.GetUserConnections(user.userName);
+        foreach (UserConnection userConnection in userConnections)
+        {
+            // While there is more to read...
+            while (userConnection.DataReady())
+            {
+                incomingMessages.Add(userConnection.GetMessage());
+                logger.Debug($"New message recieved from {user.userName}");
+            }
+        }
+
+        return incomingMessages;
+    }
+
+    /// <summary>
+    /// Processing incoming messages given a user account and a list of messages to send.
+    /// Returns messages we need to send the user back, if any
+    /// </summary>
+    /// <param name="messages"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    public static List<MoveBitMessage> ProcessIncomingUserMessages(List<MoveBitMessage> messages, UserAccount user)
+    {
+        List<MoveBitMessage> serverMessages = new List<MoveBitMessage>();
+
+        foreach(MoveBitMessage message in messages)
+        {
+            // Add new messages here as needed
+            if(message.GetType() == typeof(SimpleTextMessage))
+            {
+                SimpleTextMessageResult result;
+                SimpleTextMessage msg = (SimpleTextMessage)message;
+                if (serverDatabase.UserExists(msg.recipient))
+                {
+                    UserAccount targetUser = serverDatabase.GetUser(msg.recipient);
+                    if (targetUser != null)
+                    {
+                        result = new SimpleTextMessageResult(SendResult.sendSuccess);
+                        targetUser.AddMessageToInbox(msg);
+                    }
+                    else
+                        result = new SimpleTextMessageResult(SendResult.sendFailure);
+
+                }
+                else
+                    result = new SimpleTextMessageResult(SendResult.sendFailure);
+                serverMessages.Add(result);
+            }
+            else if(message.GetType() == typeof(TestListActiveUsersRequest))
+            {
+                serverMessages.Add(new TestListActiveUsersResponse(serverDatabase.GenerateOnlineUserReport()));
+            }
+            else
+            {
+                logger.Error($"Recieved an unknown type of message from {user.userName}!");
+            }
+        }
+
+        return serverMessages;
+    }
+
+    /// <summary>
+    /// Sends a given list of messages the given user. 
+    /// </summary>
+    /// <param name="messages"></param>
+    /// <param name="user"></param>
+    public static void ProcessOutgoingMessages(List<MoveBitMessage> messages, UserAccount user)
+    {
+        // If the user is online, send them their unread messages too
+        if (user.IsOnline())
+            messages.AddRange(user.GetUnreadMessages());
+
+        // If they are not online or we don't have anything to send them, exit
+        if (!user.IsOnline() || messages.Count() == 0)
+            return;
+
+
+
+        logger.Debug($"Server sending {messages.Count()} messages to {user.userName}");
+
+        foreach (MoveBitMessage message in messages)
+        {
+            if (user.IsOnline() && user.TrySend(message))
+                ; // If user is online and trySend succeeds, do nothing...
+            else
+                user.AddMessageToInbox(message); // Otherwise, add to their inbox for later
+        }
     }
 }
