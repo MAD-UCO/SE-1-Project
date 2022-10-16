@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Security.Cryptography;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
@@ -54,7 +54,7 @@ namespace SE_Semester_Project
         /// <summary>
         /// Function for starting the Client Network code through CLI
         /// </summary>
-        public static void start()
+        public static void Start()
         {
             Console.WriteLine("Running in commandline mode - use for testing / development purposes only");
             processConsoleInterface();
