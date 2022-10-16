@@ -1,7 +1,4 @@
-﻿//#define SIMULATE_LAG      // Uncomment to simulate random server processing and connection lag
-
-
-using MoveBitMessaging;
+﻿using MoveBitMessaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
