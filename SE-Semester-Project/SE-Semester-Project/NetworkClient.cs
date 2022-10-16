@@ -115,7 +115,6 @@ namespace SE_Semester_Project
                             Thread netThread = new Thread(StartNetworkConnection);
                             runThread = true;
                             netThread.Start();
-                            Thread.Sleep(100);
                         }
                         else
                             Console.WriteLine("You are already connected!");
@@ -405,7 +404,7 @@ namespace SE_Semester_Project
                 {
                     activity = false;
                     // Ensure server hasn't dropped 
-                    if (clientState != ClientState.Connected || !(netStream.CanRead || netStream.CanWrite) ||
+                    if ((clientState & ClientState.Connected) == ClientState.NotLoggedIn || !(netStream.CanRead || netStream.CanWrite) ||
                         client.Client.Poll(1000, SelectMode.SelectRead) && client.Client.Available == 0)
                     {
                         // TODO: Change to be different from disconnected in the future
@@ -499,7 +498,8 @@ namespace SE_Semester_Project
                             else if (msg.GetType() == typeof(SimpleTextMessage))
                             {
                                 SimpleTextMessage message = (SimpleTextMessage)msg;
-                                Console.WriteLine($"New message from {message.sender}: {message.message}");
+                                lock(writeLock)
+                                    Console.WriteLine($"New message from {message.sender}: {message.message}");
                             }
                             else if (msg.GetType() == typeof(ServerToClientLogoffCommand))
                             {
