@@ -20,14 +20,19 @@ namespace SE_Semester_Project
         {
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
+#if !USE_COMMANDLINE
             ApplicationConfiguration.Initialize();
-            //Application.Run(new Form1());
+            Application.Run(new Form1());
+#else
             AllocConsole();
+#endif
             NetworkClient.start();
         }
 
+#if USE_COMMANDLINE
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
+#endif
     }
 }
