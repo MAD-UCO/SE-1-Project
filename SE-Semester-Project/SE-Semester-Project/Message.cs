@@ -144,7 +144,7 @@ namespace SE_Semester_Project
                     writer.WriteStartElement("audio");
                     writer.WriteAttributeString("dur", audioMessages[i].duration);
                     writer.WriteAttributeString("begin", audioMessages[i].beginTime);
-                    //writer.WriteEndAttribute();
+                    writer.WriteEndElement();
                 }
             }
             if (videoMessages.Count >= 1)
@@ -155,7 +155,7 @@ namespace SE_Semester_Project
                     writer.WriteStartElement("video");
                     writer.WriteAttributeString("dur", videoMessages[i].duration);
                     writer.WriteAttributeString("begin", videoMessages[i].beginTime);
-                    //writer.WriteEndAttribute();
+                    writer.WriteEndElement();
                 }
             }
             writer.Flush();
