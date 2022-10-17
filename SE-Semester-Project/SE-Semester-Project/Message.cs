@@ -181,25 +181,6 @@ namespace SE_Semester_Project
         {
             videoMessages.Add(video);
         }
-        /*public Message generateMessage(string text, string smilFileName)
-        {
-
-        }
-        public Message generateMessage(string[] text)
-        {
-
-        }
-        public Message generateMessage(TextMessage text)
-        {
-            //generate node
-        }
-        public Message generateMessage(TextMessage text, AudioMessage audio)
-        {
-
-        }
-        public Message generateMessage(TextMessage text, AudioMessage audio, VideoMessage video)
-        {
-
-        }*/
+        
     }
 }
