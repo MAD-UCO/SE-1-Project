@@ -6,44 +6,40 @@ using System.Threading.Tasks;
 
 namespace SE_Semester_Project
 {
-    class TextMessage
+    class AudioMessage
     {
-        public string text { get; set; }
-        //these are string but would like to change them to int or double
-        //Only issue with this is getting the unit of measurement for them
-        //From smil docs it seems time measurements can be made in sec or min
-        
-        //these times are in seconds and do not have implementation that supports minutes yet
+        public string fileName { get; set; }
         public string duration { get; set; }
         public string beginTime { get; set; }
         public string endTime { get; set; }
-        //need to implement this to show region to display to
-        //public Region region
 
-        public TextMessage()
+        public AudioMessage()
         {
-            text = "";
-            duration = "5s";
-            beginTime = "0s";
-            endTime = "";
+            fileName = "";
+            duration = "1s";
+            beginTime = "1s";
+            endTime = "2s";
         }
-        //Constructor to assign text value
-        //might need default timing for messages where users dont specify duration
-        public TextMessage(String t)
+        public AudioMessage(string fileName)
         {
-            text = t;
-            duration = "5s";
+            this.fileName = fileName;
+            duration = "10s";
             beginTime = "0s";
-            endTime = "";
-
+            endTime = "10s";
         }
-
+        public AudioMessage(string fileName, string duration, string beginTime, string endTime)
+        {
+            this.fileName = fileName;
+            this.duration = duration;
+            this.beginTime = beginTime;
+            this.endTime = endTime;
+        }
 
         //getters are setup to return time in seconds
         //THESE ARE DANGEROUS CURRENTLY!!!! ONLY CAN HANDLE CORRECT INPUT!!!
         public int getDuration()
         {
-           
+
             if (duration.Contains('m') && !duration.Contains('s'))
             {
                 string[] times = duration.Split(' ');
@@ -61,10 +57,10 @@ namespace SE_Semester_Project
             }
             else
             {
-                return Int32.Parse(duration.Remove(duration.Length-1, 1));  
+                return Int32.Parse(duration.Remove(duration.Length - 1, 1));
             }
 
-            
+
         }
         public int getBeginTime()
         {
@@ -88,11 +84,5 @@ namespace SE_Semester_Project
                 return Int32.Parse(beginTime.Remove(beginTime.Length - 1, 1));
             }
         }
-        //pretty sure we arent going to use this but im going to ask about it tomorrow
-        public int getEndTime()
-        {
-            return -1;
-        }
-
     }
 }

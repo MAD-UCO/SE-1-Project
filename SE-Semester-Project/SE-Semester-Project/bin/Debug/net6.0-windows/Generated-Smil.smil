@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<smil>
+  <head>
+    <body>
+      <smilText dur="5m,15s" begin="3s">Please Work</smilText>
+      <smilText dur="5m,15s" begin="3s">Please Work</smilText>
+    </body>
+  </head>
+</smil>

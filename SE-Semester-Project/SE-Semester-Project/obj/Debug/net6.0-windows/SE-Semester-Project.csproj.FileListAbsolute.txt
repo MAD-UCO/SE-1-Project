@@ -1,0 +1,17 @@
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\SE-Semester-Project.csproj.AssemblyReference.cache
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\SE_Semester_Project.Form1.resources
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\SE-Semester-Project.csproj.GenerateResource.cache
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\SE-Semester-Project.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\SE-Semester-Project.AssemblyInfoInputs.cache
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\SE-Semester-Project.AssemblyInfo.cs
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\SE-Semester-Project.csproj.CoreCompileInputs.cache
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\bin\Debug\net6.0-windows\SE-Semester-Project.exe
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\bin\Debug\net6.0-windows\SE-Semester-Project.deps.json
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\bin\Debug\net6.0-windows\SE-Semester-Project.runtimeconfig.json
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\bin\Debug\net6.0-windows\SE-Semester-Project.dll
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\bin\Debug\net6.0-windows\SE-Semester-Project.pdb
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\SE-Semester-Project.dll
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\refint\SE-Semester-Project.dll
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\SE-Semester-Project.pdb
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\SE-Semester-Project.genruntimeconfig.cache
+C:\Users\Coleman\OneDrive\Desktop\Software Engineering\GroupProject\SE-1-Project\SE-Semester-Project\SE-Semester-Project\obj\Debug\net6.0-windows\ref\SE-Semester-Project.dll
