@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Forms;
 
 
 namespace SE_Semester_Project
@@ -48,7 +50,7 @@ namespace SE_Semester_Project
             audioMessages = new List<AudioMessage>();
             videoMessages = new List<VideoMessage>();
             //need to generate filename based on date or if we add user named files later that implementation aswell
-            parseMessage(filePath);
+            ParseMessage(filePath);
 
         }
         public Message(string smilFileName, string senderName, string receiverName, List<TextMessage> textMessages, List<AudioMessage> audioMessages, List<VideoMessage> videoMessages) : this(smilFileName)
@@ -62,7 +64,7 @@ namespace SE_Semester_Project
 
 
         //file path needs to be directly to file and not just file name
-        public void parseMessage(String filePath) //Used to parse existing message into the container to be used
+        public void ParseMessage(String filePath) //Used to parse existing message into the container to be used
         {
             XmlDocument doc = new XmlDocument();
 
@@ -100,7 +102,50 @@ namespace SE_Semester_Project
                             }
                         }
                         textMessages.Add(text);
-                    } //add more if statements or change to switch statement for audio and video
+                    } 
+                    else if(child.Name == "audio")
+                    {
+                        AudioMessage audio = new AudioMessage(child.InnerText);
+                        foreach (XmlAttribute attr in childCollection)
+                        {
+                            if (attr.Name == "src")
+                            {
+                                audio.fileName = child.Attributes[attr.Name].Value;
+                            }
+                            else if (attr.Name == "dur")
+                            {
+                                audio.duration = child.Attributes[attr.Name].Value;
+                            }
+                            else if (attr.Name == "begin")
+                            {
+                                audio.beginTime = child.Attributes[attr.Name].Value;
+                            }
+                        }
+                        audioMessages.Add(audio);
+                        
+                    }
+                    else if(child.Name == "video")
+                    {
+                        VideoMessage video = new VideoMessage(child.InnerText);
+                        foreach (XmlAttribute attr in childCollection)
+                        {
+                            if(attr.Name == "src")
+                            {
+                                video.fileName = child.Attributes[attr.Name].Value;
+                            }
+                            else if (attr.Name == "dur")
+                            {
+                                video.duration = child.Attributes[attr.Name].Value;
+                            }
+                            else if (attr.Name == "begin")
+                            {
+                                video.beginTime = child.Attributes[attr.Name].Value;
+                            }
+                        }
+                        videoMessages.Add(video);
+                    }
+
+                       //add more if statements or change to switch statement for audio and video
                       // looking into more efficient way to handle this but with the small file sizes im not sure speed will be a factor
 
 
@@ -108,7 +153,7 @@ namespace SE_Semester_Project
             }
         }
 
-        public void generateMessageFile()
+        public void GenerateMessageFile()
         {
             //XmlDocument doc = new XmlDocument();
             //doc may not be needed when creating files, although it might have more uses?
@@ -142,6 +187,7 @@ namespace SE_Semester_Project
                 for (int i = 0; i < audioMessages.Count; i++)
                 {
                     writer.WriteStartElement("audio");
+                    writer.WriteAttributeString("", audioMessages[i].fileName);
                     writer.WriteAttributeString("dur", audioMessages[i].duration);
                     writer.WriteAttributeString("begin", audioMessages[i].beginTime);
                     writer.WriteEndElement();
@@ -153,6 +199,7 @@ namespace SE_Semester_Project
                 for (int i = 0; i < videoMessages.Count; i++)
                 {
                     writer.WriteStartElement("video");
+                    writer.WriteAttributeString("", videoMessages[i].fileName);
                     writer.WriteAttributeString("dur", videoMessages[i].duration);
                     writer.WriteAttributeString("begin", videoMessages[i].beginTime);
                     writer.WriteEndElement();
