@@ -187,7 +187,7 @@ namespace SE_Semester_Project
                 for (int i = 0; i < audioMessages.Count; i++)
                 {
                     writer.WriteStartElement("audio");
-                    writer.WriteAttributeString("", audioMessages[i].fileName);
+                    writer.WriteAttributeString("src", audioMessages[i].fileName);
                     writer.WriteAttributeString("dur", audioMessages[i].duration);
                     writer.WriteAttributeString("begin", audioMessages[i].beginTime);
                     writer.WriteEndElement();
@@ -199,7 +199,7 @@ namespace SE_Semester_Project
                 for (int i = 0; i < videoMessages.Count; i++)
                 {
                     writer.WriteStartElement("video");
-                    writer.WriteAttributeString("", videoMessages[i].fileName);
+                    writer.WriteAttributeString("src", videoMessages[i].fileName);
                     writer.WriteAttributeString("dur", videoMessages[i].duration);
                     writer.WriteAttributeString("begin", videoMessages[i].beginTime);
                     writer.WriteEndElement();
