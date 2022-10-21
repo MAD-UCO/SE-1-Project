@@ -40,7 +40,7 @@ namespace MoveBit_Server
         /// <param name="message"></param>
         public void AddMessageToInbox(MoveBitMessage message)
         {
-            lock(userLock)
+            lock (userLock)
             {
                 inbox.Add(message);
                 logger.Trace($"Added new message to {userName}'s inbox");
@@ -54,7 +54,7 @@ namespace MoveBit_Server
         /// <returns>true if the user has any messages in their server-side inbox</returns>
         public bool HasUnreadMessages()
         {
-            return (inbox.Count > 0); 
+            return (inbox.Count > 0);
         }
 
 
@@ -101,7 +101,7 @@ namespace MoveBit_Server
             List<UserConnection> connections = ServerDatabase.GetTheDatabase().GetUserConnections(userName);
             int connectionNo = 0;
             // Iterate over each connection, sending as we can
-            foreach(UserConnection connection in connections)
+            foreach (UserConnection connection in connections)
             {
                 connectionNo++;
                 // Try to send to this connectoin

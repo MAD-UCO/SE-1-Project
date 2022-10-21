@@ -44,7 +44,7 @@ namespace MoveBit_Server
         /// <returns></returns>
         public static ServerDatabase GetTheDatabase()
         {
-            if(theDataBase == null)
+            if (theDataBase == null)
                 theDataBase = new ServerDatabase();
             return theDataBase;
         }
@@ -87,7 +87,7 @@ namespace MoveBit_Server
             do
             {
                 id = GenerateSessionID();
-            } 
+            }
             while (SessionValid(userName, id));
 
             return id;
@@ -333,7 +333,7 @@ namespace MoveBit_Server
 
             // If that was the last active session with the user
             // remove them from the list of those online
-            if (!user.IsOnline()) 
+            if (!user.IsOnline())
             {
                 activeUsers.Remove(user);
                 logger.Info($"{user.userName} is no longer online");
@@ -347,7 +347,7 @@ namespace MoveBit_Server
         public void UpdateUserInfo()
         {
             logger.Trace("Updating user info");
-            lock (dbLock) 
+            lock (dbLock)
             {
                 List<UserAccount> activeCopy = new List<UserAccount>(activeUsers);
                 foreach (UserAccount user in activeCopy)

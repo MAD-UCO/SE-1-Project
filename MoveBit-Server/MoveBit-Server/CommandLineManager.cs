@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MoveBit_Server
-{ 
+{
     /// <summary>
     /// Class for managing functions for parinsing command line arguments.
     /// Meant to help wiht simple configuration variables set at launch time.
@@ -26,7 +26,7 @@ namespace MoveBit_Server
         /// </summary>
         /// <param name="commandLineArgs"></param>
         /// <returns></returns>
-        public bool ParseCommandLine(string []commandLineArgs)
+        public bool ParseCommandLine(string[] commandLineArgs)
         {
             bool expectArgument = false;
             bool nextShouldBeAcceptOnlyLocal = false;
@@ -35,10 +35,10 @@ namespace MoveBit_Server
             bool nextShouldBeKick = false;
             string activeKey = null;
             // Iterate over every word in the command line
-            foreach(string command in commandLineArgs)
+            foreach (string command in commandLineArgs)
             {
                 // We are looking for keywords right now
-                if (!expectArgument) 
+                if (!expectArgument)
                 {
                     activeKey = command;
                     if (command == "acceptOnlyLocal")
@@ -46,12 +46,12 @@ namespace MoveBit_Server
                         expectArgument = true;
                         nextShouldBeAcceptOnlyLocal = true;
                     }
-                    else if(command == "listeningPort")
+                    else if (command == "listeningPort")
                     {
                         expectArgument = true;
                         nextShouldBeListeningPort = true;
                     }
-                    else if(command == "kickIdle")
+                    else if (command == "kickIdle")
                     {
                         expectArgument = true;
                         nextShouldBeKick = true;
@@ -103,12 +103,12 @@ namespace MoveBit_Server
                         }
                         else if (nextShouldBeLogLevel)
                         {
-                            if(lower == "trace")
+                            if (lower == "trace")
                             {
                                 level = LogLevel.level_trace;
                                 logLevel = "TRACE";
                             }
-                            else if(lower == "debug")
+                            else if (lower == "debug")
                             {
                                 level = LogLevel.level_debug;
                                 logLevel = "DEBUG";
@@ -153,7 +153,7 @@ namespace MoveBit_Server
 
                         expectArgument = false;
                     }
-                    catch(Exception err)
+                    catch (Exception err)
                     {
                         logger.Error($"During command processing, an error occured: {err.Message}");
                         return false;
@@ -162,7 +162,7 @@ namespace MoveBit_Server
             }
             return true;
         }
-    
+
         /// <summary>
         /// Function for displaying each of the command line variables
         /// and what they are set to.

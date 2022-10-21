@@ -77,7 +77,7 @@ namespace MoveBit_Server
                     success = true;
                 }
             }
-                return success;
+            return success;
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace MoveBit_Server
         public MoveBitMessage GetMessage()
         {
             MoveBitMessage newMessage;
-            lock(streamLock)
+            lock (streamLock)
                 newMessage = MessageManager.GetMessageFromStream(netStream);
 
             return newMessage;

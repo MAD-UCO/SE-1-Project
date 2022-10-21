@@ -57,7 +57,7 @@ namespace MoveBit_Server
         /// <param name="level"></param>
         public void SetLevel(LogLevel level)
         {
-            if(TheLogger != null)
+            if (TheLogger != null)
                 Info($"Logger level changed from '{EnumToStr(this.level)}' --> '{EnumToStr(level)}'");
             this.level = level;
         }
@@ -71,10 +71,10 @@ namespace MoveBit_Server
         public void Log(String logMessage, LogLevel logLevel)
         {
             if (((int)logLevel) >= (int)level)
-                lock (logLock) 
+                lock (logLock)
                 {
                     string label = EnumToStr(logLevel) + ":";
-                    Console.WriteLine($"{label, -16}{logMessage}");
+                    Console.WriteLine($"{label,-16}{logMessage}");
                 }
         }
 

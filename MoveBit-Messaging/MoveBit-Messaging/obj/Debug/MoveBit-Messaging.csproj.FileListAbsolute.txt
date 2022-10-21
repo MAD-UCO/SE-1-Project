@@ -1,0 +1,12 @@
+D:\School\git\temp\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.dll
+D:\School\git\temp\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.pdb
+D:\School\git\temp\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.csproj.AssemblyReference.cache
+D:\School\git\temp\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.csproj.CoreCompileInputs.cache
+D:\School\git\temp\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.dll
+D:\School\git\temp\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.pdb
+D:\School\git\SE-1-Project\SE-1-Project\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.dll
+D:\School\git\SE-1-Project\SE-1-Project\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.pdb
+D:\School\git\SE-1-Project\SE-1-Project\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.csproj.AssemblyReference.cache
+D:\School\git\SE-1-Project\SE-1-Project\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.csproj.CoreCompileInputs.cache
+D:\School\git\SE-1-Project\SE-1-Project\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.dll
+D:\School\git\SE-1-Project\SE-1-Project\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.pdb

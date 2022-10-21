@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Security.Cryptography;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using System.Diagnostics;
 
 namespace SE_Semester_Project
 {
@@ -56,9 +57,9 @@ namespace SE_Semester_Project
         /// </summary>
         public static void Start()
         {
-            Console.WriteLine("Running in commandline mode - use for testing / development purposes only");
+            Debug.WriteLine("Running in commandline mode - use for testing / development purposes only");
             processConsoleInterface();
-            Console.WriteLine("Network client ended");
+            Debug.WriteLine("Network client ended");
             Console.ReadLine();
         }
 
@@ -76,7 +77,7 @@ namespace SE_Semester_Project
             {
                 lock (writeLock)
                 {
-                    Console.Write(">>> ");
+                    Debug.Write(">>> ");
                     userInput = Console.ReadLine();
                 }
 
@@ -88,16 +89,16 @@ namespace SE_Semester_Project
                     {
                         exit = true;
                         TerminateConnection();
-                        Console.WriteLine("Diconnecting from server...");
+                        Debug.WriteLine("Diconnecting from server...");
                     }
                     else if(userInput == "send")
                     {
 
                         if (clientState == ClientState.LoggedInAndConnected)
                         {
-                            Console.Write("Enter desired recipient's username: ");
+                            Debug.Write("Enter desired recipient's username: ");
                             string recipient = Console.ReadLine();
-                            Console.Write("Enter the message you wish to send: ");
+                            Debug.Write("Enter the message you wish to send: ");
                             string message = Console.ReadLine();
                             SimpleTextMessage smtm = new SimpleTextMessage(recipient, myClientName, message);
                             AddMessageToOutQueue(smtm);
@@ -105,7 +106,7 @@ namespace SE_Semester_Project
                         else if (clientState == ClientState.Connected)
                             throw new InvalidOperationException($"User state is illegal - registed as connected, but not logged in!");
                         else if (clientState == ClientState.NotLoggedIn)
-                            Console.WriteLine("You must log in to send messages");
+                            Debug.WriteLine("You must log in to send messages");
 
                     }
                     else if(userInput == "login")
@@ -117,7 +118,7 @@ namespace SE_Semester_Project
                             netThread.Start();
                         }
                         else
-                            Console.WriteLine("You are already connected!");
+                            Debug.WriteLine("You are already connected!");
                     }
                     else if(userInput == "logout")
                     {
@@ -126,9 +127,9 @@ namespace SE_Semester_Project
                             if((clientState & ClientState.Connected) != ClientState.NotLoggedIn)
                             {
                                 TerminateConnection();
-                                Console.WriteLine("Diconnecting from server...");
+                                Debug.WriteLine("Diconnecting from server...");
                             }
-                            Console.WriteLine("Logging out");
+                            Debug.WriteLine("Logging out");
                         } 
 
                     }
@@ -139,7 +140,7 @@ namespace SE_Semester_Project
                         else if(clientState == ClientState.Connected)
                             throw new InvalidOperationException($"User state is illegal - registed as connected, but not logged in!");
                         else if (clientState != ClientState.LoggedIn)
-                            Console.WriteLine("You must log in to send messages");
+                            Debug.WriteLine("You must log in to send messages");
                     }
                 }
             }
@@ -252,7 +253,7 @@ namespace SE_Semester_Project
             {
                 runThread = false;
 #if USE_COMMANDLINE
-                Console.WriteLine("The server could not be reached at this time.\n");
+                Debug.WriteLine("The server could not be reached at this time.\n");
 #else
                 throw new NotImplementedException("Alerting the user to connection failure though the GUI needs to be implemented");
 #endif
@@ -262,7 +263,7 @@ namespace SE_Semester_Project
             if (runThread)
             {
 #if USE_COMMANDLINE
-                Console.WriteLine("Connected to server!");
+                Debug.WriteLine("Connected to server!");
 #else
                 throw new NotImplementedException("Alerting the user to connection success though the GUI needs to be implemented");
 #endif
@@ -290,15 +291,15 @@ namespace SE_Semester_Project
 #if USE_COMMANDLINE
             lock (writeLock)
             {
-                Console.Write("Are you a new user [y/n]: ");
+                Debug.Write("Are you a new user [y/n]: ");
                 newEntry = Console.ReadLine();
                 if (newEntry != "y")
                     isNew = false;
 
-                Console.Write("Enter a user name: ");
+                Debug.Write("Enter a user name: ");
                 userName = Console.ReadLine();
                 myClientName = userName;
-                Console.Write("Enter a password: ");
+                Debug.Write("Enter a password: ");
                 password = Console.ReadLine();
             }
 #else
@@ -335,17 +336,17 @@ namespace SE_Semester_Project
                     if (response.response == serverConnectResponse.success)
                         successfulConnection = true;
                     else if (response.response == serverConnectResponse.invalidCredentials)
-                        Console.WriteLine("Your credentials are invalid, please try again");
+                        Debug.WriteLine("Your credentials are invalid, please try again");
                     else if (response.response == serverConnectResponse.serverBusy)
-                        Console.WriteLine("The server is busy right now.");
+                        Debug.WriteLine("The server is busy right now.");
                     else if (response.response == serverConnectResponse.usernameTaken)
-                        Console.WriteLine("That username is taken, try another.");
+                        Debug.WriteLine("That username is taken, try another.");
                     else
-                        Console.WriteLine("Something went wrong. Please try again");
+                        Debug.WriteLine("Something went wrong. Please try again");
 
                 }
                 else
-                    Console.WriteLine("Something went wrong. Please try again.");
+                    Debug.WriteLine("Something went wrong. Please try again.");
             }
 
 #else
@@ -410,7 +411,7 @@ namespace SE_Semester_Project
                         // TODO: Change to be different from disconnected in the future
                         SetClientState(ClientState.NotLoggedIn);
 #if USE_COMMANDLINE
-                        Console.WriteLine("Lost connection to the server");
+                        Debug.WriteLine("Lost connection to the server");
 #else
                         throw new NotImplementedError("Alerting the user to sudden server-disconnect in the GUI hasn't been implemented");
 #endif
@@ -466,48 +467,48 @@ namespace SE_Semester_Project
                                 InboxListUpdate update = (InboxListUpdate)msg;
                                 lock (writeLock)
                                 {
-                                    Console.WriteLine("\nYou got the following new messages");
+                                    Debug.WriteLine("\nYou got the following new messages");
                                     foreach (SimpleTextMessage subMsg in update.messages)
                                     {
-                                        Console.WriteLine($"\t{subMsg.sender} says: \"{subMsg.message}\"");
+                                        Debug.WriteLine($"\t{subMsg.sender} says: \"{subMsg.message}\"");
                                     }
-                                    Console.WriteLine();
+                                    Debug.WriteLine("");
                                 }
                             }
                             else if (msg.GetType() == typeof(SimpleTextMessageResult))
                             {
                                 SimpleTextMessageResult result = (SimpleTextMessageResult)msg;
                                 if (result.sendResult == SendResult.sendSuccess)
-                                    Console.WriteLine("Your message was sent successfully");
+                                    Debug.WriteLine("Your message was sent successfully");
                                 else if (result.sendResult == SendResult.sendFailure)
-                                    Console.WriteLine("Your message could not be sent");
+                                    Debug.WriteLine("Your message could not be sent");
                             }
                             else if (msg.GetType() == typeof(TestListActiveUsersResponse))
                             {
                                 TestListActiveUsersResponse response = (TestListActiveUsersResponse)msg;
                                 lock (writeLock)
                                 {
-                                    Console.WriteLine("Server Users:");
+                                    Debug.WriteLine("Server Users:");
                                     foreach (string result in response.activeUsers)
                                     {
-                                        Console.WriteLine($"\t{result}");
+                                        Debug.WriteLine($"\t{result}");
                                     }
-                                    Console.WriteLine();
+                                    Debug.WriteLine("");
                                 }
                             }
                             else if (msg.GetType() == typeof(SimpleTextMessage))
                             {
                                 SimpleTextMessage message = (SimpleTextMessage)msg;
                                 lock(writeLock)
-                                    Console.WriteLine($"New message from {message.sender}: {message.message}");
+                                    Debug.WriteLine($"New message from {message.sender}: {message.message}");
                             }
                             else if (msg.GetType() == typeof(ServerToClientLogoffCommand))
                             {
-                                Console.WriteLine("Forced logoff message from server... Disconnecting\n");
+                                Debug.WriteLine("Forced logoff message from server... Disconnecting\n");
                                 TerminateConnection();
                             }
                             else
-                                Console.WriteLine("I don't know how to process this message");
+                                Debug.WriteLine("I don't know how to process this message");
                         }
 #else
                         throw new NotImplementedException("Code for handling how the GUI reacts to messages requires implementation");
@@ -524,7 +525,7 @@ namespace SE_Semester_Project
             catch(Exception error)
             {
 #if USE_COMMANDLINE
-                Console.WriteLine($"An error occured while communicating with the server: {error}");
+                Debug.WriteLine($"An error occured while communicating with the server: {error}");
 #else
                 throw new NotImplementedException("Code for alerting to error while communicating with server hasn't been implemented");
 #endif

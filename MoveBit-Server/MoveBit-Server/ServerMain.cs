@@ -1,11 +1,9 @@
 ﻿using MoveBit_Server;
-using System.Runtime.Serialization;
 using System.Net.Sockets;
-using System.Runtime.Serialization.Formatters.Binary;
 using MoveBitMessaging;
-using System.Diagnostics.Tracing;
-
-
+using System.Threading;
+using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// Main class for the MoveBitServer. The server is meant to coordinate messaging
@@ -13,7 +11,7 @@ using System.Diagnostics.Tracing;
 /// </summary>
 class MoveBitServer
 {
-    private static Object svrLock = new Object();           // Lock for accessing/modifying shared server resources
+    private static object svrLock = new object();           // Lock for accessing/modifying shared server resources
     private static bool runServer = false;                  // Flag for if we should continue server operations
     private static ServerDatabase serverDatabase;           // Local instance of the database
     private static ServerLogger logger;                     // Local instance of the logger
@@ -102,10 +100,10 @@ class MoveBitServer
             while (runServer)
             {
                 List<UserAccount> connectedUsers = serverDatabase.GetConnectedUsers();
-                if (connectedUsers.Count() == 0)
+                if (connectedUsers.Count == 0)
                 {
                     idleCycles++;
-                    if(idleCycles % 100 == 0)
+                    if (idleCycles % 100 == 0)
                         logger.Info($"Connection processer has been idle for {idleCycles} cycles");
                     Thread.Sleep(200);
                 }
@@ -118,7 +116,7 @@ class MoveBitServer
                     //  The reason for this is to wait until all work items are completed before we 
                     //  continue with the rest of processing
                     lock (svrLock)
-                        usersToProcess = connectedUsers.Count();
+                        usersToProcess = connectedUsers.Count;
 
                     idleCycles = 0;
                     double timeStart = ((DateTimeOffset)(DateTime.Now)).ToUnixTimeSeconds();
@@ -129,14 +127,14 @@ class MoveBitServer
 
                     double deltaTime = 0.0;
                     bool reported = false;
-                    while (usersToProcess > 0) 
+                    while (usersToProcess > 0)
                     {
 
 #if !THREAD_DEBUG       // directive here so if we are debugging across threads, we don't suddenly have the console print hundreds of these messages
 
                         // Allow n second(s) of processing time per user connected before we start complaining
                         double diff = ((DateTimeOffset)(DateTime.Now)).ToUnixTimeSeconds() - timeStart;
-                        if (diff >= allocatedUserTime*connectedUsers.Count && diff >= deltaTime)
+                        if (diff >= allocatedUserTime * connectedUsers.Count && diff >= deltaTime)
                         {
                             logger.Warning($"User processing is taking exceptionally long ({diff} seconds)");
                             logger.Warning($"{usersToProcess} users remain in processing and are holding up the Processing service");
@@ -189,7 +187,7 @@ class MoveBitServer
                 ThreadPool.QueueUserWorkItem(LoginUser, client);
             }
         }
-        catch(Exception exception)
+        catch (Exception exception)
         {
             loginServiceRunning = false;
             logger.Critical($"Login service was forced to quit by exception: {exception}");
@@ -215,11 +213,11 @@ class MoveBitServer
         ClientConnectResponse connectResponse;
 
         // User sent one or both fields as empty, dissallow
-        if(connectRequest.userName == "" || connectRequest.password.Count() == 0)
+        if (connectRequest.userName == "" || connectRequest.password != new byte[32])
             connectResponse = new ClientConnectResponse(serverConnectResponse.invalidCredentials);
 
         // User is creating new account
-        else if(connectRequest.createAccountFlag)
+        else if (connectRequest.createAccountFlag)
         {
             if (serverDatabase.UserExists(connectRequest.userName))
                 connectResponse = new ClientConnectResponse(serverConnectResponse.usernameTaken);
@@ -227,7 +225,7 @@ class MoveBitServer
             // Insert additional cases here...
             // else if() ...
 
-            else if(serverDatabase.InsertUserIfNotExist(connectRequest.userName, connectRequest.password))
+            else if (serverDatabase.InsertUserIfNotExist(connectRequest.userName, connectRequest.password))
             {
                 // Inserted into database
                 byte[] sessionID = serverDatabase.GenerateAndAddUserSession(connectRequest.userName, client);
@@ -263,7 +261,7 @@ class MoveBitServer
         MessageManager.WriteMessageToNetStream(connectResponse, netStream);
         logger.Trace("Finished with user login");
     }
-    
+
     /// <summary>
     /// Function for processing a connected user
     /// Meant to be executed from a worker thread
@@ -323,10 +321,10 @@ class MoveBitServer
     {
         List<MoveBitMessage> serverMessages = new List<MoveBitMessage>();
 
-        foreach(MoveBitMessage message in messages)
+        foreach (MoveBitMessage message in messages)
         {
             // Add new messages here as needed
-            if(message.GetType() == typeof(SimpleTextMessage))
+            if (message.GetType() == typeof(SimpleTextMessage))
             {
                 SimpleTextMessageResult result;
                 SimpleTextMessage msg = (SimpleTextMessage)message;
@@ -346,7 +344,7 @@ class MoveBitServer
                     result = new SimpleTextMessageResult(SendResult.sendFailure);
                 serverMessages.Add(result);
             }
-            else if(message.GetType() == typeof(TestListActiveUsersRequest))
+            else if (message.GetType() == typeof(TestListActiveUsersRequest))
             {
                 serverMessages.Add(new TestListActiveUsersResponse(serverDatabase.GenerateOnlineUserReport()));
             }
@@ -371,12 +369,12 @@ class MoveBitServer
             messages.AddRange(user.GetUnreadMessages());
 
         // If they are not online or we don't have anything to send them, exit
-        if (!user.IsOnline() || messages.Count() == 0)
+        if (!user.IsOnline() || messages.Count == 0)
             return;
 
 
 
-        logger.Debug($"Server sending {messages.Count()} messages to {user.userName}");
+        logger.Debug($"Server sending {messages.Count} messages to {user.userName}");
 
         foreach (MoveBitMessage message in messages)
         {
