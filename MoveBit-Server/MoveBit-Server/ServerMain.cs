@@ -213,14 +213,20 @@ class MoveBitServer
         ClientConnectResponse connectResponse;
 
         // User sent one or both fields as empty, dissallow
-        if (connectRequest.userName == "" || connectRequest.password != new byte[32])
+        if (connectRequest.userName == "" || connectRequest.password == new byte[32])
+        {
+            logger.Debug($"Connection to new user rejected: failed to pass basic input validation checking");
             connectResponse = new ClientConnectResponse(serverConnectResponse.invalidCredentials);
+        }
 
         // User is creating new account
         else if (connectRequest.createAccountFlag)
         {
             if (serverDatabase.UserExists(connectRequest.userName))
+            {
+                logger.Debug($"Connection to new user rejected: username already taken");
                 connectResponse = new ClientConnectResponse(serverConnectResponse.usernameTaken);
+            }
 
             // Insert additional cases here...
             // else if() ...
@@ -228,12 +234,16 @@ class MoveBitServer
             else if (serverDatabase.InsertUserIfNotExist(connectRequest.userName, connectRequest.password))
             {
                 // Inserted into database
+                logger.Debug($"Connection to new user accepted: {connectRequest.userName} (new user) has been allowed to connect");
                 byte[] sessionID = serverDatabase.GenerateAndAddUserSession(connectRequest.userName, client);
                 connectResponse = new ClientConnectResponse(serverConnectResponse.success, sessionID);
             }
 
             else
+            {
+                logger.Warning($"Connection to new user rejected for unknown reason!");
                 connectResponse = new ClientConnectResponse(serverConnectResponse.unknownError);
+            }
         }
 
         // User trying to log into existing account
@@ -245,17 +255,24 @@ class MoveBitServer
 
             // Check if username or password invalid
             if (!letUserLogin)
+            {
+                logger.Debug($"Connection to new user rejected: They did not exist in DB or had invalid credentials");
                 connectResponse = new ClientConnectResponse(serverConnectResponse.invalidCredentials);
+            }
 
             else if (letUserLogin)
             {
                 // TODO: Send session ID back
+                logger.Debug($"Connection to new user accepted: {connectRequest.userName} has been allowed to connect");
                 byte[] sessionID = serverDatabase.GenerateAndAddUserSession(connectRequest.userName, client);
                 connectResponse = new ClientConnectResponse(serverConnectResponse.success);
             }
 
             else
+            {
+                logger.Warning($"Connection to new user rejected for unknown reason!");
                 connectResponse = new ClientConnectResponse(serverConnectResponse.unknownError);
+            }
         }
 
         MessageManager.WriteMessageToNetStream(connectResponse, netStream);

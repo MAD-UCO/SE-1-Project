@@ -310,6 +310,7 @@ namespace SE_Semester_Project
             using (SHA256 sha = SHA256.Create())
                 hash = sha.ComputeHash(Encoding.ASCII.GetBytes(password));
 
+            Debug.WriteLine($"{userName}, {hash}, {isNew}");
             return new ClientConnectRequest(userName, hash, isNew);
 
         }
