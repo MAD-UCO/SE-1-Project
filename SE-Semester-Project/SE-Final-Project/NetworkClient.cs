@@ -99,7 +99,7 @@ namespace SE_Semester_Project
             }
 
             // Check to see if our state was set to 'LoggedInANdConnected'
-            success = (clientState == ClientState.LoggedInAndConnected)
+            success = (clientState == ClientState.LoggedInAndConnected);
 
                 
             return success;
@@ -133,6 +133,7 @@ namespace SE_Semester_Project
         {
             continueLoop = false;
             TerminateConnection();
+
             Thread.Sleep(100);
         }
 
@@ -543,6 +544,7 @@ namespace SE_Semester_Project
             {
                 TerminateConnection();
             }
+            return;
         }
 
         /// <summary>
@@ -552,7 +554,11 @@ namespace SE_Semester_Project
         private static bool ConnectionWithServerAlive()
         {
 
-            return !((netStream.CanRead || netStream.CanWrite) && (client.Client.Poll(1000, SelectMode.SelectRead) && client.Client.Available == 0));
+            return !((netStream == null)
+                || !((netStream.CanRead || netStream.CanWrite) 
+                || (client == null)
+                || ((client.Client.Poll(1000, SelectMode.SelectRead) 
+                && client.Client.Available == 0))));
         }
         
     }

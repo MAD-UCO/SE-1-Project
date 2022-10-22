@@ -29,7 +29,7 @@ class MoveBitServer
     {
         logger = ServerLogger.GetTheLogger();
         serverDatabase = ServerDatabase.GetTheDatabase();
-        CommandLineManager clim = new CommandLineManager();
+        CommandLineReader clim = new CommandLineReader();
 
         // Parse the command line for any arguments
         if (clim.ParseCommandLine(args))

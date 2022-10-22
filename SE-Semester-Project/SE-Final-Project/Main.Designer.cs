@@ -1,4 +1,6 @@
-﻿namespace SE_Final_Project
+﻿using SE_Semester_Project;
+
+namespace SE_Final_Project
 {
     partial class Main
     {
@@ -6,6 +8,7 @@
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
+        
 
         /// <summary>
         /// Clean up any resources being used.

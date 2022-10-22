@@ -15,6 +15,7 @@ namespace SE_Final_Project
     {
         public Login()
         {
+            this.FormClosing += Login_FormClosing;
             InitializeComponent();
         }
 
@@ -26,7 +27,15 @@ namespace SE_Final_Project
                 Main frmMain = new Main();
                 frmMain.ShowDialog();
                 this.Hide();
+                NetworkClient.Logout();
+                Application.ExitThread();
             }
+        }
+
+        private void Login_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            NetworkClient.Shutdown();
+            Application.ExitThread();
         }
     }
 }
