@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SE_Semester_Project;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,9 +20,13 @@ namespace SE_Final_Project
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            Main frmMain = new Main();
-            frmMain.ShowDialog();
-            this.Hide();
+
+            if (NetworkClient.Login(textBox1.Text, textBox2.Text, true))
+            {
+                Main frmMain = new Main();
+                frmMain.ShowDialog();
+                this.Hide();
+            }
         }
     }
 }

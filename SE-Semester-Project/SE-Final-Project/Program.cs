@@ -18,20 +18,12 @@ namespace SE_Final_Project
         [STAThread]
         static void Main()
         {
-#if !USE_COMMANDLINE
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Login());
-#else
-            AllocConsole();
             NetworkClient.Start();
-#endif
+            Application.Run(new Login());
+            NetworkClient.Logout();
+            NetworkClient.Shutdown();
         }
-
-#if USE_COMMANDLINE
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool AllocConsole();
-#endif  
     }
 }

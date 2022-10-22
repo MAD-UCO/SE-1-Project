@@ -82,7 +82,8 @@ class MoveBitServer
             }
         }
 
-        logger.Important("Server shut down");
+        logger.Important("Server shut down. Hit <ENTER> To close console");
+        Console.Read();
     }
 
     /// <summary>

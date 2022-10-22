@@ -8,6 +8,7 @@ using System.Threading;
 using System.Security.Cryptography;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Diagnostics;
+using SE_Final_Project;
 
 namespace SE_Semester_Project
 {
@@ -15,12 +16,15 @@ namespace SE_Semester_Project
     enum ClientState
     {
         NotLoggedIn             = 0,                    // No client logged in
-        LoggedIn                = 1 << 0,               // Client is logged in
-        Connected               = 1 << 1,               // Client is connected to server
+        TryingToLogIn           = 1 << 0,               // We are trying to log into the server
+        LoggedIn                = 1 << 1,               // Client is logged in
+        Connected               = 1 << 2,               // Client is connected to server
 
         LoggedInAndConnected    = LoggedIn | Connected, // Client is logged in and connected to server
+        TalkingToServer         = Connected | TryingToLogIn,
         
     }
+
 
     /// <summary>
     /// Class for managing backend netcode responsible for connecting to the
@@ -31,15 +35,14 @@ namespace SE_Semester_Project
         private static Object streamLock = new Object();                // Lock for accessing the same stream for reading and writing
         private static Object inboundMsgQueueLock = new Object();       // Lock for accessing a message in the inbound queue 
         private static Object outboundMsgQueueLock = new Object();      // Lock for accessing the outbound queue
-#if USE_COMMANDLINE
-        private static Object writeLock = new Object();                 // Lock for writing to the console 
-#endif
+        private static List<Notification> notifications = new List<Notification>();
         public static TcpClient client;                                 // Our client connection
         public static NetworkStream netStream;                          // Our network stream to write and get messages from
-        public static string myClientName = "(Unregistered User)";      // The name of this client
+        public static string myClientName = null;      // The name of this client
 
         private static string ipAddress = "127.0.0.1";                  // IP address of our server
         private static int portNumber = 5005;                           // The port we are connecting to
+        private static bool continueLoop = false;
 
         private static bool runThread = false;                          // Semaphore for when the messsage listener should exit
 
@@ -51,16 +54,64 @@ namespace SE_Semester_Project
 
 
 
-#if USE_COMMANDLINE
+        private static byte[] Sha256Hash(string password, string salt = "")
+        {
+            byte[] hash;
+            using (SHA256 sha = SHA256.Create())
+                hash = sha.ComputeHash(Encoding.ASCII.GetBytes(password + salt));
+
+            return hash;
+        }
+
+        public static bool Login(string userName, string password, bool is_new = false)
+        {
+
+            bool success = false;
+            ClientConnectRequest connectRequest = new ClientConnectRequest(userName, Sha256Hash(password), is_new);
+            AddMessageToOutQueue(connectRequest);
+            myClientName = userName;
+            SetClientState(ClientState.TryingToLogIn);
+            long start = ((DateTimeOffset)(DateTime.Now)).ToUnixTimeSeconds();
+
+
+            while (clientState == ClientState.TryingToLogIn)
+            {
+                if (((DateTimeOffset)(DateTime.Now)).ToUnixTimeSeconds() - start >= 10)
+                {
+                    SetClientState(ClientState.NotLoggedIn);
+                    notifications.Add(new Notification("Could not log in - connection to server timed out"));
+                    break;
+                }
+                Thread.Sleep(100);
+            }
+
+            if (clientState == ClientState.LoggedInAndConnected)
+                success = true;
+            return success;
+        }
+
+        public static void Logout()
+        {
+            myClientName = null;
+            SetClientState(ClientState.NotLoggedIn);
+            TerminateConnection();
+        }
+
         /// <summary>
         /// Function for starting the Client Network code through CLI
         /// </summary>
         public static void Start()
         {
-            Debug.WriteLine("Running in commandline mode - use for testing / development purposes only");
-            processConsoleInterface();
-            Debug.WriteLine("Network client ended");
-            Console.ReadLine();
+            Thread messageThread = new Thread(MessengerLoop);
+            messageThread.Start();
+        }
+
+
+        public static void Shutdown()
+        {
+            continueLoop = false;
+            TerminateConnection();
+            Thread.Sleep(100);
         }
 
         /// <summary>
@@ -75,11 +126,8 @@ namespace SE_Semester_Project
             // Loop until we are done with the program
             while (!exit)
             {
-                lock (writeLock)
-                {
-                    Debug.Write(">>> ");
-                    userInput = Console.ReadLine();
-                }
+                Debug.Write(">>> ");
+                userInput = Console.ReadLine();
 
                 // User entered something
                 if(userInput != null && userInput != "")
@@ -109,17 +157,6 @@ namespace SE_Semester_Project
                             Debug.WriteLine("You must log in to send messages");
 
                     }
-                    else if(userInput == "login")
-                    {
-                        if (clientState == ClientState.NotLoggedIn)
-                        {
-                            Thread netThread = new Thread(StartNetworkConnection);
-                            runThread = true;
-                            netThread.Start();
-                        }
-                        else
-                            Debug.WriteLine("You are already connected!");
-                    }
                     else if(userInput == "logout")
                     {
                         if((clientState & ClientState.LoggedIn) != ClientState.NotLoggedIn)
@@ -146,7 +183,6 @@ namespace SE_Semester_Project
             }
 
         }
-#endif
         
         /// <summary>
         /// Function for retrieving the current Client state
@@ -169,8 +205,8 @@ namespace SE_Semester_Project
             //  saving of the queue state if the user exits the program.
             // However, I think it's safe to throw an exception if no one is even logged in
 
-            if (clientState == ClientState.NotLoggedIn)
-                throw new InvalidOperationException("Client is not logged in or connected to server!");
+            //if (clientState == ClientState.NotLoggedIn)
+            //    throw new InvalidOperationException("Client is not logged in or connected to server!");
             lock (outboundMsgQueueLock)
             {
                 outBoundMessages.Enqueue (message);
@@ -238,123 +274,36 @@ namespace SE_Semester_Project
         }
 
         /// <summary>
-        /// Function for starting the netcode and trying to connect to the server
-        /// </summary>
-        public static void StartNetworkConnection()
-        {
-            bool retry = true;
-
-            try
-            {
-                while (retry && runThread)
-                    retry = !ConnectToServer(UserLogin());
-            }
-            catch(SocketException)
-            {
-                runThread = false;
-#if USE_COMMANDLINE
-                Debug.WriteLine("The server could not be reached at this time.\n");
-#else
-                throw new NotImplementedException("Alerting the user to connection failure though the GUI needs to be implemented");
-#endif
-                TerminateConnection();
-            }
-
-            if (runThread)
-            {
-#if USE_COMMANDLINE
-                Debug.WriteLine("Connected to server!");
-#else
-                throw new NotImplementedException("Alerting the user to connection success though the GUI needs to be implemented");
-#endif
-                SetClientState(ClientState.LoggedInAndConnected);
-                MessengerLoop();
-            }
-
-
-        }
-
-        /// <summary>
-        /// Function for processing a user login and connecting to the server
-        /// </summary>
-        /// <returns></returns>
-        public static ClientConnectRequest UserLogin()
-        {
-            // TODO: Should probably rework this so the client passes credentials to this
-            //  function instead. Easier to acces via the GUI that way
-            myClientName = "(Unregistered User)";
-            string userName = "";
-            string password = "";
-            string newEntry = "";
-            bool isNew = true;
-
-#if USE_COMMANDLINE
-            lock (writeLock)
-            {
-                Debug.Write("Are you a new user [y/n]: ");
-                newEntry = Console.ReadLine();
-                if (newEntry != "y")
-                    isNew = false;
-
-                Debug.Write("Enter a user name: ");
-                userName = Console.ReadLine();
-                myClientName = userName;
-                Debug.Write("Enter a password: ");
-                password = Console.ReadLine();
-            }
-#else
-            throw new NotImplementedException("Need to implement the initial sending of the ClientConnectRequest for the GUI still");
-#endif
-
-            byte[] hash;
-            using (SHA256 sha = SHA256.Create())
-                hash = sha.ComputeHash(Encoding.ASCII.GetBytes(password));
-
-            Debug.WriteLine($"{userName}, {hash}, {isNew}");
-            return new ClientConnectRequest(userName, hash, isNew);
-
-        }
-
-        /// <summary>
         /// Function for connecting to the Client to the Server given a connectRequest
         /// </summary>
         /// <param name="connectRequest"></param>
         /// <returns></returns>
-        public static bool ConnectToServer(ClientConnectRequest connectRequest)
+        public static bool TryConnectToServer()
         {
             bool successfulConnection = false;
 
             client = new TcpClient(ipAddress, portNumber);
             netStream = client.GetStream();
-            ClientConnectResponse response = (ClientConnectResponse)MessageManager.WriteAndRecieveMessage(connectRequest, netStream);
 
-#if USE_COMMANDLINE
+            ClientConnectRequest request = (ClientConnectRequest)GetOutboundMessagesFromQueue(1)[0];
+            ClientConnectResponse response = (ClientConnectResponse)MessageManager.WriteAndRecieveMessage(request, netStream);
 
-            lock (writeLock)
+            Notification result = new Notification("Something went wrong. Please try again.");
+            if (response != null)
             {
-                if (response != null)
-                {
-                    if (response.response == serverConnectResponse.success)
-                        successfulConnection = true;
-                    else if (response.response == serverConnectResponse.invalidCredentials)
-                        Debug.WriteLine("Your credentials are invalid, please try again");
-                    else if (response.response == serverConnectResponse.serverBusy)
-                        Debug.WriteLine("The server is busy right now.");
-                    else if (response.response == serverConnectResponse.usernameTaken)
-                        Debug.WriteLine("That username is taken, try another.");
-                    else
-                        Debug.WriteLine("Something went wrong. Please try again");
-
-                }
+                if (response.response == serverConnectResponse.success)
+                    successfulConnection = true;
+                else if (response.response == serverConnectResponse.invalidCredentials)
+                    result.notification_message = "Your credentials are invalid, please try again";
+                else if (response.response == serverConnectResponse.serverBusy)
+                    result.notification_message = "The server is busy right now.";
+                else if (response.response == serverConnectResponse.usernameTaken)
+                    result.notification_message = "That username is taken, try another.";
                 else
-                    Debug.WriteLine("Something went wrong. Please try again.");
+                    result.notification_message = "Something went wrong. Please try again";
+
             }
-
-#else
-
-            throw new NotImplementedException("The 'ConnectToServer' function for the GUI is not implemented");
-
-#endif
+            notifications.Add(result);
 
             return successfulConnection;
         }
@@ -365,6 +314,13 @@ namespace SE_Semester_Project
         /// <param name="newState"></param>
         private static void SetClientState(ClientState newState)
         {
+            // We lost connection!
+            if (clientState == ClientState.LoggedInAndConnected && newState == ClientState.LoggedIn)
+                notifications.Add(new Notification("Lost connection to the server"));
+
+            else if (clientState == ClientState.LoggedIn && newState == ClientState.LoggedInAndConnected)
+                notifications.Add(new Notification("Regained connection to the server"));
+
             clientState = newState;
         }
 
@@ -387,9 +343,6 @@ namespace SE_Semester_Project
                     client = null;
                 }
             }
-
-            // TODO: differentiate logging out and disconnecting
-            SetClientState(ClientState.NotLoggedIn);
         }
     
         /// <summary>
@@ -401,73 +354,114 @@ namespace SE_Semester_Project
         {
             try
             {
+                continueLoop = true;
                 bool activity;
-                while ((clientState & ClientState.Connected) != ClientState.NotLoggedIn)
+                while (continueLoop)//((clientState & ClientState.Connected) != ClientState.NotLoggedIn)
                 {
-                    activity = false;
-                    // Ensure server hasn't dropped 
-                    if ((clientState & ClientState.Connected) == ClientState.NotLoggedIn || !(netStream.CanRead || netStream.CanWrite) ||
-                        client.Client.Poll(1000, SelectMode.SelectRead) && client.Client.Available == 0)
+
+                    // Someone is trying to log into the system.
+                    if ((clientState & ClientState.TryingToLogIn) == ClientState.TryingToLogIn)
                     {
-                        // TODO: Change to be different from disconnected in the future
-                        SetClientState(ClientState.NotLoggedIn);
-#if USE_COMMANDLINE
-                        Debug.WriteLine("Lost connection to the server");
-#else
-                        throw new NotImplementedError("Alerting the user to sudden server-disconnect in the GUI hasn't been implemented");
-#endif
+                        bool connectSuccess = false;
+                        try
+                        {
+                            connectSuccess = TryConnectToServer();
+                        }
+                        catch (SocketException sockExcept)
+                        {
+                            notifications.Add(new Notification("The server could not be reached at this time"));
+                        }
+                        finally
+                        {
+                            if (connectSuccess)
+                                SetClientState(ClientState.LoggedInAndConnected);
+                            else
+                            {
+                                TerminateConnection();
+                                SetClientState(ClientState.NotLoggedIn);
+                            }
+                        }
                     }
 
-                    else if (clientState == ClientState.Connected || clientState == ClientState.LoggedInAndConnected)
+                    // If user is not logged in or connected, sleep
+                    else if ((clientState & ClientState.LoggedInAndConnected) == ClientState.NotLoggedIn)
                     {
-                        // We can read from the steam and something is waiting for us
-                        if (netStream.CanRead && netStream.DataAvailable)
+                        Thread.Sleep(500);
+                    }
+
+                    // User is logged in but not connected to server... We need to re-establish connection.
+                    else if ((clientState & ClientState.LoggedInAndConnected) == ClientState.LoggedIn)
+                    {
+                        // TODO:
+                        //  Create new reconnect message in MoveBit-Messaging
+                        //  Connect to server
+                        //  Give server credentials + session ID
+                        //  Re-login if session expired
+                        //  Authenticate and reconnect
+                        throw new NotImplementedException("Reconnecting to server after losing connection while logged in is not yet implemented");
+                    }
+
+
+                    // Otherwise, the user should be logged in and connected
+                    else if ((clientState & ClientState.LoggedInAndConnected) == ClientState.LoggedInAndConnected)
+                    {
+
+                        activity = false;
+                        // Ensure server hasn't dropped 
+                        if (!ConnectionWithServerAlive())
                         {
-                            activity = true;
-                            int inprocessed = 0;
-                            do
-                            { 
+                            // TODO: Change to be different from disconnected in the future
+                            SetClientState(ClientState.LoggedIn);
+
+                            Debug.WriteLine("Lost connection to the server");
+                        }
+
+                        else if ((clientState & ClientState.TalkingToServer) != ClientState.NotLoggedIn)
+                        {
+                            // We can read from the steam and something is waiting for us
+                            if (netStream.CanRead && netStream.DataAvailable)
+                            {
+                                activity = true;
+                                int inprocessed = 0;
                                 MoveBitMessage incomingMessage;
-
-                                lock(streamLock)
-                                    incomingMessage = MessageManager.GetMessageFromStream(netStream);
-
-                                // FUTURE: If there is a message we recieve that we immediately need to process (e.g., the server tells
-                                //  us to disconnect, do it here. Otherwise add it to the queue for later processing
-
-                                AddMessageToInQueue(incomingMessage);
-
-                            }
-                            while (netStream.CanRead && netStream.DataAvailable && inprocessed++ < maxNumberMessagesInprocessPerIteration);
-                        }
-
-                        // We have messages to send and need to send them
-                        if (netStream.CanWrite && outBoundMessages.Count() > 0)
-                        {
-                            activity = true;
-                            int outprocessed = 0;
-
-                            List<MoveBitMessage> outgoingMessages = GetOutboundMessagesFromQueue(maxNumberMesssagesOutprocessPerIteration);
-                            foreach (MoveBitMessage outGoing in outgoingMessages)
-                            {
-                                // FUTURE: Same as above - if any outbound messages require us to do anythimg special put an if here for them
-                                //  otherwise send the message
-
-                                MessageManager.WriteMessageToNetStream(outGoing, netStream);
-                            }
-                        }
-
-
-                        // Processing of inbound messages
-                        foreach(MoveBitMessage msg in GetInboundMessagesFromQueue(maxNumberMesssagesOutprocessPerIteration))
-                        {
-
-#if USE_COMMANDLINE
-                            if (msg.GetType() == typeof(InboxListUpdate))
-                            {
-                                InboxListUpdate update = (InboxListUpdate)msg;
-                                lock (writeLock)
+                                do
                                 {
+                                    lock (streamLock)
+                                        incomingMessage = MessageManager.GetMessageFromStream(netStream);
+
+                                    // FUTURE: If there is a message we recieve that we immediately need to process (e.g., the server tells
+                                    //  us to disconnect, do it here. Otherwise add it to the queue for later processing
+
+                                    AddMessageToInQueue(incomingMessage);
+
+                                }
+                                while (netStream.CanRead && netStream.DataAvailable && inprocessed++ < maxNumberMessagesInprocessPerIteration);
+                            }
+
+                            // We have messages to send and need to send them
+                            if (netStream.CanWrite && outBoundMessages.Count() > 0)
+                            {
+                                activity = true;
+                                int outprocessed = 0;
+
+                                List<MoveBitMessage> outgoingMessages = GetOutboundMessagesFromQueue(maxNumberMesssagesOutprocessPerIteration);
+                                foreach (MoveBitMessage outGoing in outgoingMessages)
+                                {
+                                    // FUTURE: Same as above - if any outbound messages require us to do anythimg special put an if here for them
+                                    //  otherwise send the message
+
+                                    MessageManager.WriteMessageToNetStream(outGoing, netStream);
+                                }
+                            }
+
+
+                            // Processing of inbound messages
+                            foreach (MoveBitMessage msg in GetInboundMessagesFromQueue(maxNumberMesssagesOutprocessPerIteration))
+                            {
+
+                                if (msg.GetType() == typeof(InboxListUpdate))
+                                {
+                                    InboxListUpdate update = (InboxListUpdate)msg;
                                     Debug.WriteLine("\nYou got the following new messages");
                                     foreach (SimpleTextMessage subMsg in update.messages)
                                     {
@@ -475,68 +469,67 @@ namespace SE_Semester_Project
                                     }
                                     Debug.WriteLine("");
                                 }
-                            }
-                            else if (msg.GetType() == typeof(SimpleTextMessageResult))
-                            {
-                                SimpleTextMessageResult result = (SimpleTextMessageResult)msg;
-                                if (result.sendResult == SendResult.sendSuccess)
-                                    Debug.WriteLine("Your message was sent successfully");
-                                else if (result.sendResult == SendResult.sendFailure)
-                                    Debug.WriteLine("Your message could not be sent");
-                            }
-                            else if (msg.GetType() == typeof(TestListActiveUsersResponse))
-                            {
-                                TestListActiveUsersResponse response = (TestListActiveUsersResponse)msg;
-                                lock (writeLock)
+                                else if (msg.GetType() == typeof(SimpleTextMessageResult))
                                 {
+                                    SimpleTextMessageResult result = (SimpleTextMessageResult)msg;
+                                    if (result.sendResult == SendResult.sendSuccess)
+                                        Debug.WriteLine("Your message was sent successfully");
+                                    else if (result.sendResult == SendResult.sendFailure)
+                                        Debug.WriteLine("Your message could not be sent");
+                                }
+                                else if (msg.GetType() == typeof(TestListActiveUsersResponse))
+                                {
+                                    TestListActiveUsersResponse response = (TestListActiveUsersResponse)msg;
                                     Debug.WriteLine("Server Users:");
                                     foreach (string result in response.activeUsers)
                                     {
                                         Debug.WriteLine($"\t{result}");
                                     }
                                     Debug.WriteLine("");
-                                }
-                            }
-                            else if (msg.GetType() == typeof(SimpleTextMessage))
-                            {
-                                SimpleTextMessage message = (SimpleTextMessage)msg;
-                                lock(writeLock)
-                                    Debug.WriteLine($"New message from {message.sender}: {message.message}");
-                            }
-                            else if (msg.GetType() == typeof(ServerToClientLogoffCommand))
-                            {
-                                Debug.WriteLine("Forced logoff message from server... Disconnecting\n");
-                                TerminateConnection();
-                            }
-                            else
-                                Debug.WriteLine("I don't know how to process this message");
-                        }
-#else
-                        throw new NotImplementedException("Code for handling how the GUI reacts to messages requires implementation");
-#endif
 
-                        // Nothing to do. Just relax
-                        if (!activity)
-                            Thread.Sleep(250);
+                                }
+                                else if (msg.GetType() == typeof(SimpleTextMessage))
+                                {
+                                    SimpleTextMessage message = (SimpleTextMessage)msg;
+                                    Debug.WriteLine($"New message from {message.sender}: {message.message}");
+                                }
+                                else if (msg.GetType() == typeof(ServerToClientLogoffCommand))
+                                {
+                                    Debug.WriteLine("Forced logoff message from server... Disconnecting\n");
+                                    TerminateConnection();
+                                }
+                                else
+                                    Debug.WriteLine("I don't know how to process this message");
+                            }
+
+                            // Nothing to do. Just relax
+                            if (!activity)
+                                Thread.Sleep(250);
+                        }
+
                     }
+
+                    else
+                        Debug.Assert(false, $"Fell out of the bottom of the message loop! State appeared to have no handle!\n: My state = '{clientState}'");
                 }
                  
             }
            
             catch(Exception error)
             {
-#if USE_COMMANDLINE
-                Debug.WriteLine($"An error occured while communicating with the server: {error}");
-#else
-                throw new NotImplementedException("Code for alerting to error while communicating with server hasn't been implemented");
-#endif
+                Debug.WriteLine($"An error occured while running the MessageLoop: {error}");
             }
             finally
             {
                 TerminateConnection();
             }
         }
-    
+
+        private static bool ConnectionWithServerAlive()
+        {
+
+            return !((netStream.CanRead || netStream.CanWrite) && (client.Client.Poll(1000, SelectMode.SelectRead) && client.Client.Available == 0));
+        }
         
     }
 }
