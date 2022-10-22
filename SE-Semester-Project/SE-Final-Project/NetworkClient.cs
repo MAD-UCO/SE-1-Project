@@ -53,7 +53,9 @@ namespace SE_Semester_Project
         private static ClientState clientState = ClientState.NotLoggedIn;
 
 
-
+        /// <summary>
+        /// Function that hashes a given password using SHA256
+        /// </summary>
         private static byte[] Sha256Hash(string password, string salt = "")
         {
             byte[] hash;
@@ -63,19 +65,30 @@ namespace SE_Semester_Project
             return hash;
         }
 
-        public static bool Login(string userName, string password, bool is_new = false)
+        /// <summary>
+        /// Begins the login process of the user. This function takes a username and password and 
+        /// attempts to log the user into the server.
+        /// The function spins for 10 secons while waiting to communicate with the server
+        /// If it gets denied or takes longer than 10 seconds to contact the server, it
+        ///     will fail to login the user.
+        /// </summary>
+        public static bool Login(string userName, string password, bool isNew = false)
         {
 
             bool success = false;
-            ClientConnectRequest connectRequest = new ClientConnectRequest(userName, Sha256Hash(password), is_new);
+            // Place login request in the outqueue
+            ClientConnectRequest connectRequest = new ClientConnectRequest(userName, Sha256Hash(password), isNew);
             AddMessageToOutQueue(connectRequest);
             myClientName = userName;
+            // Update client state
             SetClientState(ClientState.TryingToLogIn);
             long start = ((DateTimeOffset)(DateTime.Now)).ToUnixTimeSeconds();
 
-
+            // Wait a bit while our state is 'TryingToLogIn'
             while (clientState == ClientState.TryingToLogIn)
             {
+                // See if 10 or more seconds has passed - exits in case something in the message
+                //  loop is taking too long to process us
                 if (((DateTimeOffset)(DateTime.Now)).ToUnixTimeSeconds() - start >= 10)
                 {
                     SetClientState(ClientState.NotLoggedIn);
@@ -85,11 +98,16 @@ namespace SE_Semester_Project
                 Thread.Sleep(100);
             }
 
-            if (clientState == ClientState.LoggedInAndConnected)
-                success = true;
+            // Check to see if our state was set to 'LoggedInANdConnected'
+            success = (clientState == ClientState.LoggedInAndConnected)
+
+                
             return success;
         }
 
+        /// <summary>
+        /// Function for initiating a logout
+        /// </summary>
         public static void Logout()
         {
             myClientName = null;
@@ -98,7 +116,7 @@ namespace SE_Semester_Project
         }
 
         /// <summary>
-        /// Function for starting the Client Network code through CLI
+        /// Function for starting the Client Network code through
         /// </summary>
         public static void Start()
         {
@@ -107,6 +125,10 @@ namespace SE_Semester_Project
         }
 
 
+        /// <summary>
+        /// Function for shutting down the netcode
+        /// This includes ending the message loop
+        /// </summary>
         public static void Shutdown()
         {
             continueLoop = false;
@@ -203,10 +225,8 @@ namespace SE_Semester_Project
             // NOTE: Don't know if we should stop the client from sending messages if
             //  if they are not connected to the server, as that could require additional
             //  saving of the queue state if the user exits the program.
-            // However, I think it's safe to throw an exception if no one is even logged in
 
-            //if (clientState == ClientState.NotLoggedIn)
-            //    throw new InvalidOperationException("Client is not logged in or connected to server!");
+
             lock (outboundMsgQueueLock)
             {
                 outBoundMessages.Enqueue (message);
@@ -525,6 +545,10 @@ namespace SE_Semester_Project
             }
         }
 
+        /// <summary>
+        /// Checks to see if the server is still reachable
+        /// Returns True if we are still connected
+        /// </summary>
         private static bool ConnectionWithServerAlive()
         {
 
