@@ -1,12 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\MoveBit-Messaging\\MoveBit-Messaging",
-    "\\MoveBit-Messaging\\MoveBit-Messaging\\Properties",
+    "\\MoveBit-Server",
     "\\MoveBit-Server\\MoveBit-Server",
-    "\\SE-Semester-Project",
     "\\SE-Semester-Project\\SE-Final-Project"
   ],
-  "SelectedNode": "\\SE-Semester-Project\\SE-Semester-Project.sln",
+  "SelectedNode": "\\MoveBit-Server\\MoveBit-Server\\CommandLineReader.cs",
   "PreviewInSolutionExplorer": false
 }

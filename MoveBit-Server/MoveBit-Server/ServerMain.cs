@@ -123,7 +123,8 @@ class MoveBitServer
                     double timeStart = ((DateTimeOffset)(DateTime.Now)).ToUnixTimeSeconds();
 
                     // Start a new work item for each user
-                    foreach (UserAccount userAccount in connectedUsers)
+                    List<UserAccount> connectedCopy = new List<UserAccount>(connectedUsers);
+                    foreach (UserAccount userAccount in connectedCopy)
                         ThreadPool.QueueUserWorkItem(ProcessActiveUser, userAccount);
 
                     double deltaTime = 0.0;
