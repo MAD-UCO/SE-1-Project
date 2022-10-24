@@ -47,6 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="model\AudioMessage.cs" />
+    <Compile Include="model\User.cs" />
+    <Compile Include="Server_Observer\dummyClass.cs" />
     <Compile Include="view_controller\Duration.cs">
       <SubType>Form</SubType>
     </Compile>

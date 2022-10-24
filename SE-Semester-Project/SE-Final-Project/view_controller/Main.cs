@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
-using SE_Semester_Project;
 
 namespace SE_Final_Project
 {
@@ -22,7 +21,7 @@ namespace SE_Final_Project
         private string selectedFile;
         private List<String> outgoingFilepaths = new List<String>();
 
-        private SE_Semester_Project.Message message;
+        private Message message;
         private TextMessage textMessage;
         private VideoMessage videoMessage;
         private AudioMessage audioMessage;
@@ -49,7 +48,7 @@ namespace SE_Final_Project
         {
             //Generate a storage location and pass to message constructor
             String filePath = " insert file path ";
-            message = new SE_Semester_Project.Message(filePath);
+            message = new Message(filePath);
 
             //Store message subtypes
             if(txtOutgoing.Text != "")
@@ -200,7 +199,7 @@ namespace SE_Final_Project
             return outgoingFilepaths;
         }
 
-        public SE_Semester_Project.Message getMessage()
+        public Message getMessage()
         {
             return message;
         }

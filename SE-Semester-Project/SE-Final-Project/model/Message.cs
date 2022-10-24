@@ -10,7 +10,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Forms;
 
 
-namespace SE_Semester_Project
+namespace SE_Final_Project
 {
     public class Message
     {

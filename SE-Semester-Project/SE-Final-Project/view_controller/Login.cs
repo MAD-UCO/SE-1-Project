@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using SE_Final_Project.model;
+
 namespace SE_Final_Project
 {
     public partial class Login : Form
@@ -17,6 +19,7 @@ namespace SE_Final_Project
 
         private string username = "";
         private string password = "";
+        private User user;
 
         //Store successful and unsuccessful attempts
         List<bool> attempts = new List<bool>();
@@ -27,12 +30,25 @@ namespace SE_Final_Project
             InitializeComponent();
         }
 
+        //Runs when form loads
+        private void Login_Load(object sender, EventArgs e)
+        {
+            //Create a new user instance
+            user = new User(txtUsername.Text, txtPassword.Text);
+        }
+
         //Event handlers
         private void btnLogin_Click(object sender, EventArgs e)
         {
+            /*
+             * 
+             * Pass validation info to server here
+             * 
+             */
+
             Main frmMain = new Main();
             frmMain.ShowDialog();
-            this.Hide();
+            this.Close();
         }
 
         private void txtUsername_TextChanged(object sender, EventArgs e)
@@ -48,19 +64,9 @@ namespace SE_Final_Project
         }
 
         //Getters
-        public string getUsername()
+        public User getUser()
         {
-            return username;
-        }
-
-        public string getPassword()
-        {
-            return password;
-        }
-
-        public List<bool> getAttempts()
-        {
-            return attempts;
+            return user;
         }
     }
 }

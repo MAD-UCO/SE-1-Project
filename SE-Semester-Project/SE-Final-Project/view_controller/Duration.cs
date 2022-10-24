@@ -27,11 +27,7 @@ namespace SE_Final_Project
         //Event Handlers
         private void btnAccept_Click(object sender, EventArgs e)
         {
-            //store txt box values and close form
-            hours = txtHH.Text;
-            minutes = txtMM.Text;
             seconds = txtSS.Text;
-            timeStamp = hours + " : " + minutes + " : " + seconds;
 
             /*
              * 
