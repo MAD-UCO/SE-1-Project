@@ -36,7 +36,6 @@ namespace SE_Final_Project
 
         //Event handlers
 
-        //Runs immediately after form loads
         private void Main_Load(object sender, EventArgs e)
         {
             //Hide media player until a preview is needed
@@ -63,9 +62,12 @@ namespace SE_Final_Project
             char sndChar = (char)k;
             btnSend.Text = sndChar.ToString();
         }
+
         private void btnSend_Click(object sender, EventArgs e)
         {
-            message = new SE_Semester_Project.Message();
+            //Generate a storage location and pass to message constructor
+            String filePath = " insert file path ";
+            message = new SE_Semester_Project.Message(filePath);
 
             //Store message subtypes
             if(txtOutgoing.Text != "")
@@ -76,17 +78,18 @@ namespace SE_Final_Project
                 message.AddTextMessage(textMessage);
             }
 
+            //If a selection was made in the file list combo box
             if(cboFileList.SelectedIndex > -1)
             {
                 //Check file extension from selectedFile and store in the appropriate object
-                if(selectedFile.Contains("mp3") || selectedFile.Contains(".wav"))
+                if(selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
                 {
                     audioMessage = new AudioMessage(selectedFile);
 
                     //Store in message object
                     message.AddAudioMessage(audioMessage);
                 }
-                else if(selectedFile.Contains("mp4"))
+                else if(selectedFile.Contains(".mp4"))
                 {
                     videoMessage = new VideoMessage(selectedFile);
 
@@ -95,7 +98,8 @@ namespace SE_Final_Project
                 }
             }
 
-
+            //Generate message file
+            message.GenerateMessageFile();
 
             //Display simple message for testing
             MessageBox.Show("Message Delivered");
