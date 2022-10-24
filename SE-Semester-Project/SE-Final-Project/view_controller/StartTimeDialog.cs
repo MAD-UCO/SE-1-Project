@@ -12,6 +12,13 @@ namespace SE_Final_Project
 {
     public partial class StartTimeDialog : Form
     {
+
+        //Private fields
+        private string hours;
+        private string minutes;
+        private string seconds;
+        private string timeStamp;
+
         public StartTimeDialog()
         {
             InitializeComponent();
@@ -20,10 +27,15 @@ namespace SE_Final_Project
         private void btnAccept_Click(object sender, EventArgs e)
         {
             //store txt box values and close form
+            hours = txtHH.Text;
+            minutes = txtMM.Text;
+            seconds = txtSS.Text;
+            timeStamp = hours + " : " + minutes + " : " + seconds;
 
             /*
              * 
-             * Code for storing values
+             * 
+             * Pass the timestamp to message object here
              * 
              */
 

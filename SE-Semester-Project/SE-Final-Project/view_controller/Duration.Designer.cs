@@ -1,6 +1,6 @@
 ﻿namespace SE_Final_Project
 {
-    partial class EndTimeDialog
+    partial class Duration
     {
         /// <summary>
         /// Required designer variable.

@@ -14,9 +14,7 @@ namespace SE_Final_Project
 {
     public partial class Messages : Form
     {
-        /*
-         * Private fields
-         */
+        //private fields
 
         private String selectedMessage;
 
@@ -26,9 +24,7 @@ namespace SE_Final_Project
             InitializeComponent();
         }
 
-        /*
-         * Event handlers
-         */
+        //Event handlers
 
         //Runs immediately after form loads
         private void Messages_Load(object sender, EventArgs e)
@@ -188,9 +184,6 @@ namespace SE_Final_Project
                 playerMessages.Visible = true;
             }
         }
-
-
-
     }
 }
 

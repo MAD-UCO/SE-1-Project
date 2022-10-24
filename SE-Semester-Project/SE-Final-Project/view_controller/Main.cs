@@ -80,8 +80,21 @@ namespace SE_Final_Project
                 }
             }
 
+            /*
+             * 
+             * Get time stamp from Duration and StartTimeDialog
+             * 
+             */
+            
+
             //Generate message file
             message.GenerateMessageFile();
+
+            /*
+             * 
+             * Pass message along to the server
+             * 
+             */
 
             //Display simple message for testing
             MessageBox.Show("Message Delivered");
@@ -96,11 +109,7 @@ namespace SE_Final_Project
 
             //If a file is selected, result == Dialgoue.OK, otherwise result == Dialogue.Cancel
             DialogResult result = browser.ShowDialog();
-
-            //store entire path in a String
             String path = browser.FileName;
-
-            //Trim path to only include filename and extension
             String pathTrimmed = Path.GetFileName(path);
 
             //If a file is selected, store the full path into class List<> and add trimmed path to cboFileList
@@ -142,7 +151,7 @@ namespace SE_Final_Project
         private void btnDuration_Click(object sender, EventArgs e)
         {
             //Display EndTimeDialog
-            EndTimeDialog frmEndTimeDialog = new EndTimeDialog();
+            Duration frmEndTimeDialog = new Duration();
             frmEndTimeDialog.Show();
         }
 

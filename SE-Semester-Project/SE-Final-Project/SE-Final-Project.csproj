@@ -47,11 +47,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="model\AudioMessage.cs" />
-    <Compile Include="view_controller\EndTimeDialog.cs">
+    <Compile Include="view_controller\Duration.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="view_controller\EndTimeDialog.Designer.cs">
-      <DependentUpon>EndTimeDialog.cs</DependentUpon>
+    <Compile Include="view_controller\Duration.Designer.cs">
+      <DependentUpon>Duration.cs</DependentUpon>
     </Compile>
     <Compile Include="view_controller\Login.cs">
       <SubType>Form</SubType>
@@ -82,8 +82,8 @@
     </Compile>
     <Compile Include="model\TextMessage.cs" />
     <Compile Include="model\VideoMessage.cs" />
-    <EmbeddedResource Include="view_controller\EndTimeDialog.resx">
-      <DependentUpon>EndTimeDialog.cs</DependentUpon>
+    <EmbeddedResource Include="view_controller\Duration.resx">
+      <DependentUpon>Duration.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="view_controller\Login.resx">
       <DependentUpon>Login.cs</DependentUpon>

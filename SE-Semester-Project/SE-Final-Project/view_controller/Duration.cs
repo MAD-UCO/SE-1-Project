@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace SE_Final_Project
 {
-    public partial class EndTimeDialog : Form
+    public partial class Duration : Form
     {
         //Private fields
         private string hours;
@@ -19,7 +19,7 @@ namespace SE_Final_Project
         private string timeStamp;
 
         //Class constructor, do not edit. Use form load event for initialization.
-        public EndTimeDialog()
+        public Duration()
         {
             InitializeComponent();
         }
@@ -31,7 +31,14 @@ namespace SE_Final_Project
             hours = txtHH.Text;
             minutes = txtMM.Text;
             seconds = txtSS.Text;
-            timeStamp = hours + " : " + minutes + " : " + seconds; 
+            timeStamp = hours + " : " + minutes + " : " + seconds;
+
+            /*
+             * 
+             * 
+             * Pass the timestamp to message object here
+             * 
+             */
 
             this.Hide();
         }
