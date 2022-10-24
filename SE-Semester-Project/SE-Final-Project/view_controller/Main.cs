@@ -8,12 +8,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Serialization;
+
+using SE_Semester_Project;
 
 namespace SE_Final_Project
 {
     public partial class Main : Form
     {
+        
+        //private fields
+        private string selectedAddress;
+        private string selectedFile;
         private List<String> outgoingFilepaths = new List<String>();
+
+        private SE_Semester_Project.Message message;
+        private TextMessage textMessage;
+        private VideoMessage videoMessage;
+        private AudioMessage audioMessage;
+
 
         //Class constructor, do not edit. Use form load event for initialization
         public Main()
@@ -52,9 +65,37 @@ namespace SE_Final_Project
         }
         private void btnSend_Click(object sender, EventArgs e)
         {
-            //Customize message font before sending
-            //FontDialog font = new FontDialog();
-            //font.ShowDialog();
+            message = new SE_Semester_Project.Message();
+
+            //Store message subtypes
+            if(txtOutgoing.Text != "")
+            {
+                textMessage = new TextMessage(txtOutgoing.Text);
+
+                //store in message object
+                message.AddTextMessage(textMessage);
+            }
+
+            if(cboFileList.SelectedIndex > -1)
+            {
+                //Check file extension from selectedFile and store in the appropriate object
+                if(selectedFile.Contains("mp3") || selectedFile.Contains(".wav"))
+                {
+                    audioMessage = new AudioMessage(selectedFile);
+
+                    //Store in message object
+                    message.AddAudioMessage(audioMessage);
+                }
+                else if(selectedFile.Contains("mp4"))
+                {
+                    videoMessage = new VideoMessage(selectedFile);
+
+                    //Store in message object
+                    message.AddVideoMessage(videoMessage);
+                }
+            }
+
+
 
             //Display simple message for testing
             MessageBox.Show("Message Delivered");
@@ -71,7 +112,6 @@ namespace SE_Final_Project
             OpenFileDialog browser = new OpenFileDialog();
          
 
-            //Create a DialogueResult object which converts a selection to "ok" or "cancel" depending what is selected
             //If a file is selected, result == Dialgoue.OK, otherwise result == Dialogue.Cancel
             DialogResult result = browser.ShowDialog();
 
@@ -103,6 +143,7 @@ namespace SE_Final_Project
 
         private void btnMessages_Click(object sender, EventArgs e)
         {
+            //Create new Messages form, display, and hide the current form
             Messages frmMessages = new Messages();
             frmMessages.Show();
             frmMessages.Location = this.Location;
@@ -126,13 +167,14 @@ namespace SE_Final_Project
 
         private void cboAddresses_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
+            //Store selected address in a string variable
+            selectedAddress = cboAddresses.SelectedItem.ToString();
         }
 
         private void cboFileList_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Display media player for preview if audio or video file is selected.
-            String selectedFile = cboFileList.SelectedItem.ToString();
+            selectedFile = cboFileList.SelectedItem.ToString();
 
             if(selectedFile == "test.wav" || selectedFile == "test.mp3")
             {
@@ -151,6 +193,26 @@ namespace SE_Final_Project
             frmLogin.Show();
             this.Hide();
         }
+        
+        //Getters
+        public string getSelectedAddress()
+        {
+            return selectedAddress;
+        }
 
+        public string getSelectedFile()
+        {
+            return selectedFile;
+        }
+
+        public List<string> getOutgoingFilePaths()
+        {
+            return outgoingFilepaths;
+        }
+
+        public SE_Semester_Project.Message getMessage()
+        {
+            return message;
+        }
     }
 }

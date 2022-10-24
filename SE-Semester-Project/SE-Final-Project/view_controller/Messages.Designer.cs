@@ -89,7 +89,6 @@
             this.grpTextCanvas.Size = new System.Drawing.Size(650, 425);
             this.grpTextCanvas.TabIndex = 5;
             this.grpTextCanvas.TabStop = false;
-            this.grpTextCanvas.Enter += new System.EventHandler(this.grpTextCanvas_Enter);
             // 
             // lblDefault
             // 
@@ -118,7 +117,6 @@
             this.lblEast.Size = new System.Drawing.Size(43, 16);
             this.lblEast.TabIndex = 3;
             this.lblEast.Text = "EAST";
-            this.lblEast.Click += new System.EventHandler(this.lblEast_Click);
             // 
             // lblCenter
             // 

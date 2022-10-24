@@ -14,13 +14,23 @@ namespace SE_Final_Project
 {
     public partial class Messages : Form
     {
+        /*
+         * Private fields
+         */
+
+        private String selectedMessage;
+
+        //Class constructor, do not edit. Use form load event for initialization
         public Messages()
         {
             InitializeComponent();
         }
 
+        /*
+         * Event handlers
+         */
+
         //Runs immediately after form loads
-        //***note!*** do not modify class constructor. Use this event handler for initialization contents
         private void Messages_Load(object sender, EventArgs e)
         {
 
@@ -31,7 +41,6 @@ namespace SE_Final_Project
             cboMessages.Items.Add("testSouth");
             cboMessages.Items.Add("testEast");
             cboMessages.Items.Add("testWest");
-
             cboMessages.Items.Add("TestMedia");
 
             //Set initial visibility for labels to false
@@ -42,10 +51,6 @@ namespace SE_Final_Project
             lblEast.Visible = false;
             lblWest.Visible = false;
             playerMessages.Visible = false;
-
-            //Remove media player from group box so that it can be viewed independently of panel
-            //grpTextCanvas.Controls.Remove(playerMessages);
-
 
         }
 
@@ -58,17 +63,10 @@ namespace SE_Final_Project
             this.Hide();
         }
 
-        private void btnEnd_Click(object sender, EventArgs e)
-        {
-
-        }
-
-       
-
         private void cboMessages_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Store the selected combo box item in a string
-            String selectedMessage = "";
+            selectedMessage = "";
             selectedMessage = cboMessages.SelectedItem.ToString();
 
             if (selectedMessage == "testDefault")
@@ -175,15 +173,15 @@ namespace SE_Final_Project
             }
         }
 
-        private void grpTextCanvas_Enter(object sender, EventArgs e)
-        {
+        /*
+         * Getters
+         */
 
+        public string getSelectedMessage()
+        {
+            return selectedMessage;
         }
 
-        private void lblEast_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
 
