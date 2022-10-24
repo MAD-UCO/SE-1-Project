@@ -66,9 +66,25 @@ namespace SE_Final_Project
         private void cboMessages_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Store the selected combo box item in a string
-            selectedMessage = "";
             selectedMessage = cboMessages.SelectedItem.ToString();
 
+            //Display the text message in the correct location
+            displayTextMessage();
+            
+        }
+
+        //Getters
+
+        public string getSelectedMessage()
+        {
+            return selectedMessage;
+        }
+
+        //Operations
+
+        //Display text message in the correct location
+        private void displayTextMessage()
+        {
             if (selectedMessage == "testDefault")
             {
                 //Hide media player
@@ -173,14 +189,7 @@ namespace SE_Final_Project
             }
         }
 
-        /*
-         * Getters
-         */
 
-        public string getSelectedMessage()
-        {
-            return selectedMessage;
-        }
 
     }
 }

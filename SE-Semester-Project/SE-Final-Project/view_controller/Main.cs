@@ -41,26 +41,8 @@ namespace SE_Final_Project
             //Hide media player until a preview is needed
             playerMain.Visible = false;
 
-            //Add test IP to address combo box for presentation
-            cboAddresses.Items.Add("Coleman");
-            cboAddresses.Items.Add("Mitchell ");
-            cboAddresses.Items.Add("Tyler");
-            cboAddresses.Items.Add("Victor");
-
-            //store compose symbol and display on btnCompose
-            int i = 11036;
-            char c = (char)i;
-            btnCompose.Text = c.ToString();
-
-            //store message symbol and display on btnMessages
-            int j = 0x00002709;
-            char msgChar = (char)j;
-            btnMessages.Text = msgChar.ToString();
-
-            //store send symbol and display on btnSend
-            int k = 8628;
-            char sndChar = (char)k;
-            btnSend.Text = sndChar.ToString();
+            //Generate button symbols
+            generateButtonSymbols();
         }
 
         private void btnSend_Click(object sender, EventArgs e)
@@ -105,11 +87,7 @@ namespace SE_Final_Project
             MessageBox.Show("Message Delivered");
 
         }
-        private void btnStartTime_Click(object sender, EventArgs e)
-        {
-            //Prompt the user to select start time and store locally
-        }
-
+       
         private void btnUpload_Click(object sender, EventArgs e)
         {
             //Create an OpenFileDialog object which provides file browser functionality
@@ -160,7 +138,6 @@ namespace SE_Final_Project
             StartTimeDialog frmStartTimeDialog = new StartTimeDialog();
             frmStartTimeDialog.Show();
         }
-
 
         private void btnDuration_Click(object sender, EventArgs e)
         {
@@ -217,6 +194,27 @@ namespace SE_Final_Project
         public SE_Semester_Project.Message getMessage()
         {
             return message;
+        }
+
+        //Operations
+
+        //Generate button symbols during initialization
+        private void generateButtonSymbols()
+        {
+            //store compose symbol and display on btnCompose
+            int i = 11036;
+            char c = (char)i;
+            btnCompose.Text = c.ToString();
+
+            //store message symbol and display on btnMessages
+            int j = 0x00002709;
+            char msgChar = (char)j;
+            btnMessages.Text = msgChar.ToString();
+
+            //store send symbol and display on btnSend
+            int k = 8628;
+            char sndChar = (char)k;
+            btnSend.Text = sndChar.ToString();
         }
     }
 }
