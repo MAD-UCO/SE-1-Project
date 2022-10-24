@@ -15,13 +15,15 @@ namespace SE_Final_Project
     {
         private List<String> outgoingFilepaths = new List<String>();
 
+        //Class constructor, do not edit. Use form load event for initialization
         public Main()
         {
             InitializeComponent();
         }
 
+        //Event handlers
+
         //Runs immediately after form loads
-        //***note!*** do not modify class constructor. Use this event handler for initialization contents
         private void Main_Load(object sender, EventArgs e)
         {
             //Hide media player until a preview is needed
@@ -38,12 +40,12 @@ namespace SE_Final_Project
             char c = (char)i;
             btnCompose.Text = c.ToString();
 
-            //store compose symbol and display on btnMessages
+            //store message symbol and display on btnMessages
             int j = 0x00002709;
             char msgChar = (char)j;
             btnMessages.Text = msgChar.ToString();
 
-            //store compose symbol and display on btnMessages
+            //store send symbol and display on btnSend
             int k = 8628;
             char sndChar = (char)k;
             btnSend.Text = sndChar.ToString();
@@ -61,11 +63,6 @@ namespace SE_Final_Project
         private void btnStartTime_Click(object sender, EventArgs e)
         {
             //Prompt the user to select start time and store locally
-        }
-
-        private void btnFinishTime_Click(object sender, EventArgs e)
-        {
-            //Prompt the user to select finish time and store locally
         }
 
         private void btnUpload_Click(object sender, EventArgs e)
@@ -119,11 +116,12 @@ namespace SE_Final_Project
             frmStartTimeDialog.Show();
         }
 
-        private void btnEnd_Click(object sender, EventArgs e)
+
+        private void btnDuration_Click(object sender, EventArgs e)
         {
-            //Display start time dialog
-            StartTimeDialog frmStartTimeDialog = new StartTimeDialog();
-            frmStartTimeDialog.Show();
+            //Display EndTimeDialog
+            EndTimeDialog frmEndTimeDialog = new EndTimeDialog();
+            frmEndTimeDialog.Show();
         }
 
         private void cboAddresses_SelectedIndexChanged(object sender, EventArgs e)
@@ -148,9 +146,11 @@ namespace SE_Final_Project
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
+            //Create new Login form, display, and hide the current form
             Login frmLogin = new Login();
             frmLogin.Show();
             this.Hide();
         }
+
     }
 }

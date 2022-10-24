@@ -35,7 +35,7 @@
             this.btnSend = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
-            this.btnEnd = new System.Windows.Forms.Button();
+            this.btnDuration = new System.Windows.Forms.Button();
             this.btnMessages = new System.Windows.Forms.Button();
             this.cboFileList = new System.Windows.Forms.ComboBox();
             this.btnUpload = new System.Windows.Forms.Button();
@@ -109,16 +109,16 @@
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
-            // btnEnd
+            // btnDuration
             // 
-            this.btnEnd.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEnd.Location = new System.Drawing.Point(668, 361);
-            this.btnEnd.Name = "btnEnd";
-            this.btnEnd.Size = new System.Drawing.Size(100, 50);
-            this.btnEnd.TabIndex = 6;
-            this.btnEnd.Text = "END";
-            this.btnEnd.UseVisualStyleBackColor = true;
-            this.btnEnd.Click += new System.EventHandler(this.btnEnd_Click);
+            this.btnDuration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDuration.Location = new System.Drawing.Point(668, 361);
+            this.btnDuration.Name = "btnDuration";
+            this.btnDuration.Size = new System.Drawing.Size(100, 50);
+            this.btnDuration.TabIndex = 6;
+            this.btnDuration.Text = "Duration";
+            this.btnDuration.UseVisualStyleBackColor = true;
+            this.btnDuration.Click += new System.EventHandler(this.btnDuration_Click);
             // 
             // btnMessages
             // 
@@ -184,7 +184,7 @@
             this.Controls.Add(this.btnUpload);
             this.Controls.Add(this.cboFileList);
             this.Controls.Add(this.btnMessages);
-            this.Controls.Add(this.btnEnd);
+            this.Controls.Add(this.btnDuration);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnSend);
@@ -208,7 +208,7 @@
         private System.Windows.Forms.Button btnSend;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnStart;
-        private System.Windows.Forms.Button btnEnd;
+        private System.Windows.Forms.Button btnDuration;
         private System.Windows.Forms.Button btnMessages;
         private System.Windows.Forms.ComboBox cboFileList;
         private System.Windows.Forms.Button btnUpload;
