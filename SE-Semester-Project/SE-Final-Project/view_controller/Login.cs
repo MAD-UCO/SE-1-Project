@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using SE_Final_Project.model;
+using SE_Final_Project.view_controller;
 
 namespace SE_Final_Project
 {
@@ -46,9 +47,13 @@ namespace SE_Final_Project
              * 
              */
 
-            Main frmMain = new Main();
-            frmMain.ShowDialog();
-            this.Close();
+            //Use mediator to navigate
+            Mediator mediator = new Mediator(this, new Main());
+            mediator.navigate();
+
+            //Main frmMain = new Main();
+            //frmMain.ShowDialog();
+            //this.Hide();
         }
 
         private void txtUsername_TextChanged(object sender, EventArgs e)

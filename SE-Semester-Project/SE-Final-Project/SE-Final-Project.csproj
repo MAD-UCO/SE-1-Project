@@ -68,6 +68,7 @@
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
     <Compile Include="model\Message.cs" />
+    <Compile Include="view_controller\Mediator.cs" />
     <Compile Include="view_controller\Messages.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SE_Final_Project.view_controller;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -57,6 +58,9 @@ namespace SE_Final_Project
             frmMain.Show();
             frmMain.Location = this.Location;
             this.Hide();
+
+            Mediator mediator = new Mediator(this, new Main());
+            mediator.navigate();
         }
 
         private void cboMessages_SelectedIndexChanged(object sender, EventArgs e)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SE_Final_Project.view_controller;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -133,25 +134,23 @@ namespace SE_Final_Project
 
         private void btnMessages_Click(object sender, EventArgs e)
         {
-            //Create new Messages form, display, and hide the current form
-            Messages frmMessages = new Messages();
-            frmMessages.Show();
-            frmMessages.Location = this.Location;
-            this.Hide();
+            //Navigate to messages form using mediator
+            Mediator mediator = new Mediator(this, new Messages());
+            mediator.navigate();
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            //Display start time dialog
-            StartTimeDialog frmStartTimeDialog = new StartTimeDialog();
-            frmStartTimeDialog.Show();
+            //Navigate to StartTimeDialog form using mediator
+            Mediator mediator = new Mediator(this, new StartTimeDialog());
+            mediator.navigate();
         }
 
         private void btnDuration_Click(object sender, EventArgs e)
         {
-            //Display EndTimeDialog
-            Duration frmEndTimeDialog = new Duration();
-            frmEndTimeDialog.Show();
+            //Navigate to Duration form using mediator
+            Mediator mediator = new Mediator(this, new Duration());
+            mediator.navigate();
         }
 
         private void cboAddresses_SelectedIndexChanged(object sender, EventArgs e)
