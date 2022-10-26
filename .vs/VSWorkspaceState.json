@@ -1,6 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\MoveBit-Server",
+    "\\MoveBit-Server\\MoveBit-Server",
+    "\\SE-Semester-Project\\SE-Final-Project"
   ],
+  "SelectedNode": "\\MoveBit-Server\\MoveBit-Server\\CommandLineReader.cs",
   "PreviewInSolutionExplorer": false
 }
