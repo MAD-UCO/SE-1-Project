@@ -143,6 +143,7 @@ namespace SE_Semester_Project
         /// </summary>
         public static void processConsoleInterface()
         {
+            // TODO: Make useful or DELETE
             bool exit = false;
             string userInput;
 
