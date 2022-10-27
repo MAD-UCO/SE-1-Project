@@ -12,6 +12,7 @@ using System.Windows.Forms;
 
 using SE_Final_Project.model;
 using SE_Final_Project.view_controller;
+using SE_Semester_Project;
 
 namespace SE_Final_Project
 {
@@ -28,6 +29,7 @@ namespace SE_Final_Project
         //Class construcctor, do not edit. Use form load event for initialization
         public Login()
         {
+            this.FormClosing += login_FormClosing;
             InitializeComponent();
         }
 
@@ -46,10 +48,13 @@ namespace SE_Final_Project
              * Pass validation info to server here
              * 
              */
-
-            //Use mediator to navigate
-            Mediator mediator = new Mediator(this, new Main());
-            mediator.navigate();
+            // TODO: Only adding new users... Need to fix
+            if (NetworkClient.Login(txtUsername.Text, txtPassword.Text, true))
+            {
+                //Use mediator to navigate
+                Mediator mediator = new Mediator(this, new Main());
+                mediator.navigate();
+            }
 
             //Main frmMain = new Main();
             //frmMain.ShowDialog();
@@ -66,6 +71,12 @@ namespace SE_Final_Project
         {
             //Save the input text from txtPassword
             password = txtPassword.Text;
+        }
+
+        private void login_FormClosing(object sender, FormClosingEventArgs closingArgs)
+        {
+            NetworkClient.Logout();
+            NetworkClient.Shutdown();
         }
 
         //Getters
