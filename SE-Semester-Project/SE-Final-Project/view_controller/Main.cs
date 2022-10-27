@@ -1,4 +1,5 @@
 ﻿using SE_Final_Project.view_controller;
+using SE_Semester_Project;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,6 +32,7 @@ namespace SE_Final_Project
         //Class constructor, do not edit. Use form load event for initialization
         public Main()
         {
+            this.FormClosing += main_FormClosing;
             InitializeComponent();
         }
 
@@ -181,7 +183,12 @@ namespace SE_Final_Project
             frmLogin.Show();
             this.Hide();
         }
-        
+
+        private void main_FormClosing(object sender, FormClosingEventArgs closingArgs)
+        {
+            NetworkClient.Shutdown();
+        }
+
         //Getters
         public string getSelectedAddress()
         {
