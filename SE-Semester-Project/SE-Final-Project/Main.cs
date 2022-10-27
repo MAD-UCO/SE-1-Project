@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SE_Semester_Project;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,7 +18,15 @@ namespace SE_Final_Project
 
         public Main()
         {
+            this.FormClosing += Main_OnClose;
             InitializeComponent();
+        }
+
+        private void Main_OnClose(object sender, FormClosingEventArgs e)
+        {
+            NetworkClient.Logout();
+            NetworkClient.Shutdown();
+            Application.ExitThread();
         }
 
         //Runs immediately after form loads

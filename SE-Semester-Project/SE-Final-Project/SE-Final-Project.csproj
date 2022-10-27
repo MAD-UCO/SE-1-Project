@@ -12,6 +12,21 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -19,7 +34,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;USE_COMMANDLINE;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -33,6 +48,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MoveBit-Messaging">
+      <HintPath>..\..\..\..\temp\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,48 +64,57 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EndTimeDialog.cs">
+    <Compile Include="model\AudioMessage.cs" />
+    <Compile Include="model\User.cs" />
+    <Compile Include="Server_Observer\dummyClass.cs" />
+    <Compile Include="view_controller\Duration.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EndTimeDialog.Designer.cs">
-      <DependentUpon>EndTimeDialog.cs</DependentUpon>
+    <Compile Include="view_controller\Duration.Designer.cs">
+      <DependentUpon>Duration.cs</DependentUpon>
     </Compile>
-    <Compile Include="Login.cs">
+    <Compile Include="view_controller\Login.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Login.Designer.cs">
+    <Compile Include="view_controller\Login.Designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
-    <Compile Include="Main.cs">
+    <Compile Include="view_controller\Main.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main.Designer.cs">
+    <Compile Include="view_controller\Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="Messages.cs">
+    <Compile Include="model\Message.cs" />
+    <Compile Include="view_controller\Mediator.cs" />
+    <Compile Include="view_controller\Messages.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Messages.Designer.cs">
+    <Compile Include="view_controller\Messages.Designer.cs">
       <DependentUpon>Messages.cs</DependentUpon>
     </Compile>
+    <Compile Include="NetworkClient.cs" />
+    <Compile Include="Notification.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StartTimeDialog.cs">
+    <Compile Include="view_controller\StartTimeDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StartTimeDialog.Designer.cs">
+    <Compile Include="view_controller\StartTimeDialog.Designer.cs">
       <DependentUpon>StartTimeDialog.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="EndTimeDialog.resx">
-      <DependentUpon>EndTimeDialog.cs</DependentUpon>
+    <Compile Include="model\TextMessage.cs" />
+    <Compile Include="model\VideoMessage.cs" />
+    <EmbeddedResource Include="view_controller\Duration.resx">
+      <DependentUpon>Duration.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Login.resx">
+    <EmbeddedResource Include="view_controller\Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Main.resx">
+    <EmbeddedResource Include="view_controller\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Messages.resx">
+    <EmbeddedResource Include="view_controller\Messages.resx">
       <DependentUpon>Messages.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -99,7 +126,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="StartTimeDialog.resx">
+    <EmbeddedResource Include="view_controller\StartTimeDialog.resx">
       <DependentUpon>StartTimeDialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
@@ -134,5 +161,6 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
