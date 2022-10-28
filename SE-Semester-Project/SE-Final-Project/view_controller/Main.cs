@@ -136,23 +136,29 @@ namespace SE_Final_Project
 
         private void btnMessages_Click(object sender, EventArgs e)
         {
-            //Navigate to messages form using mediator
-            Mediator mediator = new Mediator(this, new Messages());
-            mediator.navigate();
+            this.Hide();
+            Messages frmMessages = new Messages();
+            frmMessages.Show();
+            frmMessages.Location = this.Location;
+            
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            //Navigate to StartTimeDialog form using mediator
-            Mediator mediator = new Mediator(this, new StartTimeDialog());
-            mediator.navigate();
+            this.Hide();
+            StartTimeDialog frmStart = new StartTimeDialog();
+            frmStart.Show();
+            frmStart.Location = this.Location;
+            
         }
 
         private void btnDuration_Click(object sender, EventArgs e)
         {
-            //Navigate to Duration form using mediator
-            Mediator mediator = new Mediator(this, new Duration());
-            mediator.navigate();
+            this.Hide();
+            Duration frmDuration = new Duration();
+            frmDuration.Show();
+            frmDuration.Location = this.Location;
+            
         }
 
         private void cboAddresses_SelectedIndexChanged(object sender, EventArgs e)
@@ -179,9 +185,10 @@ namespace SE_Final_Project
         private void btnLogout_Click(object sender, EventArgs e)
         {
             //Create new Login form, display, and hide the current form
+            this.Hide();
             Login frmLogin = new Login();
             frmLogin.Show();
-            this.Hide();
+            
         }
 
         private void main_FormClosing(object sender, FormClosingEventArgs closingArgs)
