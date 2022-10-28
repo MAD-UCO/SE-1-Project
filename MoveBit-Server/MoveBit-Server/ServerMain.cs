@@ -4,6 +4,7 @@ using MoveBitMessaging;
 using System.Threading;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 /// <summary>
 /// Main class for the MoveBitServer. The server is meant to coordinate messaging
@@ -20,6 +21,7 @@ class MoveBitServer
     private static TcpListener server;                      // The TCP listener that clients connect through
     private static int usersToProcess = 0;                  // How many users we have to process
     private static double allocatedUserTime = 1.0;          // How many seconds allowed per user for processing before we report it as an issue
+    private static bool plannedListenerShutdown = false;
 
     /// <summary>
     /// Main execution method for the server
@@ -75,12 +77,20 @@ class MoveBitServer
             }
             finally
             {
+                logger.Debug("Server preparing for shutdown....");
+                ShutdownListener();
                 // Stop databse, stop services, prepare for shutdown
                 serverDatabase.SaveDataBase();
                 runServer = false;
-                loginServiceRunning = false;
+
+                while (loginServiceRunning)
+                {
+                    logger.Trace("Server shutting down... Giving 1.5 seconds for different services...");
+                    Thread.Sleep(1500);
+                }
             }
         }
+
 
         logger.Important("Server shut down. Hit <ENTER> To close console");
         Console.Read();
@@ -94,7 +104,7 @@ class MoveBitServer
     /// </summary>
     public static void MaintainUserConnections()
     {
-        logger.Trace($"Beginning the user connection processing function");
+        logger.Debug($"Beginning the user connection processing function");
         try
         {
             int idleCycles = 0;
@@ -107,6 +117,13 @@ class MoveBitServer
                     if (idleCycles % 100 == 0)
                         logger.Info($"Connection processer has been idle for {idleCycles} cycles");
                     Thread.Sleep(200);
+
+                    if (idleCycles >= 150)
+                    {
+                        logger.Important("TEST - Connection idle for too long - exiting the server");
+                        runServer = false;
+                        continue;
+                    }
                 }
                 else
                 {
@@ -167,6 +184,10 @@ class MoveBitServer
             logger.Critical($"User maintainence loop forced to quit by exception: {exception}");
             throw;
         }
+        finally
+        {
+            logger.Debug("The user connection processing function has terminated");
+        }
     }
 
     /// <summary>
@@ -177,7 +198,7 @@ class MoveBitServer
     {
         logger.Trace("Starting the login service");
         TcpClient client;
-        loginServiceRunning = false;
+        loginServiceRunning = true;
         try
         {
             while (runServer)
@@ -189,11 +210,24 @@ class MoveBitServer
                 ThreadPool.QueueUserWorkItem(LoginUser, client);
             }
         }
+        catch (SocketException exception)
+        {
+            if (plannedListenerShutdown)
+                logger.Important("Login service being shut down...");
+            else
+            {
+                logger.Critical($"Unplanned server shutdown due to SocketException: {exception}");
+                throw;
+            }
+        }
         catch (Exception exception)
         {
-            loginServiceRunning = false;
             logger.Critical($"Login service was forced to quit by exception: {exception}");
             throw;
+        }
+        finally
+        {
+            loginServiceRunning = false;
         }
 
         logger.Trace("Login service exiting");
@@ -402,5 +436,11 @@ class MoveBitServer
             else
                 user.AddMessageToInbox(message); // Otherwise, add to their inbox for later
         }
+    }
+
+    private static void ShutdownListener()
+    {
+        plannedListenerShutdown = true;
+        server.Stop();
     }
 }
