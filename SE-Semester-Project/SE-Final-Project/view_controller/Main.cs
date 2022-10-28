@@ -145,20 +145,16 @@ namespace SE_Final_Project
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            this.Hide();
             StartTimeDialog frmStart = new StartTimeDialog();
             frmStart.Show();
-            frmStart.Location = this.Location;
-            
+            frmStart.Location = new Point(this.Location.X + 150, this.Location.Y + 150);
         }
 
         private void btnDuration_Click(object sender, EventArgs e)
         {
-            this.Hide();
             Duration frmDuration = new Duration();
             frmDuration.Show();
-            frmDuration.Location = this.Location;
-            
+            frmDuration.Location = new Point(this.Location.X + 150, this.Location.Y + 150);
         }
 
         private void cboAddresses_SelectedIndexChanged(object sender, EventArgs e)
