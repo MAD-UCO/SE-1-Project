@@ -42,23 +42,10 @@ namespace SE_Final_Project
 
         //Event handlers
         private void btnLogin_Click(object sender, EventArgs e)
-        {
-            /*
-             * 
-             * Pass validation info to server here
-             * 
-             */
-            // TODO: Only adding new users... Need to fix
-            if (NetworkClient.Login(txtUsername.Text, txtPassword.Text, true))
-            {
-                //Use mediator to navigate
-                Mediator mediator = new Mediator(this, new Main());
-                mediator.navigate();
-            }
-
-            //Main frmMain = new Main();
-            //frmMain.ShowDialog();
-            //this.Hide();
+        { 
+            Main frmMain = new Main();
+            frmMain.ShowDialog();
+            this.Hide();
         }
 
         private void txtUsername_TextChanged(object sender, EventArgs e)

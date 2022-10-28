@@ -54,13 +54,12 @@ namespace SE_Final_Project
         private void btnBack_Click(object sender, EventArgs e)
         {
             //Create a new frmMain object and display it in the current location.
+            this.Hide();
             Main frmMain = new Main();
             frmMain.Show();
             frmMain.Location = this.Location;
-            this.Hide();
+            
 
-            Mediator mediator = new Mediator(this, new Main());
-            mediator.navigate();
         }
 
         private void cboMessages_SelectedIndexChanged(object sender, EventArgs e)
