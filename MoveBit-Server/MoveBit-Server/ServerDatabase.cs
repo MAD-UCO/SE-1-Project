@@ -23,8 +23,6 @@ namespace MoveBit_Server
         private Object dbLock = new Object();                                               // Lock for accessing and modifying the database.
         public bool timeoutUserSessions = false;                                            // (Experimental/Unused) if we are to kick users who are idle too long
 
-        private ServerLogger logger = ServerLogger.GetTheLogger();
-
         /// <summary>
         /// Constructor for the database. Currently set to private sinc this class
         /// is a constructor
@@ -109,12 +107,12 @@ namespace MoveBit_Server
             UserAccount thisUser = userTable[userName];
             if (!activeUsers.Contains(thisUser))
             {
-                logger.Info($"{userName} logged in");
+                ServerLogger.Info($"{userName} logged in");
                 lock (dbLock)
                     activeUsers.Add(thisUser);
             }
             else
-                logger.Info($"{userName} started another session");
+                ServerLogger.Info($"{userName} started another session");
 
             UserConnection userStream = new UserConnection(sessionId, client);
             connectionTable[userName][sessionId] = userStream;
@@ -154,7 +152,7 @@ namespace MoveBit_Server
                 }
             }
             else
-                logger.Warning($"No user named {userName} exists in the database and thus cannot have any sessions");
+                ServerLogger.Warning($"No user named {userName} exists in the database and thus cannot have any sessions");
 
             return sessionList;
         }
@@ -245,9 +243,9 @@ namespace MoveBit_Server
         private void LoadDataBase()
         {
             // TODO: pass a file path so we may load local files
-            logger.Debug("Loading database");
+            ServerLogger.Debug("Loading database");
 #if DEBUG
-            logger.Debug("Loading database with dummy data");
+            ServerLogger.Debug("Loading database with dummy data");
             bool successful = true;
             successful &= InsertUserIfNotExist("admin", SHA256HashShortcut("password"));
 
@@ -282,7 +280,7 @@ namespace MoveBit_Server
                     userConnections.Add(connectionTable[userName][userSession]);
             }
             else
-                logger.Warning($"No user with username {userName} exists in database and thus cannot have any active connections");
+                ServerLogger.Warning($"No user with username {userName} exists in database and thus cannot have any active connections");
 
             return userConnections;
         }
@@ -301,7 +299,7 @@ namespace MoveBit_Server
             {
                 if (!connection.IsActive())
                 {
-                    logger.Info($"A session with {user.userName} was ended");
+                    ServerLogger.Info($"A session with {user.userName} was ended");
                     EndUserSession(user, connection.sessionID);
                 }
             }
@@ -317,26 +315,26 @@ namespace MoveBit_Server
             if (sessionTable[user.userName].ContainsKey(sessionID))
             {
                 sessionTable[user.userName].Remove(sessionID);
-                logger.Trace($"Session with {user.userName} successfully ended");
+                ServerLogger.Trace($"Session with {user.userName} successfully ended");
             }
             else
-                logger.Warning($"Request to end session for {user.userName} failed, as the session did not exist!");
+                ServerLogger.Warning($"Request to end session for {user.userName} failed, as the session did not exist!");
 
             if (connectionTable[user.userName].ContainsKey(sessionID))
             {
                 connectionTable[user.userName][sessionID].End();
                 connectionTable[user.userName].Remove(sessionID);
-                logger.Trace($"Connection with {user.userName} successfully closed");
+                ServerLogger.Trace($"Connection with {user.userName} successfully closed");
             }
             else
-                logger.Warning($"Reques to end user connection for {user.userName} by session failed, as the session did not exist!");
+                ServerLogger.Warning($"Reques to end user connection for {user.userName} by session failed, as the session did not exist!");
 
             // If that was the last active session with the user
             // remove them from the list of those online
             if (!user.IsOnline())
             {
                 activeUsers.Remove(user);
-                logger.Info($"{user.userName} is no longer online");
+                ServerLogger.Info($"{user.userName} is no longer online");
             }
         }
 
@@ -346,7 +344,7 @@ namespace MoveBit_Server
         /// </summary>
         public void UpdateUserInfo()
         {
-            logger.Trace("Updating user info");
+            ServerLogger.Trace("Updating user info");
             lock (dbLock)
             {
                 List<UserAccount> activeCopy = new List<UserAccount>(activeUsers);

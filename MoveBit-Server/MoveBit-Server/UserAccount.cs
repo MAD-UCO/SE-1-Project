@@ -14,7 +14,6 @@ namespace MoveBit_Server
     /// </summary>
     internal class UserAccount
     {
-        private static ServerLogger logger = ServerLogger.GetTheLogger();
 
         public string userName;                         // User's username (unique)
         public byte[] password;                         // SHA256 password 
@@ -43,7 +42,7 @@ namespace MoveBit_Server
             lock (userLock)
             {
                 inbox.Add(message);
-                logger.Trace($"Added new message to {userName}'s inbox");
+                ServerLogger.Trace($"Added new message to {userName}'s inbox");
             }
         }
 
@@ -110,7 +109,7 @@ namespace MoveBit_Server
                 {
                     // NOTE TODO: layers above this must handle failures correctly. This code probably could
                     //      be made more robust
-                    logger.Warning($"Sending {userName} message on connection #{connectionNo} failed");
+                    ServerLogger.Warning($"Sending {userName} message on connection #{connectionNo} failed");
                     return success;
                 }
             }
