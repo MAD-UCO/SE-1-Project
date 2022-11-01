@@ -222,6 +222,15 @@ namespace MoveBitMessaging
         }
     }
 
+    [Serializable]
+    public class ServerShutdownCommand : MoveBitMessage
+    {
+        public ServerShutdownCommand()
+        {
+            // TODO: Add some kind of authorization
+        }
+    }
+
     /// <summary>
     /// Class meant to serve as a response from the server 
     /// on if our media message was sent successfully

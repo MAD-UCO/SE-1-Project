@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Security.Cryptography;
@@ -25,8 +26,7 @@ namespace MoveBit_Server
     internal class ServerTester
     {
         // Todo: Set these parameters
-        private static TcpClient serverClient = new TcpClient("127.0.0.1", 5005);
-        private static NetworkStream netStream = serverClient.GetStream();
+        private static Dictionary<string, Tuple<TcpClient, NetworkStream>> persitentUserConnections = new Dictionary<string, Tuple<TcpClient, NetworkStream>>();
         private static Dictionary<string, Action> testFunctions = new Dictionary<string, Action>();
         private static List<string> results = new List<string>();
         private static List<string> traceBacks = new List<string>();
@@ -35,6 +35,7 @@ namespace MoveBit_Server
         private static int failedAssertions = 0;
         private static int unexpectedExceptions = 0;
         private static ServerDatabase serverDatabase = ServerDatabase.GetTheDatabase();
+        private static string reportFile = "TestReport.txt";
 
         public static void RunTests()
         {
@@ -48,17 +49,21 @@ namespace MoveBit_Server
                 try
                 {
                     test.Value();
+                    Thread.Sleep(1250); // Here to ensure activities from previous tests have time to end
                 }
                 catch (MoveBitAssertionException failure)
                 {
                     failedAssertions++;
                     results.Add($"[FAILED ASSERTION]: Test '{test.Key}' failed with the following: {failure.Message}");
+                    traceBacks.Add($"{test.Key}: FAILED ASSERTION\n{failure}\n=========================================================================\n");
                     success = false;
                 }
                 catch (Exception exception)
                 {
                     unexpectedExceptions++;
                     results.Add($"[UNEXPECTED FAILURE]: Test '{test.Key}' failed to an unhandled exception of type {exception.GetType().Name}: {exception.Message}");
+                    traceBacks.Add(exception.ToString());
+                    traceBacks.Add($"{test.Key}: UNEXPECTED FAILURE\n{exception}\n=========================================================================\n");
                     success = false;
                 }
                 finally
@@ -74,7 +79,7 @@ namespace MoveBit_Server
             Report();
         }
 
-        public static void Report()
+        private static void Report()
         {
             if (testsRun == 0)
             {
@@ -95,19 +100,34 @@ namespace MoveBit_Server
                 {
                     Console.WriteLine(result);
                 }
+
+                ReportVerbose();
+                Console.WriteLine($"Generated report file, '{reportFile}'");
             }
+        }
+
+        private static void ReportVerbose()
+        {
+            File.WriteAllLines(reportFile, traceBacks);
         }
 
 
         private static void LoadTests()
         {
-            testFunctions["TestConnectSimple"] = TestConnectSimple;
+            testFunctions["TestNewUserLogon"] = TestNewUserLogon;
             testFunctions["TestUserLogoutSimple"] = TestUserLogoutSimple;
+            testFunctions["TestExistingUserLogon"] = TestExistingUserLogon;
+            testFunctions["TestPasswordFail"] = TestPasswordFail;
+            testFunctions["TestUsernameTaken"] = TestUsernameTaken;
+            testFunctions["TestMultiSession"] = TestMultiSession;
         }
 
-        private static void TestConnectSimple()
+        private static void TestNewUserLogon()
         {
-            Tuple<string, string> userCreds = ClientCredentialMaker.GetNewUserValid();
+            Tuple<string, string> userCreds = ClientFactory.GetNewUserValid();
+            Tuple<TcpClient, NetworkStream> net = ClientFactory.GetNewConnectionObjects();
+            persitentUserConnections[userCreds.Item1] = net;
+            NetworkStream netStream = net.Item2;
             ClientConnectRequest connect = new ClientConnectRequest(userCreds.Item1, SHA256HashShortcut(userCreds.Item2), true);
             ClientConnectResponse resp = (ClientConnectResponse)MessageManager.WriteAndRecieveMessage(connect, netStream);
 
@@ -128,10 +148,11 @@ namespace MoveBit_Server
 
 
         private static void TestUserLogoutSimple()
-        {
-            string username = ClientCredentialMaker.GetLastUser();
+        { 
+            string username = ClientFactory.GetLastUser();
             ServerDatabase serverDatabase = ServerDatabase.GetTheDatabase();
-            netStream.Close();
+            persitentUserConnections[username].Item2.Close();
+            persitentUserConnections[username].Item1.Close();
             Thread.Sleep(250);
 
             MoveBitAssert(
@@ -144,6 +165,161 @@ namespace MoveBit_Server
                 numSessions == 0,
                 $"Expected client '{username}' to have exactly zero session in the database after logout, got {numSessions}"
                 );
+
+        }
+
+
+        private static void TestExistingUserLogon()
+        {
+            string username = ClientFactory.GetLastUser();
+            string password = ClientFactory.GetUserPassword(username);
+            TestClient tc = new TestClient();
+            tc.Connect();
+            tc.Send(new ClientConnectRequest(username, SHA256HashShortcut(password), false));
+            ClientConnectResponse resp = (ClientConnectResponse)tc.GetMessage();
+
+            MoveBitAssert(
+                resp.response == serverConnectResponse.success,
+                $"The client '{username}' could not connect to the server, got response type {resp.response}, password was {password}"
+                );
+
+
+            tc.Disconnect();
+
+        }
+
+
+        private static void TestPasswordFail()
+        {
+            string username = ClientFactory.GetLastUser();
+            string rightPassword = ClientFactory.GetUserPassword(username);
+            string wrongpassword = "thisisntthepassword";
+
+            TestClient tc = new TestClient();
+            tc.Connect();
+
+            tc.Send(new ClientConnectRequest(username, SHA256HashShortcut(wrongpassword), false));
+            ClientConnectResponse resp = (ClientConnectResponse)tc.GetMessage();
+
+            MoveBitAssert(
+                resp.response == serverConnectResponse.invalidCredentials,
+                $"The client '{username}' should not have been allowed to log in, but was - Response code was {resp.response}, fake password was {wrongpassword}"
+                );
+
+            Thread.Sleep(250);
+            tc.Reset();
+            tc.Send(new ClientConnectRequest(username, SHA256HashShortcut(rightPassword), false));
+            resp = (ClientConnectResponse)tc.GetMessage();
+
+            MoveBitAssert(
+                resp.response == serverConnectResponse.success,
+                $"The client '{username}' could not connect to the server, got response type {resp.response}, password was {rightPassword}"
+                );
+
+            tc.Disconnect();
+
+
+        }
+
+        private static void TestUsernameTaken()
+        {
+            string username = ClientFactory.GetLastUser();
+            string password = ClientFactory.GeneratePassword();
+
+            TestClient tc = new TestClient();
+            tc.Connect();
+
+            tc.Send(new ClientConnectRequest(username, SHA256HashShortcut(password), true));
+            ClientConnectResponse resp = (ClientConnectResponse)tc.GetMessage();
+
+            MoveBitAssert(
+                resp.response == serverConnectResponse.usernameTaken,
+                $"The client '{username}' should not have been allowed to log in due to duplicate username, but was - Response code was {resp.response}, password was {password}"
+                );
+
+            tc.Reset();
+            username = "ThrowAway";
+            tc.Send(new ClientConnectRequest(username, SHA256HashShortcut(password), true));
+            resp = (ClientConnectResponse)tc.GetMessage();
+
+            MoveBitAssert(
+                resp.response == serverConnectResponse.success,
+                $"The client '{username}' could not connect to the server, got response type {resp.response}, password was {password}"
+                );
+
+            tc.Disconnect();
+        }
+
+        private static void TestMultiSession()
+        {
+            string userName = ClientFactory.GetLastUser();
+            string password = ClientFactory.GetUserPassword(userName);
+
+            TestClient tc1 = new TestClient();
+            tc1.Connect();
+
+            tc1.Send(new ClientConnectRequest(userName, SHA256HashShortcut(password), false));
+            ClientConnectResponse resp = (ClientConnectResponse)tc1.GetMessage();
+
+            MoveBitAssert(
+                resp.response == serverConnectResponse.success,
+                $"The client '{userName}' could not connect to the server, got response type {resp.response}, password was {password}"
+                );
+
+            MoveBitAssert(
+                serverDatabase.GetUserConnections(userName).Count == 1,
+                $"Expected '1' active user connection to be stored in the database for '{userName}', got {serverDatabase.GetUserConnections(userName).Count}"
+                );
+
+            MoveBitAssert(
+                serverDatabase.GetUserSessionIDs(userName).Count == 1,
+                $"Expected '1' active user sessions to be stored in the database for '{userName}', got {serverDatabase.GetUserSessionIDs(userName).Count}"
+                );
+
+            TestClient tc2 = new TestClient();
+            tc2.Connect();
+
+            tc2.Send(new ClientConnectRequest(userName, SHA256HashShortcut(password), false));
+            resp = (ClientConnectResponse)tc2.GetMessage();
+
+            MoveBitAssert(
+                resp.response == serverConnectResponse.success,
+                $"The client '{userName}' could not connect to the server on their second login attempt, got response type {resp.response}, password was {password}"
+                );
+
+            MoveBitAssert(
+                serverDatabase.GetUserConnections(userName).Count == 2,
+                $"Expected '2' active user connection to be stored in the database for '{userName}', got {serverDatabase.GetUserConnections(userName).Count}"
+                );
+
+            MoveBitAssert(
+                serverDatabase.GetUserSessionIDs(userName).Count == 2,
+                $"Expected '2' active user sessions to be stored in the database for '{userName}', got {serverDatabase.GetUserSessionIDs(userName).Count}"
+                );
+            Thread.Sleep(100);
+
+
+            tc1.Disconnect();
+            Thread.Sleep(100);
+
+            MoveBitAssert(
+                serverDatabase.GetUserConnections(userName).Count == 1,
+                $"Expected '1' active user connection to be stored in the database for '{userName}', got {serverDatabase.GetUserConnections(userName).Count}"
+                );
+
+            MoveBitAssert(
+                serverDatabase.GetUserSessionIDs(userName).Count == 1,
+                $"Expected '1' active user sessions to be stored in the database for '{userName}', got {serverDatabase.GetUserSessionIDs(userName).Count}"
+                );
+
+            tc2.Disconnect();
+
+
+
+        }
+
+        private static void TestBadUserSend()
+        {
 
         }
 
@@ -171,8 +347,49 @@ namespace MoveBit_Server
     }
 
 
+    internal class TestClient
+    {
 
-    internal class ClientCredentialMaker
+        public TcpClient client;
+        public NetworkStream netStream = null;
+        public TestClient()
+        {
+            client = new TcpClient();
+        }
+
+        public void Connect()
+        {
+            client.Connect("127.0.0.1", 5005);
+            netStream = client.GetStream();
+        }
+
+        public void Disconnect()
+        {
+            netStream.Close();
+            client.Close();
+        }
+
+
+        public void Send(MoveBitMessage msg)
+        {
+            MessageManager.WriteMessageToNetStream(msg, netStream);
+        }
+
+        public MoveBitMessage GetMessage()
+        {
+            return MessageManager.GetMessageFromStream(netStream);
+        }
+
+        public void Reset()
+        {
+            Disconnect();
+            client = new TcpClient();
+            Connect();
+        }
+    }
+
+
+    internal class ClientFactory
     {
         private static Dictionary<string, string> userCreds = new Dictionary<string, string>();
         private static Random rand = new Random();
@@ -187,6 +404,16 @@ namespace MoveBit_Server
             return new Tuple<string, string>(username, password);
         }
 
+        public static string GetUserPassword(string username)
+        {
+            return userCreds[username];
+        }
+
+        public static Tuple<TcpClient, NetworkStream> GetNewConnectionObjects(string ipAddress = "127.0.0.1", int portnumber = 5005)
+        {
+            TcpClient client = new TcpClient(ipAddress, portnumber);
+            return new Tuple<TcpClient, NetworkStream>(client, client.GetStream());
+        }
 
         public static string GetLastUser()
         {
@@ -196,14 +423,14 @@ namespace MoveBit_Server
             return lastUser;
         }
 
-        private static string GenerateUserName()
+        public static string GenerateUserName()
         {
             string user = "User" + (++numUsers).ToString();
             lastUser = user;
             return user;
         }
 
-        private static string GeneratePassword()
+        public static string GeneratePassword()
         {
             return rand.Next().ToString();
         }

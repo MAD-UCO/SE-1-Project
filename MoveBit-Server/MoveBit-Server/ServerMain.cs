@@ -95,6 +95,12 @@ class MoveBitServer
         }
 
 
+#if SERVER_UNIT_TESTING && TEST_DIRECTIVE
+
+        ServerLogger.Notice("This is a test statement");
+
+#endif
+
         ServerLogger.Notice("Server shut down. Hit <ENTER> To close console");
         Console.Read();
     }
@@ -120,13 +126,13 @@ class MoveBitServer
                     if (idleCycles % 100 == 0)
                         ServerLogger.Info($"Connection processer has been idle for {idleCycles} cycles");
                     Thread.Sleep(200);
-
+/*
                     if (idleCycles >= 150)
                     {
                         ServerLogger.Notice("TEST - Connection idle for too long - exiting the server");
                         runServer = false;
                         continue;
-                    }
+                    }*/
                 }
                 else
                 {
