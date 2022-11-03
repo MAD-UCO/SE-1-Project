@@ -149,7 +149,7 @@ class MoveBitServer
                     double timeStart = ((DateTimeOffset)(DateTime.Now)).ToUnixTimeSeconds();
 
                     // Start a new work item for each user
-                    List<UserAccount> connectedCopy = new List<UserAccount>(connectedUsers);
+                    List<UserAccount> connectedCopy = new List<UserAccount>(connectedUsers);                //BUG?
                     foreach (UserAccount userAccount in connectedCopy)
                         ThreadPool.QueueUserWorkItem(ProcessActiveUser, userAccount);
 
@@ -212,9 +212,6 @@ class MoveBitServer
         {
             while (runServer)
             {
-                // TODO: make async.  Currently this function will hang forever unless 
-                // the server adds a new job and runsServer is set to false
-                // (or an exception occurs)
                 client = server.AcceptTcpClient();
                 ThreadPool.QueueUserWorkItem(LoginUser, client);
             }
@@ -253,8 +250,19 @@ class MoveBitServer
         ServerLogger.Trace("Logging in new user");
         TcpClient client = (TcpClient)clientObj;
         NetworkStream netStream = client.GetStream();
+        ClientConnectRequest connectRequest;
         // Assumes first message will be ClientConnectRequest... May need to make more robust in the future
-        ClientConnectRequest connectRequest = (ClientConnectRequest)MessageManager.GetMessageFromStream(netStream);
+        try
+        {
+            connectRequest = (ClientConnectRequest)MessageManager.GetMessageFromStream(netStream);
+        }
+        catch(InvalidCastException invalidCast)
+        {
+            ServerLogger.Error($"Client sent unexpected query: {invalidCast}");
+            ServerLogger.Notice($"Due to User's illegal activity, they will not be allowed to connect");
+            client.Close();
+            return;
+        }
         ClientConnectResponse connectResponse;
 
         // User sent one or both fields as empty, dissallow
@@ -410,6 +418,12 @@ class MoveBitServer
             {
                 serverMessages.Add(new TestListActiveUsersResponse(serverDatabase.GenerateOnlineUserReport()));
             }
+            else if (message.GetType() == typeof(ServerShutdownCommand))
+            {
+                ServerLogger.Notice("Server has been commanded to shut down...");
+                runServer = false;
+                
+            }
             else
             {
                 ServerLogger.Error($"Recieved an unknown type of message from {user.userName}!");
@@ -449,7 +463,19 @@ class MoveBitServer
 
     private static void ShutdownListener()
     {
+        ServerLogger.Info($"Server interface being killed...");
         plannedListenerShutdown = true;
         server.Stop();
     }
+
+#if SERVER_UNIT_TESTING
+
+    public static void TesterShutdown()
+    {
+        ServerLogger.Notice($"Tester is shutting down the server");
+        runServer = false;
+        //ShutdownListener();
+    }
+#endif
+
 }
