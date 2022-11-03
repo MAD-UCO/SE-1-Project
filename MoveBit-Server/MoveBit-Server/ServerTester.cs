@@ -39,6 +39,7 @@ namespace MoveBit_Server
 
         public static void RunTests()
         {
+            // this is new
             LoadTests();
             ServerLogger.Notice("Starting server tests");
             Thread.Sleep(500);
