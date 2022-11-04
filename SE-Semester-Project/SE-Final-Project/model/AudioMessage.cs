@@ -8,28 +8,28 @@ namespace SE_Final_Project
 {
     public class AudioMessage
     {
-        public string fileName { get; set; }
+        public string filePath { get; set; }
         public string duration { get; set; }
         public string beginTime { get; set; }
         public string endTime { get; set; }
 
         public AudioMessage()
         {
-            fileName = "";
+            filePath = "";
             duration = "1s";
             beginTime = "1s";
             endTime = "2s";
         }
-        public AudioMessage(string fileName)
+        public AudioMessage(string filePath)
         {
-            this.fileName = fileName;
+            this.filePath = filePath;
             duration = "10s";
             beginTime = "0s";
             endTime = "10s";
         }
-        public AudioMessage(string fileName, string duration, string beginTime, string endTime)
+        public AudioMessage(string filePath, string duration, string beginTime, string endTime)
         {
-            this.fileName = fileName;
+            this.filePath = filePath;
             this.duration = duration;
             this.beginTime = beginTime;
             this.endTime = endTime;

@@ -32,8 +32,11 @@ namespace SE_Final_Project
         //Class constructor, do not edit. Use form load event for initialization
         public Main()
         {
+
             this.FormClosing += main_FormClosing;
             InitializeComponent();
+
+
         }
 
         //Event handlers

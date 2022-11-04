@@ -18,7 +18,8 @@ namespace SE_Final_Project
         public string beginTime { get; set; }
         public string endTime { get; set; }
         //need to implement this to show region to display to
-        //public Region region
+        public string region { get; set; }
+        
 
         public TextMessage()
         {
@@ -35,6 +36,7 @@ namespace SE_Final_Project
             duration = "5s";
             beginTime = "0s";
             endTime = "";
+            region = "Center";
 
         }
 

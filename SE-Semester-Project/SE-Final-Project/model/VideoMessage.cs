@@ -8,7 +8,7 @@ namespace SE_Final_Project
 {
     public class VideoMessage
     {
-        public string fileName { get; set; }
+        public string filePath { get; set; }
         public string duration { get; set; }
 
         public string beginTime { get; set; }
@@ -18,22 +18,22 @@ namespace SE_Final_Project
 
         public VideoMessage()
         {
-            fileName = "";
+            filePath = "";
             duration = "1s";
             beginTime = "1s";
             endTime = "2s";
         }
-        public VideoMessage(string fileName)
+        public VideoMessage(string filePath)
         {
-            this.fileName = fileName;
+            this.filePath = filePath;
             //these times subject to change based
             duration = "10s";
             beginTime = "0s";
             endTime = "10s";
         }
-        public VideoMessage(string fileName, string duration, string beginTime, string endTime)
+        public VideoMessage(string filePath, string duration, string beginTime, string endTime)
         {
-            this.fileName = fileName;
+            this.filePath = filePath;
             this.duration = duration;
             this.beginTime = beginTime;
             this.endTime = endTime;

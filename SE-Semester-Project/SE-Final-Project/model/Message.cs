@@ -8,23 +8,26 @@ using System.Xml;
 using System.Xml.Serialization;
 using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Forms;
-
+using System.IO;
+using System.ComponentModel;
 
 namespace SE_Final_Project
 {
     public class Message
     {
-        //Not sure how we are going to get the sender/receiver from message creation yet
-        //Should be able to grab from UI and pass to network
-        //smilFileName should be in the working directory
-        public string smilFileName { get; set; }
-        //need to figure out naming convention for smilFiles
+        
+        
+        public string smilFilePath { get;  set; }
+        
         public string senderName { get; set; }
         public string receiverName { get; set; }
+        private bool parallelMessages { get; set; }
 
         public List<TextMessage> textMessages { get; private set; }
         public List<AudioMessage> audioMessages { get; private set; }
         public List<VideoMessage> videoMessages { get; private set; }
+
+        
 
 
 
@@ -35,7 +38,7 @@ namespace SE_Final_Project
             senderName = "N/A";
             receiverName = "N/A";
 
-            smilFileName = "";
+            smilFilePath = "";
             textMessages = new List<TextMessage>();
             audioMessages = new List<AudioMessage>();
             videoMessages = new List<VideoMessage>();
@@ -45,7 +48,7 @@ namespace SE_Final_Project
         {
             senderName = "";
             receiverName = "";
-            smilFileName = "";//need to change to extract file name from filePath
+            smilFilePath = "";//need to change to extract file name from filePath
             textMessages = new List<TextMessage>();
             audioMessages = new List<AudioMessage>();
             videoMessages = new List<VideoMessage>();
@@ -64,10 +67,16 @@ namespace SE_Final_Project
 
 
         //file path needs to be directly to file and not just file name
-        public void ParseMessage(String filePath) //Used to parse existing message into the container to be used
+        public bool ParseMessage(String filePath) //Used to parse existing message into the container to be used
         {
-            XmlDocument doc = new XmlDocument();
+            filePath = filePath.Trim();
 
+            if (filePath == null)
+            {
+                return false;
+            }
+            XmlDocument doc = new XmlDocument();
+            
             try
             {
                 doc.Load(filePath);
@@ -76,95 +85,189 @@ namespace SE_Final_Project
             {
                 Console.WriteLine("Error loading file to parse, path may not be correct");
                 Console.WriteLine(e.Message);
+                return false;
                 //Might be useful to add more detailed breakdown, probably get to this later
             }
             XmlNodeList headNodes = doc.GetElementsByTagName("head");
             XmlNodeList nodes = doc.GetElementsByTagName("body");
+            XmlNodeList parNodes = doc.GetElementsByTagName("par");
 
-            foreach (XmlNode node in nodes)
+            if (parNodes.Count > 0)
             {
-                XmlAttributeCollection collection = node.Attributes;
-                foreach (XmlNode child in node)
+                parallelMessages = true;
+                foreach (XmlNode node in parNodes)
                 {
-                    XmlAttributeCollection childCollection = child.Attributes;
-                    if (child.Name == "smilText")
+                    XmlAttributeCollection collection = node.Attributes;
+                    foreach (XmlNode child in node)
                     {
-                        TextMessage text = new TextMessage(child.InnerText);
-                        foreach (XmlAttribute attr in childCollection)
+                        XmlAttributeCollection childCollection = child.Attributes;
+                        if (child.Name == "smilText")
                         {
-                            if (attr.Name == "dur")
+                            TextMessage text = new TextMessage(child.InnerText);
+                            foreach (XmlAttribute attr in childCollection)
                             {
-                                text.duration = child.Attributes[attr.Name].Value;
+                                if (attr.Name == "dur")
+                                {
+                                    text.duration = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "begin")
+                                {
+                                    text.beginTime = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "region")
+                                {
+                                    text.region = child.Attributes[attr.Name].Value;
+                                }
                             }
-                            else if (attr.Name == "begin")
-                            {
-                                text.beginTime = child.Attributes[attr.Name].Value;
-                            }
+                            textMessages.Add(text);
                         }
-                        textMessages.Add(text);
-                    }
-                    else if (child.Name == "audio")
-                    {
-                        AudioMessage audio = new AudioMessage(child.InnerText);
-                        foreach (XmlAttribute attr in childCollection)
+                        else if (child.Name == "audio")
                         {
-                            if (attr.Name == "src")
+                            AudioMessage audio = new AudioMessage(child.InnerText);
+                            foreach (XmlAttribute attr in childCollection)
                             {
-                                audio.fileName = child.Attributes[attr.Name].Value;
+                                if (attr.Name == "src")
+                                {
+                                    audio.filePath = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "dur")
+                                {
+                                    audio.duration = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "begin")
+                                {
+                                    audio.beginTime = child.Attributes[attr.Name].Value;
+                                }
                             }
-                            else if (attr.Name == "dur")
-                            {
-                                audio.duration = child.Attributes[attr.Name].Value;
-                            }
-                            else if (attr.Name == "begin")
-                            {
-                                audio.beginTime = child.Attributes[attr.Name].Value;
-                            }
-                        }
-                        audioMessages.Add(audio);
+                            audioMessages.Add(audio);
 
-                    }
-                    else if (child.Name == "video")
-                    {
-                        VideoMessage video = new VideoMessage(child.InnerText);
-                        foreach (XmlAttribute attr in childCollection)
+                        }
+                        else if (child.Name == "video")
                         {
-                            if (attr.Name == "src")
+                            VideoMessage video = new VideoMessage(child.InnerText);
+                            foreach (XmlAttribute attr in childCollection)
                             {
-                                video.fileName = child.Attributes[attr.Name].Value;
+                                if (attr.Name == "src")
+                                {
+                                    video.filePath = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "dur")
+                                {
+                                    video.duration = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "begin")
+                                {
+                                    video.beginTime = child.Attributes[attr.Name].Value;
+                                }
                             }
-                            else if (attr.Name == "dur")
-                            {
-                                video.duration = child.Attributes[attr.Name].Value;
-                            }
-                            else if (attr.Name == "begin")
-                            {
-                                video.beginTime = child.Attributes[attr.Name].Value;
-                            }
+                            videoMessages.Add(video);
                         }
-                        videoMessages.Add(video);
+
+
+
+
                     }
-
-                    //add more if statements or change to switch statement for audio and video
-                    // looking into more efficient way to handle this but with the small file sizes im not sure speed will be a factor
-
-
                 }
+                return true;
             }
+            else
+            {
+                foreach (XmlNode node in nodes)
+                {
+                    XmlAttributeCollection collection = node.Attributes;
+                    foreach (XmlNode child in node)
+                    {
+                        XmlAttributeCollection childCollection = child.Attributes;
+                        if (child.Name == "smilText")
+                        {
+                            TextMessage text = new TextMessage(child.InnerText);
+                            foreach (XmlAttribute attr in childCollection)
+                            {
+                                if (attr.Name == "dur")
+                                {
+                                    text.duration = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "begin")
+                                {
+                                    text.beginTime = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "region")
+                                {
+                                    text.region = child.Attributes[attr.Name].Value;
+                                }
+                            }
+                            textMessages.Add(text);
+                        }
+                        else if (child.Name == "audio")
+                        {
+                            AudioMessage audio = new AudioMessage(child.InnerText);
+                            foreach (XmlAttribute attr in childCollection)
+                            {
+                                if (attr.Name == "src")
+                                {
+                                    audio.filePath = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "dur")
+                                {
+                                    audio.duration = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "begin")
+                                {
+                                    audio.beginTime = child.Attributes[attr.Name].Value;
+                                }
+                            }
+                            audioMessages.Add(audio);
+
+                        }
+                        else if (child.Name == "video")
+                        {
+                            VideoMessage video = new VideoMessage(child.InnerText);
+                            foreach (XmlAttribute attr in childCollection)
+                            {
+                                if (attr.Name == "src")
+                                {
+                                    video.filePath = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "dur")
+                                {
+                                    video.duration = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "begin")
+                                {
+                                    video.beginTime = child.Attributes[attr.Name].Value;
+                                }
+                            }
+                            videoMessages.Add(video);
+                        }
+
+
+
+
+                    }
+                }
+                return true; 
+            }
+
         }
 
+        //potentially change this to return bool to show if generation worked
+        //this will currently overwrite files without warning if the file already exists
         public void GenerateMessageFile()
         {
-            //XmlDocument doc = new XmlDocument();
-            //doc may not be needed when creating files, although it might have more uses?
+            
+            
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
             //settings.NewLineOnAttributes = true;
-            XmlWriter writer = XmlWriter.Create(smilFileName, settings);
+            XmlWriter writer = XmlWriter.Create(smilFilePath, settings);
 
             writer.WriteStartElement("smil");
             writer.WriteStartElement("head");
             writer.WriteStartElement("body");
+            if (parallelMessages)
+            {
+                writer.WriteStartElement("par");
+            }
 
             if (textMessages.Count >= 1)
             {
@@ -174,6 +277,7 @@ namespace SE_Final_Project
                     writer.WriteStartElement("smilText");
                     writer.WriteAttributeString("dur", textMessages[i].duration);
                     writer.WriteAttributeString("begin", textMessages[i].beginTime);
+                    writer.WriteAttributeString("region", textMessages[i].region);
                     //not including end for now cause it seems like it might not be needed
                     writer.WriteString(textMessages[i].text);
 
@@ -187,7 +291,7 @@ namespace SE_Final_Project
                 for (int i = 0; i < audioMessages.Count; i++)
                 {
                     writer.WriteStartElement("audio");
-                    writer.WriteAttributeString("src", audioMessages[i].fileName);
+                    writer.WriteAttributeString("src", audioMessages[i].filePath);
                     writer.WriteAttributeString("dur", audioMessages[i].duration);
                     writer.WriteAttributeString("begin", audioMessages[i].beginTime);
                     writer.WriteEndElement();
@@ -199,7 +303,7 @@ namespace SE_Final_Project
                 for (int i = 0; i < videoMessages.Count; i++)
                 {
                     writer.WriteStartElement("video");
-                    writer.WriteAttributeString("src", videoMessages[i].fileName);
+                    writer.WriteAttributeString("src", videoMessages[i].filePath);
                     writer.WriteAttributeString("dur", videoMessages[i].duration);
                     writer.WriteAttributeString("begin", videoMessages[i].beginTime);
                     writer.WriteEndElement();
@@ -207,14 +311,11 @@ namespace SE_Final_Project
             }
             writer.Flush();
             writer.Close();
+            
 
         }
 
-        public void EditMessageFile(string filePath)
-        {
-            //check if fileName matches smil file in directory
-            //might just have it delete file contents and rewrite the whole file so this may not get used
-        }
+        
 
         public void AddTextMessage(TextMessage text)
         {
@@ -228,6 +329,38 @@ namespace SE_Final_Project
         {
             videoMessages.Add(video);
         }
+        public string getFileName()
+        {
+            if(Path.HasExtension(smilFilePath) && Path.IsPathRooted(smilFilePath))
+            {
+                return Path.GetFileName(smilFilePath);
+            }
+            else if (Path.HasExtension(smilFilePath))
+            {
+                return Path.GetFileName(smilFilePath);
+            }
 
+            return "No file name found";
+        }
+
+        public void SetFilePath(string fileName)
+        {
+            //potentially needs changing if we decide how the files are going to be stored
+            smilFilePath = Environment.CurrentDirectory + fileName;
+        }
+
+        public void UpdateFilePaths()
+        {
+            
+            foreach(AudioMessage audio in audioMessages)
+            {
+                audio.filePath =Environment.CurrentDirectory + Path.GetFileName(audio.filePath);
+            }
+            foreach(VideoMessage video in videoMessages)
+            {
+                video.filePath =Environment.CurrentDirectory + Path.GetFileName(video.filePath);
+            }
+
+        }
     }
 }
