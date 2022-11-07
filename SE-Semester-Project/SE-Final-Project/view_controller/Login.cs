@@ -33,19 +33,22 @@ namespace SE_Final_Project
             InitializeComponent();
         }
 
-        //Runs when form loads
-        private void Login_Load(object sender, EventArgs e)
-        {
-            //Create a new user instance
-            user = new User(txtUsername.Text, txtPassword.Text);
-        }
-
         //Event handlers
         private void btnLogin_Click(object sender, EventArgs e)
-        { 
-            Main frmMain = new Main();
-            frmMain.ShowDialog();
-            this.Hide();
+        {
+            if(txtPassword.Text == "" || txtUsername.Text == "")
+            {
+                MessageBox.Show("Username or Password not entered");
+            }
+            else
+            {
+                //Create a user instance
+                user = new User(txtUsername.Text, txtPassword.Text, chkNewUser.Checked);
+
+                this.Hide();
+                Main frmMain = new Main();
+                frmMain.ShowDialog();
+            }
         }
 
         private void txtUsername_TextChanged(object sender, EventArgs e)

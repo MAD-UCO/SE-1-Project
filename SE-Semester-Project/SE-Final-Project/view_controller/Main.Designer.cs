@@ -55,8 +55,8 @@ namespace SE_Final_Project
             this.cboAddresses.Name = "cboAddresses";
             this.cboAddresses.Size = new System.Drawing.Size(225, 28);
             this.cboAddresses.TabIndex = 0;
-            this.cboAddresses.Text = "To:";
             this.cboAddresses.SelectedIndexChanged += new System.EventHandler(this.cboAddresses_SelectedIndexChanged);
+            this.cboAddresses.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cboAddresses_KeyUp);
             // 
             // btnCompose
             // 

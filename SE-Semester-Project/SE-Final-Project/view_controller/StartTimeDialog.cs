@@ -14,10 +14,8 @@ namespace SE_Final_Project
     {
 
         //Private fields
-        private string hours;
-        private string minutes;
-        private string seconds;
-        private string timeStamp;
+
+        private string seconds = "";
 
         public StartTimeDialog()
         {
@@ -26,15 +24,26 @@ namespace SE_Final_Project
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
-            seconds = txtSS.Text;
-            /*
-             * 
-             * 
-             * Pass the timestamp to message object here
-             * 
-             */
+            seconds = txtSS.Text + "s";
 
             this.Hide();
+        }
+
+        //Getters and Setters
+        public String getSeconds()
+        {
+            return this.seconds;
+        }
+
+        private void StartTimeDialog_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void StartTimeDialog_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.Hide();
+            e.Cancel = true;
         }
     }
 }
