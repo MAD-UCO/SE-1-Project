@@ -13,6 +13,7 @@ namespace SE_Final_Project.model
         private string userName;
         private string password;
         private string contactAddress;
+        private bool isNewUser;
 
 
         //Constructors
@@ -22,6 +23,7 @@ namespace SE_Final_Project.model
             userName = "John";
             password = "Doe";
             contactAddress = "100.100.100";
+            isNewUser = true;
         }
 
         public User(string userName, string password)
@@ -29,6 +31,7 @@ namespace SE_Final_Project.model
             this.userName = userName;
             this.password = password;
             contactAddress = "100.100.100";
+            isNewUser = true;
         }
 
         public User(string userName, string password, string contactAddress)
@@ -36,6 +39,15 @@ namespace SE_Final_Project.model
             this.userName = userName;
             this.password = password;
             this.contactAddress = contactAddress;
+            isNewUser=true;
+        }
+
+        public User(string userName, string password, bool isNewUser)
+        {
+            this.userName = userName;
+            this.password = password;
+            this.contactAddress = contactAddress;
+            this.isNewUser = isNewUser;
         }
 
         //Getters and Setters

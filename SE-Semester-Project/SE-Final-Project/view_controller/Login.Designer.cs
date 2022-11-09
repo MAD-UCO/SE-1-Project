@@ -33,6 +33,7 @@
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.btnLogin = new System.Windows.Forms.Button();
+            this.chkNewUser = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblUsername
@@ -86,12 +87,25 @@
             this.btnLogin.UseVisualStyleBackColor = true;
             this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 
+            // chkNewUser
+            // 
+            this.chkNewUser.AutoSize = true;
+            this.chkNewUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkNewUser.ForeColor = System.Drawing.Color.White;
+            this.chkNewUser.Location = new System.Drawing.Point(47, 186);
+            this.chkNewUser.Name = "chkNewUser";
+            this.chkNewUser.Size = new System.Drawing.Size(105, 24);
+            this.chkNewUser.TabIndex = 5;
+            this.chkNewUser.Text = "New User";
+            this.chkNewUser.UseVisualStyleBackColor = true;
+            // 
             // Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.MidnightBlue;
             this.ClientSize = new System.Drawing.Size(482, 253);
+            this.Controls.Add(this.chkNewUser);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.txtUsername);
@@ -100,7 +114,6 @@
             this.Name = "Login";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MoveBit - Login";
-            this.Load += new System.EventHandler(this.Login_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -113,5 +126,6 @@
         private System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Button btnLogin;
+        private System.Windows.Forms.CheckBox chkNewUser;
     }
 }

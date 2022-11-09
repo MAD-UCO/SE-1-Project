@@ -75,6 +75,7 @@
             this.Name = "Duration";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "EndTimeDialogue";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Duration_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -229,5 +229,21 @@ namespace SE_Final_Project
             videoMessages.Add(video);
         }
 
+        //Setters
+
+        public void setSmilFileName(String smilFileName)
+        {
+            this.smilFileName = smilFileName;
+        }
+
+        public void setSenderName(String senderName)
+        {
+            this.senderName = senderName;
+        }
+
+        public void setReceiverName(String receiverName)
+        {
+            this.receiverName = receiverName;
+        }
     }
 }
