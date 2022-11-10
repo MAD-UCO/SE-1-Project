@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<smil>
+  <head>
+    <body>
+      <smilText dur="10s" begin="1s" region="Center">This is a generalized test file to test parsing</smilText>
+    </body>
+  </head>
+</smil>
