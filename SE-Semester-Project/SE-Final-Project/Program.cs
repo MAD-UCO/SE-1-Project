@@ -21,7 +21,10 @@ namespace SE_Final_Project
         static void Main()
         {
 
-            
+#if PARSING_UNIT_TESTING
+            ParsingTester.RunTests();
+#endif
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             NetworkClient.Start();

@@ -20,12 +20,10 @@ C:\OCCC_UCO\Fall 2022\Movebit\SE-Semester-Project\SE-Final-Project\obj\Debug\SE-
 C:\OCCC_UCO\Fall 2022\Movebit\SE-Semester-Project\SE-Final-Project\obj\Debug\SE-Final-Project.csproj.CopyComplete
 C:\OCCC_UCO\Fall 2022\Movebit\SE-Semester-Project\SE-Final-Project\obj\Debug\SE-Final-Project.exe
 C:\OCCC_UCO\Fall 2022\Movebit\SE-Semester-Project\SE-Final-Project\obj\Debug\SE-Final-Project.pdb
-C:\Users\Coleman\OneDrive\Desktop\Semester-Project-GUI-Hookup\SE-1-Project\SE-Semester-Project\SE-Final-Project\bin\Debug\SE-Final-Project.exe.config
 C:\Users\Coleman\OneDrive\Desktop\Semester-Project-GUI-Hookup\SE-1-Project\SE-Semester-Project\SE-Final-Project\bin\Debug\SE-Final-Project.exe
-C:\Users\Coleman\OneDrive\Desktop\Semester-Project-GUI-Hookup\SE-1-Project\SE-Semester-Project\SE-Final-Project\bin\Debug\SE-Final-Project.pdb
-C:\Users\Coleman\OneDrive\Desktop\Semester-Project-GUI-Hookup\SE-1-Project\SE-Semester-Project\SE-Final-Project\bin\Debug\MoveBit-Messaging.pdb
 C:\Users\Coleman\OneDrive\Desktop\Semester-Project-GUI-Hookup\SE-1-Project\SE-Semester-Project\SE-Final-Project\bin\Debug\Interop.WMPLib.dll
 C:\Users\Coleman\OneDrive\Desktop\Semester-Project-GUI-Hookup\SE-1-Project\SE-Semester-Project\SE-Final-Project\bin\Debug\AxInterop.WMPLib.dll
+C:\Users\Coleman\OneDrive\Desktop\Semester-Project-GUI-Hookup\SE-1-Project\SE-Semester-Project\SE-Final-Project\bin\Debug\SE-Final-Project.exe.config
 C:\Users\Coleman\OneDrive\Desktop\Semester-Project-GUI-Hookup\SE-1-Project\SE-Semester-Project\SE-Final-Project\obj\Debug\SE-Final-Project.csproj.AssemblyReference.cache
 C:\Users\Coleman\OneDrive\Desktop\Semester-Project-GUI-Hookup\SE-1-Project\SE-Semester-Project\SE-Final-Project\obj\Debug\SE-Final-Project.csproj.SuggestedBindingRedirects.cache
 C:\Users\Coleman\OneDrive\Desktop\Semester-Project-GUI-Hookup\SE-1-Project\SE-Semester-Project\SE-Final-Project\obj\Debug\Interop.WMPLib.dll
@@ -42,3 +40,4 @@ C:\Users\Coleman\OneDrive\Desktop\Semester-Project-GUI-Hookup\SE-1-Project\SE-Se
 C:\Users\Coleman\OneDrive\Desktop\Semester-Project-GUI-Hookup\SE-1-Project\SE-Semester-Project\SE-Final-Project\obj\Debug\SE-Final-Project.csproj.CopyComplete
 C:\Users\Coleman\OneDrive\Desktop\Semester-Project-GUI-Hookup\SE-1-Project\SE-Semester-Project\SE-Final-Project\obj\Debug\SE-Final-Project.exe
 C:\Users\Coleman\OneDrive\Desktop\Semester-Project-GUI-Hookup\SE-1-Project\SE-Semester-Project\SE-Final-Project\obj\Debug\SE-Final-Project.pdb
+C:\Users\Coleman\OneDrive\Desktop\Semester-Project-GUI-Hookup\SE-1-Project\SE-Semester-Project\SE-Final-Project\bin\Debug\SE-Final-Project.pdb

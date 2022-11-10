@@ -25,7 +25,7 @@ namespace SE_Semester_Project
         private static int testsRun = 0;
         private static int failedAssertions = 0;
         private static int unexpectedExceptions = 0;
-        private static readonly string reportFile = "TestReport.txt";
+        private static readonly string reportFile = Environment.CurrentDirectory + @"\Files-for-parse-test\TestReport.txt";
         private static string workingDirectory = Environment.CurrentDirectory + @"\Files-for-parse-test\";
 
         public static void RunTests()
@@ -77,7 +77,7 @@ namespace SE_Semester_Project
             testFunctions["TestMultipleTextFileParsing"] = TestMultipleTextFileParsing;
             //testFunctions["TestLargeTextFileParsing"] = TestLargeTextFileParsing;
             //testFunctions["TestSpecialCharTextFileParsing"] = TestSpecialCharTextFileParsing;
-            testFunctions["TestParallelTextFileParsing"] = TestParallelTextFileParsing;
+            //testFunctions["TestParallelTextFileParsing"] = TestParallelTextFileParsing;
         }
 
         //test for no file contents
@@ -102,7 +102,7 @@ namespace SE_Semester_Project
             Message message = new Message();
             message.ParseMessage(workingDirectory +"SingleText.smil");
             ParsingAssert(
-                message.textMessages[0].text == "This is a generalized test file to test parsing",
+                message.textMessages[0].text.Equals( "This is a generalized test file to test parsing"),
                 $"Text contents are not correct for SingleText.smil"
                 );
             
@@ -112,7 +112,7 @@ namespace SE_Semester_Project
                 );
             
             ParsingAssert(
-                message.textMessages[0].beginTime == "10s",
+                message.textMessages[0].duration == "10s",
                 $"Duration contents are not correct for SingleText.smil"
                 );
             message.smilFilePath = workingDirectory + "SingleTextComparison.smil";
@@ -168,7 +168,7 @@ namespace SE_Semester_Project
             for (int i = 0; i < 100; i++)
             {
                 ParsingAssert(
-                    message.textMessages[i].text == $"This is a generalized test file to test parsing {i}",
+                    message.textMessages[i].text ==$"This is a generalized test file to test parsing {i}",
                     "File parsing failed, text contents of MultipleTexts.smil was not parsed correctly"
                     );
                 ParsingAssert(
@@ -210,9 +210,12 @@ namespace SE_Semester_Project
 
         private static void Report()
         {
-            File.Create(reportFile);
+            var myFile = File.Create(reportFile);
+            myFile.Close();
+
             using (StreamWriter sw = File.AppendText(reportFile))
             {
+                sw.WriteLine("=[Parsing Unit Tests]=");
                 sw.WriteLine("=======REPORT=======");
                 sw.WriteLine($"Tests Ran:          {testsRun}");
                 sw.WriteLine($"Tests Passed:       {testsPassed}");

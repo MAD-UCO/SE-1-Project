@@ -50,6 +50,9 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>MBMICON.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MoveBit-Messaging">
       <HintPath>..\..\..\..\temp\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.dll</HintPath>
@@ -68,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="model\AudioMessage.cs" />
+    <Compile Include="model\ImageMessage.cs" />
     <Compile Include="model\ParsingTester.cs" />
     <Compile Include="model\User.cs" />
     <Compile Include="Server_Observer\dummyClass.cs" />
@@ -165,6 +169,9 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="MBMICON.ico" />
+    <Content Include="MovingBitMessengingIcon.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

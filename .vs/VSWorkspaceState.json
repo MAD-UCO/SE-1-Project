@@ -3,8 +3,14 @@
     "",
     "\\MoveBit-Server",
     "\\MoveBit-Server\\MoveBit-Server",
-    "\\SE-Semester-Project\\SE-Final-Project"
+    "\\MoveBit-Server\\MoveBit-Server\\bin",
+    "\\MoveBit-Server\\MoveBit-Server\\bin\\Debug",
+    "\\MoveBit-Server\\MoveBit-Server\\bin\\Release",
+    "\\MoveBit-Server\\MoveBit-Server\\obj",
+    "\\MoveBit-Server\\MoveBit-Server\\obj\\Debug",
+    "\\MoveBit-Server\\MoveBit-Server\\obj\\Release",
+    "\\MoveBit-Server\\MoveBit-Server\\Properties"
   ],
-  "SelectedNode": "\\MoveBit-Server\\MoveBit-Server\\CommandLineReader.cs",
+  "SelectedNode": "\\SE-Semester-Project\\SE-Final-Project\\view_controller\\Login.cs",
   "PreviewInSolutionExplorer": false
 }

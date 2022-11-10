@@ -42,18 +42,21 @@ namespace SE_Final_Project
             this.btnMessages = new System.Windows.Forms.Button();
             this.cboFileList = new System.Windows.Forms.ComboBox();
             this.btnUpload = new System.Windows.Forms.Button();
-            this.playerMain = new AxWMPLib.AxWindowsMediaPlayer();
             this.btnLogout = new System.Windows.Forms.Button();
+            this.playerMain = new AxWMPLib.AxWindowsMediaPlayer();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.playerMain)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // cboAddresses
             // 
             this.cboAddresses.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboAddresses.FormattingEnabled = true;
-            this.cboAddresses.Location = new System.Drawing.Point(12, 22);
+            this.cboAddresses.Location = new System.Drawing.Point(11, 175);
+            this.cboAddresses.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cboAddresses.Name = "cboAddresses";
-            this.cboAddresses.Size = new System.Drawing.Size(225, 28);
+            this.cboAddresses.Size = new System.Drawing.Size(170, 25);
             this.cboAddresses.TabIndex = 0;
             this.cboAddresses.Text = "To:";
             this.cboAddresses.SelectedIndexChanged += new System.EventHandler(this.cboAddresses_SelectedIndexChanged);
@@ -61,9 +64,10 @@ namespace SE_Final_Project
             // btnCompose
             // 
             this.btnCompose.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCompose.Location = new System.Drawing.Point(668, 91);
+            this.btnCompose.Location = new System.Drawing.Point(503, 231);
+            this.btnCompose.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnCompose.Name = "btnCompose";
-            this.btnCompose.Size = new System.Drawing.Size(98, 52);
+            this.btnCompose.Size = new System.Drawing.Size(74, 42);
             this.btnCompose.TabIndex = 1;
             this.btnCompose.Text = "comp";
             this.btnCompose.UseVisualStyleBackColor = true;
@@ -72,9 +76,10 @@ namespace SE_Final_Project
             // txtOutgoing
             // 
             this.txtOutgoing.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtOutgoing.Location = new System.Drawing.Point(12, 56);
+            this.txtOutgoing.Location = new System.Drawing.Point(11, 203);
+            this.txtOutgoing.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtOutgoing.Name = "txtOutgoing";
-            this.txtOutgoing.Size = new System.Drawing.Size(650, 425);
+            this.txtOutgoing.Size = new System.Drawing.Size(488, 346);
             this.txtOutgoing.TabIndex = 2;
             this.txtOutgoing.Text = "";
             // 
@@ -82,9 +87,10 @@ namespace SE_Final_Project
             // 
             this.btnSend.BackColor = System.Drawing.Color.LightGreen;
             this.btnSend.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSend.Location = new System.Drawing.Point(668, 160);
+            this.btnSend.Location = new System.Drawing.Point(503, 287);
+            this.btnSend.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(100, 50);
+            this.btnSend.Size = new System.Drawing.Size(75, 41);
             this.btnSend.TabIndex = 3;
             this.btnSend.Text = "SND";
             this.btnSend.UseVisualStyleBackColor = false;
@@ -94,9 +100,10 @@ namespace SE_Final_Project
             // 
             this.btnDelete.BackColor = System.Drawing.Color.Silver;
             this.btnDelete.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDelete.Location = new System.Drawing.Point(668, 227);
+            this.btnDelete.Location = new System.Drawing.Point(503, 341);
+            this.btnDelete.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(100, 50);
+            this.btnDelete.Size = new System.Drawing.Size(75, 41);
             this.btnDelete.TabIndex = 4;
             this.btnDelete.Text = "(X|";
             this.btnDelete.UseVisualStyleBackColor = false;
@@ -104,9 +111,10 @@ namespace SE_Final_Project
             // btnStart
             // 
             this.btnStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStart.Location = new System.Drawing.Point(668, 294);
+            this.btnStart.Location = new System.Drawing.Point(503, 396);
+            this.btnStart.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(100, 50);
+            this.btnStart.Size = new System.Drawing.Size(75, 41);
             this.btnStart.TabIndex = 5;
             this.btnStart.Text = "START";
             this.btnStart.UseVisualStyleBackColor = true;
@@ -115,9 +123,10 @@ namespace SE_Final_Project
             // btnDuration
             // 
             this.btnDuration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDuration.Location = new System.Drawing.Point(668, 361);
+            this.btnDuration.Location = new System.Drawing.Point(503, 450);
+            this.btnDuration.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnDuration.Name = "btnDuration";
-            this.btnDuration.Size = new System.Drawing.Size(100, 50);
+            this.btnDuration.Size = new System.Drawing.Size(75, 41);
             this.btnDuration.TabIndex = 6;
             this.btnDuration.Text = "Duration";
             this.btnDuration.UseVisualStyleBackColor = true;
@@ -126,9 +135,10 @@ namespace SE_Final_Project
             // btnMessages
             // 
             this.btnMessages.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMessages.Location = new System.Drawing.Point(668, 431);
+            this.btnMessages.Location = new System.Drawing.Point(503, 507);
+            this.btnMessages.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnMessages.Name = "btnMessages";
-            this.btnMessages.Size = new System.Drawing.Size(100, 50);
+            this.btnMessages.Size = new System.Drawing.Size(75, 41);
             this.btnMessages.TabIndex = 7;
             this.btnMessages.Text = "msgs";
             this.btnMessages.UseVisualStyleBackColor = true;
@@ -138,50 +148,65 @@ namespace SE_Final_Project
             // 
             this.cboFileList.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboFileList.FormattingEnabled = true;
-            this.cboFileList.Location = new System.Drawing.Point(356, 22);
+            this.cboFileList.Location = new System.Drawing.Point(269, 175);
+            this.cboFileList.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cboFileList.Name = "cboFileList";
-            this.cboFileList.Size = new System.Drawing.Size(175, 28);
+            this.cboFileList.Size = new System.Drawing.Size(132, 25);
             this.cboFileList.TabIndex = 8;
             this.cboFileList.SelectedIndexChanged += new System.EventHandler(this.cboFileList_SelectedIndexChanged);
             // 
             // btnUpload
             // 
             this.btnUpload.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnUpload.Location = new System.Drawing.Point(537, 22);
+            this.btnUpload.Location = new System.Drawing.Point(405, 175);
+            this.btnUpload.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnUpload.Name = "btnUpload";
-            this.btnUpload.Size = new System.Drawing.Size(125, 28);
+            this.btnUpload.Size = new System.Drawing.Size(94, 23);
             this.btnUpload.TabIndex = 9;
             this.btnUpload.Text = "BROWSE";
             this.btnUpload.UseVisualStyleBackColor = true;
             this.btnUpload.Click += new System.EventHandler(this.btnUpload_Click);
             // 
-            // playerMain
-            // 
-            this.playerMain.Enabled = true;
-            this.playerMain.Location = new System.Drawing.Point(12, 56);
-            this.playerMain.MaximumSize = new System.Drawing.Size(650, 425);
-            this.playerMain.Name = "playerMain";
-            this.playerMain.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("playerMain.OcxState")));
-            this.playerMain.Size = new System.Drawing.Size(650, 425);
-            this.playerMain.TabIndex = 10;
-            // 
             // btnLogout
             // 
             this.btnLogout.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLogout.Location = new System.Drawing.Point(668, 22);
+            this.btnLogout.Location = new System.Drawing.Point(503, 175);
+            this.btnLogout.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnLogout.Name = "btnLogout";
-            this.btnLogout.Size = new System.Drawing.Size(98, 52);
+            this.btnLogout.Size = new System.Drawing.Size(74, 42);
             this.btnLogout.TabIndex = 11;
             this.btnLogout.Text = "Logout";
             this.btnLogout.UseVisualStyleBackColor = true;
             this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
             // 
+            // playerMain
+            // 
+            this.playerMain.Enabled = true;
+            this.playerMain.Location = new System.Drawing.Point(14, 213);
+            this.playerMain.Margin = new System.Windows.Forms.Padding(2);
+            this.playerMain.MaximumSize = new System.Drawing.Size(488, 345);
+            this.playerMain.Name = "playerMain";
+            this.playerMain.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("playerMain.OcxState")));
+            this.playerMain.Size = new System.Drawing.Size(488, 345);
+            this.playerMain.TabIndex = 10;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(11, 12);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(339, 158);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 12;
+            this.pictureBox1.TabStop = false;
+            // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.MidnightBlue;
-            this.ClientSize = new System.Drawing.Size(782, 503);
+            this.ClientSize = new System.Drawing.Size(588, 583);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btnLogout);
             this.Controls.Add(this.playerMain);
             this.Controls.Add(this.btnUpload);
@@ -194,11 +219,14 @@ namespace SE_Final_Project
             this.Controls.Add(this.txtOutgoing);
             this.Controls.Add(this.btnCompose);
             this.Controls.Add(this.cboAddresses);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MoveBit - Composer";
             this.Load += new System.EventHandler(this.Main_Load);
             ((System.ComponentModel.ISupportInitialize)(this.playerMain)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -217,6 +245,7 @@ namespace SE_Final_Project
         private System.Windows.Forms.Button btnUpload;
         private AxWMPLib.AxWindowsMediaPlayer playerMain;
         private System.Windows.Forms.Button btnLogout;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 
