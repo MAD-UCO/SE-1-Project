@@ -75,6 +75,8 @@
             this.Name = "StartTimeDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "StartTimeDialogue";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.StartTimeDialog_FormClosing);
+            this.Load += new System.EventHandler(this.StartTimeDialog_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

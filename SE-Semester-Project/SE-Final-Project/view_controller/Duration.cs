@@ -13,10 +13,7 @@ namespace SE_Final_Project
     public partial class Duration : Form
     {
         //Private fields
-        private string hours;
-        private string minutes;
-        private string seconds;
-        private string timeStamp;
+        private string seconds = "";
 
         //Class constructor, do not edit. Use form load event for initialization.
         public Duration()
@@ -27,37 +24,22 @@ namespace SE_Final_Project
         //Event Handlers
         private void btnAccept_Click(object sender, EventArgs e)
         {
-            seconds = txtSS.Text;
-
-            /*
-             * 
-             * 
-             * Pass the timestamp to message object here
-             * 
-             */
+            seconds = txtSS.Text + "s";
 
             this.Hide();
         }
 
         //Getters
-        public string getHours()
-        {
-            return hours;
-        }
-
-        public string getMinutes()
-        {
-            return minutes;
-        }
-
+       
         public string getSeconds()
         {
             return seconds;
         }
 
-        public string getTimeStamp()
+        private void Duration_FormClosing(object sender, FormClosingEventArgs e)
         {
-            return timeStamp;
+            this.Hide();
+            e.Cancel = true;
         }
     }
 }
