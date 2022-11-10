@@ -126,13 +126,6 @@ class MoveBitServer
                     if (idleCycles % 100 == 0)
                         ServerLogger.Info($"Connection processer has been idle for {idleCycles} cycles");
                     Thread.Sleep(200);
-/*
-                    if (idleCycles >= 150)
-                    {
-                        ServerLogger.Notice("TEST - Connection idle for too long - exiting the server");
-                        runServer = false;
-                        continue;
-                    }*/
                 }
                 else
                 {
@@ -461,6 +454,11 @@ class MoveBitServer
         }
     }
 
+    /// <summary>
+    /// Shuts down the login service by killing the server TcpListener
+    /// This results in an exception being raised, which lets the server
+    /// end in a planned manner.
+    /// </summary>
     private static void ShutdownListener()
     {
         ServerLogger.Info($"Server interface being killed...");
@@ -469,12 +467,16 @@ class MoveBitServer
     }
 
 #if SERVER_UNIT_TESTING
-
+    /// <summary>
+    /// Quick and easy shutdown method to end server when running tests
+    /// </summary>
     public static void TesterShutdown()
     {
-        ServerLogger.Notice($"Tester is shutting down the server");
-        runServer = false;
-        //ShutdownListener();
+        if (runServer)
+        {
+            ServerLogger.Notice($"Tester is shutting down the server");
+            runServer = false;
+        }
     }
 #endif
 
