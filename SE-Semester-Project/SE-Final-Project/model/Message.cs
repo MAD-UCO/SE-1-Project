@@ -239,7 +239,26 @@ namespace SE_Final_Project
                             }
                             videoMessages.Add(video);
                         }
-
+                        else if (child.Name == "img")
+                        {
+                            VideoMessage video = new VideoMessage(child.InnerText);
+                            foreach (XmlAttribute attr in childCollection)
+                            {
+                                if (attr.Name == "src")
+                                {
+                                    video.filePath = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "dur")
+                                {
+                                    video.duration = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "begin")
+                                {
+                                    video.beginTime = child.Attributes[attr.Name].Value;
+                                }
+                            }
+                            videoMessages.Add(video);
+                        }
 
 
 

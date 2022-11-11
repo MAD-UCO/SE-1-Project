@@ -95,6 +95,8 @@ namespace SE_Semester_Project
             message.textMessages.Add(text);
             message.GenerateMessageFile();
             //not sure how to actually assert that this works gracefully
+            //make file manually to have the elements given from default constructor
+            //then compare the files
             
         }
         private static void TestSingleTextFileParsing()
