@@ -359,6 +359,7 @@ namespace SE_Final_Project
                 return Path.GetFileName(smilFilePath);
             }
 
+<<<<<<< HEAD
             return "No file name found";
         }
 
@@ -380,6 +381,23 @@ namespace SE_Final_Project
                 video.filePath =Environment.CurrentDirectory + Path.GetFileName(video.filePath);
             }
 
+=======
+        //Setters
+
+        public void setSmilFileName(String smilFileName)
+        {
+            this.smilFileName = smilFileName;
+        }
+
+        public void setSenderName(String senderName)
+        {
+            this.senderName = senderName;
+        }
+
+        public void setReceiverName(String receiverName)
+        {
+            this.receiverName = receiverName;
+>>>>>>> main
         }
     }
 }

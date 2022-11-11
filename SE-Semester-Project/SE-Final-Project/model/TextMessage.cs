@@ -96,5 +96,15 @@ namespace SE_Final_Project
             return -1;
         }
 
+        public void setBeginTime(String beginTime)
+        {
+            this.beginTime = beginTime;
+        }
+
+        public void setDuration(String duration)
+        {
+            this.duration = duration;
+        }
+
     }
 }

@@ -11,6 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using System.Net;
+using static System.Net.WebRequestMethods;
 
 
 namespace SE_Final_Project
@@ -27,6 +29,8 @@ namespace SE_Final_Project
         private TextMessage textMessage;
         private VideoMessage videoMessage;
         private AudioMessage audioMessage;
+        private StartTimeDialog frmStartTimeDialog = new StartTimeDialog();
+        private Duration frmDuration = new Duration();
 
 
         //Class constructor, do not edit. Use form load event for initialization
@@ -48,62 +52,82 @@ namespace SE_Final_Project
 
             //Generate button symbols
             generateButtonSymbols();
+
         }
 
         private void btnSend_Click(object sender, EventArgs e)
         {
-            //Generate a storage location and pass to message constructor
-            String filePath = " insert file path ";
-            message = new Message(filePath);
 
-            //Store message subtypes
-            if(txtOutgoing.Text != "")
+
+            if(cboAddresses.SelectedItem == null)
             {
-                textMessage = new TextMessage(txtOutgoing.Text);
-
-                //store in message object
-                message.AddTextMessage(textMessage);
+                MessageBox.Show("Recipient Not Selected");
             }
-
-            //If a selection was made in the file list combo box
-            if(cboFileList.SelectedIndex > -1)
+            else if(frmStartTimeDialog.getSeconds() == "" || frmDuration.getSeconds() == "")
             {
-                //Check file extension from selectedFile and store in the appropriate object
-                if(selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
-                {
-                    audioMessage = new AudioMessage(selectedFile);
-
-                    //Store in message object
-                    message.AddAudioMessage(audioMessage);
-                }
-                else if(selectedFile.Contains(".mp4"))
-                {
-                    videoMessage = new VideoMessage(selectedFile);
-
-                    //Store in message object
-                    message.AddVideoMessage(videoMessage);
-                }
+                MessageBox.Show("Missing start time or end time duration");
             }
+            else
+            {
 
-            /*
-             * 
-             * Get time stamp from Duration and StartTimeDialog
-             * 
-             */
-            
+                //Generate a storage location and pass to message constructor
+                String filePath = "C:/OCCC_UCO/Fall 2022/Project Test Files";
+                message = new Message();
 
-            //Generate message file
-            message.GenerateMessageFile();
+                //Set sender and receiver name
+                message.setSenderName("Movebit User");
+                message.setReceiverName(cboAddresses.SelectedItem.ToString());
 
-            /*
-             * 
-             * Pass message along to the server
-             * 
-             */
+                //Store message subtypes
+                if (txtOutgoing.Text != "")
+                {
+                    //Create new text message and assign start/duration
+                    textMessage = new TextMessage(txtOutgoing.Text);
+                    textMessage.beginTime = frmStartTimeDialog.getSeconds();
+                    textMessage.duration = frmDuration.getSeconds();
 
-            //Display simple message for testing
-            MessageBox.Show("Message Delivered");
 
+                    //store in message object
+                    message.AddTextMessage(textMessage);
+                }
+
+                //If a selection was made in the file list combo box
+                if (cboFileList.SelectedIndex > -1)
+                {
+                    //Check file extension from selectedFile and store in the appropriate object
+                    if (selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
+                    {
+                        audioMessage = new AudioMessage(selectedFile);
+
+                        //Store in message object
+                        message.AddAudioMessage(audioMessage);
+                    }
+                    else if (selectedFile.Contains(".mp4"))
+                    {
+                        videoMessage = new VideoMessage(selectedFile);
+
+                        //Store in message object
+                        message.AddVideoMessage(videoMessage);
+                    }
+                }
+
+                //Add host name (IP Address) sender, reciever, and smilFile name(receiver + current time stamp)
+                message.setSenderName(Dns.GetHostName());
+                message.setReceiverName(cboAddresses.Text.ToString());
+                message.setSmilFileName(filePath + "/" + cboAddresses.SelectedItem.ToString() + ".smil");
+
+                //Generate message file
+                message.GenerateMessageFile();
+
+                /*
+                 * 
+                 * Pass message along to the server
+                 * 
+                 */
+
+                //Display simple message for testing
+                MessageBox.Show("Message Delivered");
+            }
         }
        
         private void btnUpload_Click(object sender, EventArgs e)
@@ -143,19 +167,17 @@ namespace SE_Final_Project
             Messages frmMessages = new Messages();
             frmMessages.Show();
             frmMessages.Location = this.Location;
-            
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            StartTimeDialog frmStart = new StartTimeDialog();
-            frmStart.Show();
-            frmStart.Location = new Point(this.Location.X + 150, this.Location.Y + 150);
+            
+            frmStartTimeDialog.Show();
+            frmStartTimeDialog.Location = new Point(this.Location.X + 150, this.Location.Y + 150);
         }
 
         private void btnDuration_Click(object sender, EventArgs e)
         {
-            Duration frmDuration = new Duration();
             frmDuration.Show();
             frmDuration.Location = new Point(this.Location.X + 150, this.Location.Y + 150);
         }
@@ -164,6 +186,18 @@ namespace SE_Final_Project
         {
             //Store selected address in a string variable
             selectedAddress = cboAddresses.SelectedItem.ToString();
+        }
+
+        //Add an address to the combo box that has been typed in by the user
+        private void cboAddresses_KeyUp(object sender, KeyEventArgs e)
+        {
+            //After the user has typed the address and pressed enter, add it to the list
+            if(e.KeyCode == Keys.Enter)
+            {
+                cboAddresses.Items.Add(cboAddresses.Text);
+                MessageBox.Show("Recipient Successfully Added");
+                cboAddresses.Text = "";
+            }
         }
 
         private void cboFileList_SelectedIndexChanged(object sender, EventArgs e)
