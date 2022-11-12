@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Diagnostics;
 using SE_Final_Project;
+using System.Windows.Forms;
 
 namespace SE_Semester_Project
 {
@@ -495,9 +496,9 @@ namespace SE_Semester_Project
                                 {
                                     SimpleTextMessageResult result = (SimpleTextMessageResult)msg;
                                     if (result.sendResult == SendResult.sendSuccess)
-                                        Debug.WriteLine("Your message was sent successfully");
+                                        MessageBox.Show("Your message was sent successfully");
                                     else if (result.sendResult == SendResult.sendFailure)
-                                        Debug.WriteLine("Your message could not be sent");
+                                        MessageBox.Show("You message could not be delivered");
                                 }
                                 else if (msg.GetType() == typeof(TestListActiveUsersResponse))
                                 {
