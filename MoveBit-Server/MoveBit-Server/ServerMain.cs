@@ -91,15 +91,9 @@ class MoveBitServer
                     ServerLogger.Trace("Server shutting down... Giving 1.5 seconds for different services...");
                     Thread.Sleep(1500);
                 }
+                ServerLogger.FlushLogBuffer();
             }
         }
-
-
-#if SERVER_UNIT_TESTING && TEST_DIRECTIVE
-
-        ServerLogger.Notice("This is a test statement");
-
-#endif
 
         ServerLogger.Notice("Server shut down. Hit <ENTER> To close console");
         Console.Read();

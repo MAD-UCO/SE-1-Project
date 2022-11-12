@@ -420,7 +420,7 @@ namespace MoveBit_Server
             string username;
             string password;
             TestClient tc;
-            for(int i = 0; i < 100; i++)
+            for(int i = 0; i < 200; i++)
             {
                 Tuple<string, string> info = ClientFactory.GetNewUserValid();
                 tc = new TestClient();

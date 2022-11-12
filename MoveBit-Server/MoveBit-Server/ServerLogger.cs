@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,7 +30,10 @@ namespace MoveBit_Server
     internal class ServerLogger
     {
         private static LogLevel level = LogLevel.level_off;                          // Current level of the logger
-        private static Object logLock = new Object();          // Lock to manage asynchronous calls to the logger
+        private static List<string> logBuffer = new List<string>();
+        private static int maxLogBufferSize = 100;
+        private static string logFileName = DateTime.Now.ToString("yyMMddHHmmss") + "_server_log";
+        private static Object logLock = new Object();                               // Lock to manage asynchronous calls to the logger
 
         /// <summary>
         /// Sets the logger to output only messages above or equal to the 
@@ -37,6 +42,7 @@ namespace MoveBit_Server
         /// <param name="level"></param>
         public static void SetLevel(LogLevel level)
         {
+            Console.OpenStandardOutput();
             if (level != LogLevel.level_off)
                 Info($"Logger level changed from '{EnumToStr(ServerLogger.level)}' --> '{EnumToStr(level)}'");
             ServerLogger.level = level;
@@ -50,12 +56,17 @@ namespace MoveBit_Server
         /// <param name="logLevel"></param>
         public static void Log(String logMessage, LogLevel logLevel)
         {
-            if (((int)logLevel) >= (int)level)
-                lock (logLock)
-                {
-                    string label = EnumToStr(logLevel) + ":";
+            string label = EnumToStr(logLevel) + ":";
+            lock (logLock)
+            {
+                if (((int)logLevel) >= (int)level)
                     Console.WriteLine($"{label,-16}{logMessage}");
-                }
+                logBuffer.Add($"{label,-16}{logMessage}");
+            }
+
+            if (logBuffer.Count() >= maxLogBufferSize)
+                FlushLogBuffer();
+            
         }
 
         /// <summary>
@@ -162,6 +173,22 @@ namespace MoveBit_Server
                     break;
             }
             return label;
+        }
+    
+    
+        public static void FlushLogBuffer()
+        {
+            lock (logLock) 
+            {
+                using (StreamWriter sw = File.AppendText(logFileName))
+                {
+                    foreach (string entry in logBuffer)
+                    {
+                        sw.WriteLine(entry);
+                    }
+                }
+                logBuffer.Clear();
+            }
         }
     }
 }
