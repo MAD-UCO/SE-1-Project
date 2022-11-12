@@ -87,9 +87,9 @@ namespace SE_Semester_Project
             // Wait a bit while our state is 'TryingToLogIn'
             while (clientState == ClientState.TryingToLogIn)
             {
-                // See if 10 or more seconds has passed - exits in case something in the message
+                // See if 3 or more seconds has passed - exits in case something in the message
                 //  loop is taking too long to process us
-                if (((DateTimeOffset)(DateTime.Now)).ToUnixTimeSeconds() - start >= 10)
+                if (((DateTimeOffset)(DateTime.Now)).ToUnixTimeSeconds() - start >= 3)
                 {
                     SetClientState(ClientState.NotLoggedIn);
                     notifications.Add(new Notification("Could not log in - connection to server timed out"));

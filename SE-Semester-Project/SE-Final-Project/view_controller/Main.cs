@@ -13,12 +13,14 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.Net;
 using static System.Net.WebRequestMethods;
-
+using System.Diagnostics;
 
 namespace SE_Final_Project
 {
     public partial class Main : Form
     {
+
+        public bool hardClose = false;
         
         //private fields
         private string selectedAddress;
@@ -216,14 +218,22 @@ namespace SE_Final_Project
         {
             //Create new Login form, display, and hide the current form
             this.Hide();
-            Login frmLogin = new Login();
-            frmLogin.Show();
+            NetworkClient.Logout();
+            hardClose = false;
+            //Login frmLogin = new Login();
+            //frmLogin.Show();
             
         }
 
         private void main_FormClosing(object sender, FormClosingEventArgs closingArgs)
         {
-            NetworkClient.Shutdown();
+            //Debug.Assert(false);
+            //NetworkClient.Shutdown();
+            if (NetworkClient.GetClientState() != ClientState.NotLoggedIn)
+            {
+                hardClose = true;
+                NetworkClient.Logout();
+            }
         }
 
         //Getters
