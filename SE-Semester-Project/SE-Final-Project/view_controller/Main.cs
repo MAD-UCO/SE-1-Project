@@ -111,7 +111,7 @@ namespace SE_Final_Project
                 }
 
                 //Add host name (IP Address) sender, reciever, and smilFile name(receiver + current time stamp)
-                message.setSenderName(Dns.GetHostName());
+                message.setSenderName(NetworkClient.myClientName);
                 message.setReceiverName(cboAddresses.Text.ToString());
                 message.setSmilFileName(filePath + "/" + cboAddresses.SelectedItem.ToString() + ".smil");
 
@@ -124,8 +124,12 @@ namespace SE_Final_Project
                  * 
                  */
 
+                NetworkClient.AddMessageToOutQueue(
+                    new MoveBitMessaging.SimpleTextMessage(message.receiverName, message.senderName, message.GetSmilText(message.smilFileName))
+                    );
+
                 //Display simple message for testing
-                MessageBox.Show("Message Delivered");
+
             }
         }
        
