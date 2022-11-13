@@ -1,0 +1,12 @@
+# ignore for top level folder
+
+
+.vs/SE-1-Project/v17/.suo
+.vs/VSWorkspaceState.json
+.vs/slnx.sqlite
+*.suo
+
+*.vsidx
+
+[Dd]ebug/
+[Rr]elease/

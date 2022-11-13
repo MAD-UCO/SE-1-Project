@@ -1,0 +1,9 @@
+# .gitignore file for movebit-messaging
+
+
+*.suo
+
+
+
+bin/
+obj/

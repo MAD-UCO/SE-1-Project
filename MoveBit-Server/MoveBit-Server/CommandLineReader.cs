@@ -18,8 +18,6 @@ namespace MoveBit_Server
         public string logLevel = "TRACE";                   // Log level string to tell what log level we are at in echo
         public LogLevel level = LogLevel.level_trace;       // The log level we set from the CLI
 
-        private static ServerLogger logger = ServerLogger.GetTheLogger();
-
         /// <summary>
         /// Function meant to parse the command line and extract variables being set from it. 
         /// If a variable is unknown or invalid, this function returns false.
@@ -65,7 +63,7 @@ namespace MoveBit_Server
                     }
                     else
                     {
-                        logger.Error($"Unexpected command line keyword: {command}");
+                        ServerLogger.Error($"Unexpected command line keyword: {command}");
                         return false;
                     }
                 }
@@ -120,10 +118,10 @@ namespace MoveBit_Server
                                 level = LogLevel.level_info;
                                 logLevel = "INFO";
                             }
-                            else if (lower == "important")
+                            else if (lower == "notice")
                             {
-                                level = LogLevel.level_important;
-                                logLevel = "IMPORTANT";
+                                level = LogLevel.level_notice;
+                                logLevel = "NOTICE";
                             }
                             else if (lower == "warning")
                             {
@@ -148,7 +146,7 @@ namespace MoveBit_Server
                             else
                                 throw new ArgumentException($"Invalid argument for keyword '{activeKey}' - {lower}");
 
-                            logger.SetLevel(level);
+                            ServerLogger.SetLevel(level);
                         }
                         else
                             throw new ArgumentException($"No processing routine for key '{activeKey}'");
@@ -157,7 +155,7 @@ namespace MoveBit_Server
                     }
                     catch (Exception err)
                     {
-                        logger.Error($"During command processing, an error occured: {err.Message}");
+                        ServerLogger.Error($"During command processing, an error occured: {err.Message}");
                         return false;
                     }
                 }
@@ -171,11 +169,11 @@ namespace MoveBit_Server
         /// </summary>
         public void EchoSettings()
         {
-            logger.Info("The program is operating with the following variables set:");
-            logger.Info($"Networking on localHost only: {acceptOnlyLocal}");
-            logger.Info($"Listening on port #{listeningPort}");
-            logger.Info($"Kicking idle users: {kickIdleUsers}");
-            logger.Info($"Set Log level: {logLevel}\n");
+            ServerLogger.Info("The program is operating with the following variables set:");
+            ServerLogger.Info($"Networking on localHost only: {acceptOnlyLocal}");
+            ServerLogger.Info($"Listening on port #{listeningPort}");
+            ServerLogger.Info($"Kicking idle users: {kickIdleUsers}");
+            ServerLogger.Info($"Set Log level: {logLevel}\n");
         }
     }
 }
