@@ -1,0 +1,11 @@
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Server\MoveBit-Server\bin\Debug\MoveBit-Server.exe.config
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Server\MoveBit-Server\bin\Debug\MoveBit-Server.exe
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Server\MoveBit-Server\bin\Debug\MoveBit-Server.pdb
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Server\MoveBit-Server\bin\Debug\MoveBit-Messaging.dll
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Server\MoveBit-Server\bin\Debug\MoveBit-Messaging.pdb
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Server\MoveBit-Server\obj\Debug\MoveBit-Server.csproj.AssemblyReference.cache
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Server\MoveBit-Server\obj\Debug\MoveBit-Server.csproj.SuggestedBindingRedirects.cache
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Server\MoveBit-Server\obj\Debug\MoveBit-Server.csproj.CoreCompileInputs.cache
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Server\MoveBit-Server\obj\Debug\MoveBit-Server.csproj.CopyComplete
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Server\MoveBit-Server\obj\Debug\MoveBit-Server.exe
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Server\MoveBit-Server\obj\Debug\MoveBit-Server.pdb
