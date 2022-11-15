@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -40,7 +41,7 @@ namespace SE_Final_Project
             {
                 MessageBox.Show("Username or Password not entered");
             }
-            else
+            else if(NetworkClient.Login(txtUsername.Text, txtPassword.Text, chkNewUser.Checked))
             {
                 //Create a user instance
                 user = new User(txtUsername.Text, txtPassword.Text, chkNewUser.Checked);
@@ -48,6 +49,15 @@ namespace SE_Final_Project
                 this.Hide();
                 Main frmMain = new Main();
                 frmMain.ShowDialog();
+                if (frmMain.hardClose)
+                    this.Close();
+                else
+                {
+                    txtUsername.Clear();
+                    txtPassword.Clear();
+                    chkNewUser.Checked = false;
+                    this.Show();
+                }
             }
         }
 
