@@ -1,0 +1,9 @@
+# .gitignoe
+
+
+*.suo
+
+
+
+bin/
+obj/

@@ -8,7 +8,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Forms;
-
+using System.IO;
 
 namespace SE_Final_Project
 {
@@ -60,6 +60,23 @@ namespace SE_Final_Project
             this.textMessages = textMessages;
             this.audioMessages = audioMessages;
             this.videoMessages = videoMessages;
+        }
+
+
+        public string GetSmilText(string filePath)
+        {
+            string x = "";
+            try
+            {
+                x=System.IO.File.ReadAllText(filePath);
+            }
+            catch (FileNotFoundException nofile)
+            {
+                // TODO
+            }
+
+            return x;
+
         }
 
 

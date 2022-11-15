@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,7 +16,7 @@ namespace MoveBit_Server
         level_trace,
         level_debug,
         level_info,
-        level_important,
+        level_notice,
         level_warning,
         level_error,
         level_critical,
@@ -27,62 +29,51 @@ namespace MoveBit_Server
     /// </summary>
     internal class ServerLogger
     {
-        public LogLevel level;                          // Current level of the logger
-        private Object logLock = new Object();          // Lock to manage asynchronous calls to the logger
-        private static ServerLogger TheLogger = null;   // Singleton instance of the logger
-
-        private ServerLogger(LogLevel level)
-        {
-            SetLevel(level);
-        }
-
-        /// <summary>
-        /// Retrieves the singleton instance of the logger, or makes it if it does not yet exist.
-        /// </summary>
-        /// <param name="level"></param>
-        /// <returns></returns>
-        public static ServerLogger GetTheLogger(LogLevel level = LogLevel.level_trace)
-        {
-            if (TheLogger == null)
-                TheLogger = new ServerLogger(level);
-
-            return TheLogger;
-
-        }
+        private static LogLevel level = LogLevel.level_off;                          // Current level of the logger
+        private static List<string> logBuffer = new List<string>();
+        private static int maxLogBufferSize = 100;
+        private static string logFileName = DateTime.Now.ToString("yyMMddHHmmss") + "_server_log";
+        private static Object logLock = new Object();                               // Lock to manage asynchronous calls to the logger
 
         /// <summary>
         /// Sets the logger to output only messages above or equal to the 
         /// importance we specify.
         /// </summary>
         /// <param name="level"></param>
-        public void SetLevel(LogLevel level)
+        public static void SetLevel(LogLevel level)
         {
-            if (TheLogger != null)
-                Info($"Logger level changed from '{EnumToStr(this.level)}' --> '{EnumToStr(level)}'");
-            this.level = level;
+            Console.OpenStandardOutput();
+            if (level != LogLevel.level_off)
+                Info($"Logger level changed from '{EnumToStr(ServerLogger.level)}' --> '{EnumToStr(level)}'");
+            ServerLogger.level = level;
         }
 
         /// <summary>
-        /// Generic log function. If the given level is more important or 
+        /// Generic log function. If the given level is more Notice or 
         /// equal to what we have it set to, the message will be logged
         /// </summary>
         /// <param name="logMessage"></param>
         /// <param name="logLevel"></param>
-        public void Log(String logMessage, LogLevel logLevel)
+        public static void Log(String logMessage, LogLevel logLevel)
         {
-            if (((int)logLevel) >= (int)level)
-                lock (logLock)
-                {
-                    string label = EnumToStr(logLevel) + ":";
+            string label = EnumToStr(logLevel) + ":";
+            lock (logLock)
+            {
+                if (((int)logLevel) >= (int)level)
                     Console.WriteLine($"{label,-16}{logMessage}");
-                }
+                logBuffer.Add($"{label,-16}{logMessage}");
+            }
+
+            if (logBuffer.Count() >= maxLogBufferSize)
+                FlushLogBuffer();
+            
         }
 
         /// <summary>
         /// Log a trace message
         /// </summary>
         /// <param name="logMessage"></param>
-        public void Trace(String logMessage)
+        public static void Trace(String logMessage)
         {
             Log(logMessage, LogLevel.level_trace);
         }
@@ -91,7 +82,7 @@ namespace MoveBit_Server
         /// Log a debug message
         /// </summary>
         /// <param name="logMessage"></param>
-        public void Debug(String logMessage)
+        public static void Debug(String logMessage)
         {
             Log(logMessage, LogLevel.level_debug);
         }
@@ -100,25 +91,25 @@ namespace MoveBit_Server
         /// Log an info message
         /// </summary>
         /// <param name="logMessage"></param>
-        public void Info(String logMessage)
+        public static void Info(String logMessage)
         {
             Log(logMessage, LogLevel.level_info);
         }
 
         /// <summary>
-        /// Log an important message
+        /// Log an Notice message
         /// </summary>
         /// <param name="logMessage"></param>
-        public void Important(String logMessage)
+        public static void Notice(String logMessage)
         {
-            Log(logMessage, LogLevel.level_important);
+            Log(logMessage, LogLevel.level_notice);
         }
 
         /// <summary>
         /// Log a warning message
         /// </summary>
         /// <param name="logMessage"></param>
-        public void Warning(String logMessage)
+        public static void Warning(String logMessage)
         {
             Log(logMessage, LogLevel.level_warning);
         }
@@ -127,7 +118,7 @@ namespace MoveBit_Server
         /// Log an error message
         /// </summary>
         /// <param name="logMessage"></param>
-        public void Error(String logMessage)
+        public static void Error(String logMessage)
         {
             Log(logMessage, LogLevel.level_error);
         }
@@ -136,7 +127,7 @@ namespace MoveBit_Server
         /// Log a critical error message
         /// </summary>
         /// <param name="logMessage"></param>
-        public void Critical(String logMessage)
+        public static void Critical(String logMessage)
         {
             Log(logMessage, LogLevel.level_critical);
         }
@@ -146,7 +137,7 @@ namespace MoveBit_Server
         /// </summary>
         /// <param name="loglevel"></param>
         /// <returns></returns>
-        private string EnumToStr(LogLevel loglevel)
+        private static string EnumToStr(LogLevel loglevel)
         {
             // Probably a better way to do this...
             // But I think this works well enough
@@ -163,7 +154,7 @@ namespace MoveBit_Server
                     label = "INFO";
                     break;
                 case (3):
-                    label = "IMPORTANT";
+                    label = "NOTICE";
                     break;
                 case (4):
                     label = "WARNING";
@@ -182,6 +173,22 @@ namespace MoveBit_Server
                     break;
             }
             return label;
+        }
+    
+    
+        public static void FlushLogBuffer()
+        {
+            lock (logLock) 
+            {
+                using (StreamWriter sw = File.AppendText(logFileName))
+                {
+                    foreach (string entry in logBuffer)
+                    {
+                        sw.WriteLine(entry);
+                    }
+                }
+                logBuffer.Clear();
+            }
         }
     }
 }

@@ -1,0 +1,8 @@
+# .gitignore file for movebit-server
+
+
+*.suo
+
+
+bin/
+obj/

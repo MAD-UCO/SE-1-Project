@@ -4,6 +4,7 @@ using MoveBitMessaging;
 using System.Threading;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 /// <summary>
 /// Main class for the MoveBitServer. The server is meant to coordinate messaging
@@ -14,12 +15,12 @@ class MoveBitServer
     private static object svrLock = new object();           // Lock for accessing/modifying shared server resources
     private static bool runServer = false;                  // Flag for if we should continue server operations
     private static ServerDatabase serverDatabase;           // Local instance of the database
-    private static ServerLogger logger;                     // Local instance of the logger
     private static bool kickIdle = false;                   // (experimental/unused) if we should kick idle users
     private static bool loginServiceRunning = false;        // If the login service is/should continue to run
     private static TcpListener server;                      // The TCP listener that clients connect through
     private static int usersToProcess = 0;                  // How many users we have to process
     private static double allocatedUserTime = 1.0;          // How many seconds allowed per user for processing before we report it as an issue
+    private static bool plannedListenerShutdown = false;
 
     /// <summary>
     /// Main execution method for the server
@@ -27,7 +28,6 @@ class MoveBitServer
     /// <param name="args"></param>
     public static void Main(string[] args)
     {
-        logger = ServerLogger.GetTheLogger();
         serverDatabase = ServerDatabase.GetTheDatabase();
         CommandLineReader clim = new CommandLineReader();
 
@@ -36,32 +36,37 @@ class MoveBitServer
         {
             clim.EchoSettings();
             kickIdle = clim.kickIdleUsers;
-            logger.Important("Starting the MoveBit Server...");
+            ServerLogger.Notice("Starting the MoveBit Server...");
 
             // Run in localhost mode
             if (clim.acceptOnlyLocal)
             {
                 server = new TcpListener(System.Net.IPAddress.Loopback, clim.listeningPort);
-                logger.Debug("Server listening on loopback only");
+                ServerLogger.Debug("Server listening on loopback only");
             }
 
             // Accept any IP connection
             else
             {
                 server = new TcpListener(System.Net.IPAddress.Any, clim.listeningPort);
-                logger.Debug("Server listening on all interfaces");
+                ServerLogger.Debug("Server listening on all interfaces");
             }
 
             runServer = true;
 
         }
         else
-            logger.Error("The command line arguments could not be set");
+            ServerLogger.Error("The command line arguments could not be set");
 
         if (runServer)
         {
             try
             {
+#if SERVER_UNIT_TESTING
+                ServerLogger.Notice("NOTE: Server running with tests set to enabled");
+                Thread testThread = new Thread(ServerTester.RunTests);
+                testThread.Start();
+#endif
                 server.Start();
                 // Send login service to its own thread
                 Thread loginThread = new Thread(LoginService);
@@ -71,18 +76,26 @@ class MoveBitServer
             }
             catch (Exception exception)
             {
-                logger.Critical($"Fatal exception caused server to terminate: {exception}");
+                ServerLogger.Critical($"Fatal exception caused server to terminate: {exception}");
             }
             finally
             {
+                ServerLogger.Debug("Server preparing for shutdown....");
+                ShutdownListener();
                 // Stop databse, stop services, prepare for shutdown
                 serverDatabase.SaveDataBase();
                 runServer = false;
-                loginServiceRunning = false;
+
+                while (loginServiceRunning)
+                {
+                    ServerLogger.Trace("Server shutting down... Giving 1.5 seconds for different services...");
+                    Thread.Sleep(1500);
+                }
+                ServerLogger.FlushLogBuffer();
             }
         }
 
-        logger.Important("Server shut down. Hit <ENTER> To close console");
+        ServerLogger.Notice("Server shut down. Hit <ENTER> To close console");
         Console.Read();
     }
 
@@ -94,7 +107,7 @@ class MoveBitServer
     /// </summary>
     public static void MaintainUserConnections()
     {
-        logger.Trace($"Beginning the user connection processing function");
+        ServerLogger.Debug($"Beginning the user connection processing function");
         try
         {
             int idleCycles = 0;
@@ -105,7 +118,7 @@ class MoveBitServer
                 {
                     idleCycles++;
                     if (idleCycles % 100 == 0)
-                        logger.Info($"Connection processer has been idle for {idleCycles} cycles");
+                        ServerLogger.Info($"Connection processer has been idle for {idleCycles} cycles");
                     Thread.Sleep(200);
                 }
                 else
@@ -123,7 +136,7 @@ class MoveBitServer
                     double timeStart = ((DateTimeOffset)(DateTime.Now)).ToUnixTimeSeconds();
 
                     // Start a new work item for each user
-                    List<UserAccount> connectedCopy = new List<UserAccount>(connectedUsers);
+                    List<UserAccount> connectedCopy = new List<UserAccount>(connectedUsers);                //BUG?
                     foreach (UserAccount userAccount in connectedCopy)
                         ThreadPool.QueueUserWorkItem(ProcessActiveUser, userAccount);
 
@@ -138,8 +151,8 @@ class MoveBitServer
                         double diff = ((DateTimeOffset)(DateTime.Now)).ToUnixTimeSeconds() - timeStart;
                         if (diff >= allocatedUserTime * connectedUsers.Count && diff >= deltaTime)
                         {
-                            logger.Warning($"User processing is taking exceptionally long ({diff} seconds)");
-                            logger.Warning($"{usersToProcess} users remain in processing and are holding up the Processing service");
+                            ServerLogger.Warning($"User processing is taking exceptionally long ({diff} seconds)");
+                            ServerLogger.Warning($"{usersToProcess} users remain in processing and are holding up the Processing service");
                             deltaTime = diff + 1.0; // Ensures we don't hammer the reporting
                             reported = true;
                         }
@@ -148,11 +161,11 @@ class MoveBitServer
                     };  // Spin 
 
                     if (reported)
-                        logger.Important($"Previous blockage ended, resuming connection processing service");
+                        ServerLogger.Notice($"Previous blockage ended, resuming connection processing service");
 
                     if (usersToProcess < 0)
                     {
-                        logger.Warning($"'usersToProcess' set to {usersToProcess}, implies lock mechanism is not working as intended");
+                        ServerLogger.Warning($"'usersToProcess' set to {usersToProcess}, implies lock mechanism is not working as intended");
                         usersToProcess = 0;
                     }
 
@@ -164,8 +177,12 @@ class MoveBitServer
         catch (Exception exception)
         {
             runServer = false;
-            logger.Critical($"User maintainence loop forced to quit by exception: {exception}");
+            ServerLogger.Critical($"User maintainence loop forced to quit by exception: {exception}");
             throw;
+        }
+        finally
+        {
+            ServerLogger.Debug("The user connection processing function has terminated");
         }
     }
 
@@ -175,28 +192,38 @@ class MoveBitServer
     /// </summary>
     public static void LoginService()
     {
-        logger.Trace("Starting the login service");
+        ServerLogger.Trace("Starting the login service");
         TcpClient client;
-        loginServiceRunning = false;
+        loginServiceRunning = true;
         try
         {
             while (runServer)
             {
-                // TODO: make async.  Currently this function will hang forever unless 
-                // the server adds a new job and runsServer is set to false
-                // (or an exception occurs)
                 client = server.AcceptTcpClient();
                 ThreadPool.QueueUserWorkItem(LoginUser, client);
             }
         }
+        catch (SocketException exception)
+        {
+            if (plannedListenerShutdown)
+                ServerLogger.Notice("Login service being shut down...");
+            else
+            {
+                ServerLogger.Critical($"Unplanned server shutdown due to SocketException: {exception}");
+                throw;
+            }
+        }
         catch (Exception exception)
         {
-            loginServiceRunning = false;
-            logger.Critical($"Login service was forced to quit by exception: {exception}");
+            ServerLogger.Critical($"Login service was forced to quit by exception: {exception}");
             throw;
         }
+        finally
+        {
+            loginServiceRunning = false;
+        }
 
-        logger.Trace("Login service exiting");
+        ServerLogger.Trace("Login service exiting");
         return;
     }
 
@@ -207,17 +234,28 @@ class MoveBitServer
     /// <param name="clientObj"></param>
     public static void LoginUser(Object clientObj)
     {
-        logger.Trace("Logging in new user");
+        ServerLogger.Trace("Logging in new user");
         TcpClient client = (TcpClient)clientObj;
         NetworkStream netStream = client.GetStream();
+        ClientConnectRequest connectRequest;
         // Assumes first message will be ClientConnectRequest... May need to make more robust in the future
-        ClientConnectRequest connectRequest = (ClientConnectRequest)MessageManager.GetMessageFromStream(netStream);
+        try
+        {
+            connectRequest = (ClientConnectRequest)MessageManager.GetMessageFromStream(netStream);
+        }
+        catch(InvalidCastException invalidCast)
+        {
+            ServerLogger.Error($"Client sent unexpected query: {invalidCast}");
+            ServerLogger.Notice($"Due to User's illegal activity, they will not be allowed to connect");
+            client.Close();
+            return;
+        }
         ClientConnectResponse connectResponse;
 
         // User sent one or both fields as empty, dissallow
         if (connectRequest.userName == "" || connectRequest.password == new byte[32])
         {
-            logger.Debug($"Connection to new user rejected: failed to pass basic input validation checking");
+            ServerLogger.Debug($"Connection to new user rejected: failed to pass basic input validation checking");
             connectResponse = new ClientConnectResponse(serverConnectResponse.invalidCredentials);
         }
 
@@ -226,7 +264,7 @@ class MoveBitServer
         {
             if (serverDatabase.UserExists(connectRequest.userName))
             {
-                logger.Debug($"Connection to new user rejected: username already taken");
+                ServerLogger.Debug($"Connection to new user rejected: username already taken");
                 connectResponse = new ClientConnectResponse(serverConnectResponse.usernameTaken);
             }
 
@@ -236,14 +274,14 @@ class MoveBitServer
             else if (serverDatabase.InsertUserIfNotExist(connectRequest.userName, connectRequest.password))
             {
                 // Inserted into database
-                logger.Debug($"Connection to new user accepted: {connectRequest.userName} (new user) has been allowed to connect");
+                ServerLogger.Debug($"Connection to new user accepted: {connectRequest.userName} (new user) has been allowed to connect");
                 byte[] sessionID = serverDatabase.GenerateAndAddUserSession(connectRequest.userName, client);
                 connectResponse = new ClientConnectResponse(serverConnectResponse.success, sessionID);
             }
 
             else
             {
-                logger.Warning($"Connection to new user rejected for unknown reason!");
+                ServerLogger.Warning($"Connection to new user rejected for unknown reason!");
                 connectResponse = new ClientConnectResponse(serverConnectResponse.unknownError);
             }
         }
@@ -258,27 +296,27 @@ class MoveBitServer
             // Check if username or password invalid
             if (!letUserLogin)
             {
-                logger.Debug($"Connection to new user rejected: They did not exist in DB or had invalid credentials");
+                ServerLogger.Debug($"Connection to new user rejected: They did not exist in DB or had invalid credentials");
                 connectResponse = new ClientConnectResponse(serverConnectResponse.invalidCredentials);
             }
 
             else if (letUserLogin)
             {
                 // TODO: Send session ID back
-                logger.Debug($"Connection to new user accepted: {connectRequest.userName} has been allowed to connect");
+                ServerLogger.Debug($"Connection to new user accepted: {connectRequest.userName} has been allowed to connect");
                 byte[] sessionID = serverDatabase.GenerateAndAddUserSession(connectRequest.userName, client);
                 connectResponse = new ClientConnectResponse(serverConnectResponse.success);
             }
 
             else
             {
-                logger.Warning($"Connection to new user rejected for unknown reason!");
+                ServerLogger.Warning($"Connection to new user rejected for unknown reason!");
                 connectResponse = new ClientConnectResponse(serverConnectResponse.unknownError);
             }
         }
 
         MessageManager.WriteMessageToNetStream(connectResponse, netStream);
-        logger.Trace("Finished with user login");
+        ServerLogger.Trace("Finished with user login");
     }
 
     /// <summary>
@@ -290,7 +328,7 @@ class MoveBitServer
     {
 
         UserAccount user = (UserAccount)userObj;
-        logger.Trace($"Starting new processing service for {user.userName}");
+        ServerLogger.Trace($"Starting new processing service for {user.userName}");
         if (user.IsOnline())
         {
             List<MoveBitMessage> messages = CheckForNewMessagesFromUser(user);  // Get incoming
@@ -298,7 +336,7 @@ class MoveBitServer
             ProcessOutgoingMessages(messages, user);                            // Process outgoing
         }
         else
-            logger.Trace($"{user.userName} is no longer online");
+            ServerLogger.Trace($"{user.userName} is no longer online");
 
         // Decrement how many users we have left to process
         lock (svrLock)
@@ -322,7 +360,7 @@ class MoveBitServer
             while (userConnection.DataReady())
             {
                 incomingMessages.Add(userConnection.GetMessage());
-                logger.Debug($"New message recieved from {user.userName}");
+                ServerLogger.Debug($"New message recieved from {user.userName}");
             }
         }
 
@@ -367,9 +405,15 @@ class MoveBitServer
             {
                 serverMessages.Add(new TestListActiveUsersResponse(serverDatabase.GenerateOnlineUserReport()));
             }
+            else if (message.GetType() == typeof(ServerShutdownCommand))
+            {
+                ServerLogger.Notice("Server has been commanded to shut down...");
+                runServer = false;
+                
+            }
             else
             {
-                logger.Error($"Recieved an unknown type of message from {user.userName}!");
+                ServerLogger.Error($"Recieved an unknown type of message from {user.userName}!");
             }
         }
 
@@ -393,7 +437,7 @@ class MoveBitServer
 
 
 
-        logger.Debug($"Server sending {messages.Count} messages to {user.userName}");
+        ServerLogger.Debug($"Server sending {messages.Count} messages to {user.userName}");
 
         foreach (MoveBitMessage message in messages)
         {
@@ -403,4 +447,31 @@ class MoveBitServer
                 user.AddMessageToInbox(message); // Otherwise, add to their inbox for later
         }
     }
+
+    /// <summary>
+    /// Shuts down the login service by killing the server TcpListener
+    /// This results in an exception being raised, which lets the server
+    /// end in a planned manner.
+    /// </summary>
+    private static void ShutdownListener()
+    {
+        ServerLogger.Info($"Server interface being killed...");
+        plannedListenerShutdown = true;
+        server.Stop();
+    }
+
+#if SERVER_UNIT_TESTING
+    /// <summary>
+    /// Quick and easy shutdown method to end server when running tests
+    /// </summary>
+    public static void TesterShutdown()
+    {
+        if (runServer)
+        {
+            ServerLogger.Notice($"Tester is shutting down the server");
+            runServer = false;
+        }
+    }
+#endif
+
 }
