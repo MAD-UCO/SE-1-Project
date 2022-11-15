@@ -10,6 +10,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Forms;
 using System.IO;
 using System.ComponentModel;
+using SE_Final_Project.model;
 
 namespace SE_Final_Project
 {
@@ -18,7 +19,7 @@ namespace SE_Final_Project
         
         
         public string smilFilePath { get;  set; }
-        
+        public string smilFileName { get; set; }    
         public string senderName { get; set; }
         public string receiverName { get; set; }
         private bool parallelMessages { get; set; }
@@ -26,6 +27,7 @@ namespace SE_Final_Project
         public List<TextMessage> textMessages { get; private set; }
         public List<AudioMessage> audioMessages { get; private set; }
         public List<VideoMessage> videoMessages { get; private set; }
+        public List<ImageMessage> imageMessages  { get; private set; }
 
         
 
@@ -56,6 +58,20 @@ namespace SE_Final_Project
             ParseMessage(filePath);
 
         }
+        //constructor for handling the recieving the message from the server
+        //fileName should include extension
+        public Message(String fileName, String fileStringContents)
+        {
+            try
+            {
+                File.WriteAllText(Environment.CurrentDirectory + fileName, fileStringContents);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Unable to generate file from text");
+            }
+            this.ParseMessage(fileName);
+        }
         public Message(string smilFileName, string senderName, string receiverName, List<TextMessage> textMessages, List<AudioMessage> audioMessages, List<VideoMessage> videoMessages) : this(smilFileName)
         {
             this.senderName = senderName;
@@ -70,6 +86,7 @@ namespace SE_Final_Project
         public bool ParseMessage(String filePath) //Used to parse existing message into the container to be used
         {
             filePath = filePath.Trim();
+            smilFileName = Path.GetFileNameWithoutExtension(filePath);
 
             if (filePath == null)
             {
@@ -162,6 +179,25 @@ namespace SE_Final_Project
                             }
                             videoMessages.Add(video);
                         }
+                        else if (child.Name == "img")
+                        {
+                            ImageMessage image = new ImageMessage(child.InnerText);
+                            foreach(XmlAttribute attr in childCollection)
+                            {
+                                if (attr.Name == "src")
+                                {
+                                    image.filePath = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "dur")
+                                {
+                                    image.duration = child.Attributes[attr.Name].Value;
+                                }
+                                else if (attr.Name == "begin")
+                                {
+                                    image.beginTime = child.Attributes[attr.Name].Value;
+                                }
+                            }
+                        }
 
 
 
@@ -241,23 +277,22 @@ namespace SE_Final_Project
                         }
                         else if (child.Name == "img")
                         {
-                            VideoMessage video = new VideoMessage(child.InnerText);
-                            foreach (XmlAttribute attr in childCollection)
+                            ImageMessage image = new ImageMessage(child.InnerText);
+                            foreach(XmlAttribute attr in childCollection)
                             {
                                 if (attr.Name == "src")
                                 {
-                                    video.filePath = child.Attributes[attr.Name].Value;
+                                    image.filePath = child.Attributes[attr.Name].Value;
                                 }
                                 else if (attr.Name == "dur")
                                 {
-                                    video.duration = child.Attributes[attr.Name].Value;
+                                    image.duration = child.Attributes[attr.Name].Value;
                                 }
                                 else if (attr.Name == "begin")
                                 {
-                                    video.beginTime = child.Attributes[attr.Name].Value;
+                                    image.beginTime = child.Attributes[attr.Name].Value;
                                 }
                             }
-                            videoMessages.Add(video);
                         }
 
 
@@ -271,67 +306,84 @@ namespace SE_Final_Project
 
         //potentially change this to return bool to show if generation worked
         //this will currently overwrite files without warning if the file already exists
-        public void GenerateMessageFile()
+        public bool GenerateMessageFile()
         {
             
-            
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-            //settings.NewLineOnAttributes = true;
-            XmlWriter writer = XmlWriter.Create(smilFilePath, settings);
+            try
+            { 
+                XmlWriterSettings settings = new XmlWriterSettings();
+                settings.Indent = true;
+                //settings.NewLineOnAttributes = true;
+                XmlWriter writer = XmlWriter.Create(smilFilePath, settings);
 
-            writer.WriteStartElement("smil");
-            writer.WriteStartElement("head");
-            writer.WriteStartElement("body");
-            if (parallelMessages)
-            {
-                writer.WriteStartElement("par");
-            }
-
-            if (textMessages.Count >= 1)
-            {
-
-                for (int i = 0; i < textMessages.Count; i++)
+                writer.WriteStartElement("smil");
+                writer.WriteStartElement("head");
+                writer.WriteStartElement("body");
+                if (parallelMessages)
                 {
-                    writer.WriteStartElement("smilText");
-                    writer.WriteAttributeString("dur", textMessages[i].duration);
-                    writer.WriteAttributeString("begin", textMessages[i].beginTime);
-                    writer.WriteAttributeString("region", textMessages[i].region);
-                    //not including end for now cause it seems like it might not be needed
-                    writer.WriteString(textMessages[i].text);
-
-                    writer.WriteEndElement();
+                    writer.WriteStartElement("par");
                 }
 
-            }
-            if (audioMessages.Count >= 1)
-            {
-
-                for (int i = 0; i < audioMessages.Count; i++)
+                if (textMessages.Count >= 1)
                 {
-                    writer.WriteStartElement("audio");
-                    writer.WriteAttributeString("src", audioMessages[i].filePath);
-                    writer.WriteAttributeString("dur", audioMessages[i].duration);
-                    writer.WriteAttributeString("begin", audioMessages[i].beginTime);
-                    writer.WriteEndElement();
-                }
-            }
-            if (videoMessages.Count >= 1)
-            {
 
-                for (int i = 0; i < videoMessages.Count; i++)
+                    for (int i = 0; i < textMessages.Count; i++)
+                    {
+                        writer.WriteStartElement("smilText");
+                        writer.WriteAttributeString("dur", textMessages[i].duration);
+                        writer.WriteAttributeString("begin", textMessages[i].beginTime);
+                        writer.WriteAttributeString("region", textMessages[i].region);
+                        //not including end for now cause it seems like it might not be needed
+                        writer.WriteString(textMessages[i].text);
+
+                        writer.WriteEndElement();
+                    }
+
+                }
+                if (audioMessages.Count >= 1)
                 {
-                    writer.WriteStartElement("video");
-                    writer.WriteAttributeString("src", videoMessages[i].filePath);
-                    writer.WriteAttributeString("dur", videoMessages[i].duration);
-                    writer.WriteAttributeString("begin", videoMessages[i].beginTime);
-                    writer.WriteEndElement();
-                }
-            }
-            writer.Flush();
-            writer.Close();
-            
 
+                    for (int i = 0; i < audioMessages.Count; i++)
+                    {
+                        writer.WriteStartElement("audio");
+                        writer.WriteAttributeString("src", audioMessages[i].filePath);
+                        writer.WriteAttributeString("dur", audioMessages[i].duration);
+                        writer.WriteAttributeString("begin", audioMessages[i].beginTime);
+                        writer.WriteEndElement();
+                    }
+                }
+                if (videoMessages.Count >= 1)
+                {
+
+                    for (int i = 0; i < videoMessages.Count; i++)
+                    {
+                        writer.WriteStartElement("video");
+                        writer.WriteAttributeString("src", videoMessages[i].filePath);
+                        writer.WriteAttributeString("dur", videoMessages[i].duration);
+                        writer.WriteAttributeString("begin", videoMessages[i].beginTime);
+                        writer.WriteEndElement();
+                    }
+                }
+                if( imageMessages.Count >= 1)
+                {
+                    for( int i = 0; i < imageMessages.Count; i++)
+                    {
+                        writer.WriteStartAttribute("img");
+                        writer.WriteAttributeString("src", imageMessages[i].filePath);
+                        writer.WriteAttributeString("dur", imageMessages[i].duration);
+                        writer.WriteAttributeString("begin", imageMessages[i].beginTime);
+                        writer.WriteEndElement();
+                    }
+                }
+                writer.Flush();
+                writer.Close();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+                Console.WriteLine("Message Generation failed");
+            }
         }
 
         
@@ -359,7 +411,7 @@ namespace SE_Final_Project
                 return Path.GetFileName(smilFilePath);
             }
 
-<<<<<<< HEAD
+
             return "No file name found";
         }
 
@@ -381,12 +433,10 @@ namespace SE_Final_Project
                 video.filePath =Environment.CurrentDirectory + Path.GetFileName(video.filePath);
             }
 
-=======
-        //Setters
-
-        public void setSmilFileName(String smilFileName)
+        }
+        public void setSmilFilePath(String smilFilePath)
         {
-            this.smilFileName = smilFileName;
+            this.smilFilePath = smilFilePath;
         }
 
         public void setSenderName(String senderName)
@@ -397,7 +447,7 @@ namespace SE_Final_Project
         public void setReceiverName(String receiverName)
         {
             this.receiverName = receiverName;
->>>>>>> main
+
         }
     }
 }

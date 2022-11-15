@@ -15,7 +15,7 @@ namespace SE_Semester_Project
     }
     internal class ParsingTester
     {
-        //gonna try and follow mitchells testing style here to try and make him proud
+        //gonna try and follow mitchells testing architecture here to try and make him proud
         //these tests rely on specific smilFiles to run that will be available in a Files-For-Tester folder
         private static Dictionary<string,Message> testMessages = new Dictionary<string,Message>();
         private static Dictionary<string,Action> testFunctions = new Dictionary<string,Action>();
@@ -30,7 +30,10 @@ namespace SE_Semester_Project
 
         public static void RunTests()
         {
-            
+            if(File.Exists(reportFile))
+            {
+                File.Delete(reportFile);
+            }
             
 
 
@@ -133,6 +136,11 @@ namespace SE_Semester_Project
 
         private static void TestMultipleTextFileParsing()
         {
+            if(File.Exists(workingDirectory + "MultipleTextsComparison.smil"))
+            {
+                File.Delete(workingDirectory+ "MultipleTextsComparison.smil");
+            }
+
             Message message = new Message();
             message.ParseMessage(workingDirectory + "MultipleTexts.smil");
             for(int i = 0; i<100; i++)
@@ -165,6 +173,11 @@ namespace SE_Semester_Project
 
         private static void TestParallelTextFileParsing()
         {
+            if(File.Exists(workingDirectory + "ParallelTextsComparison.smil"))
+            {
+                File.Delete(workingDirectory + "ParallelTextsComparison.smil");
+            }
+
             Message message = new Message();
             message.ParseMessage(workingDirectory + "ParallelTexts.smil");
             for (int i = 0; i < 100; i++)
