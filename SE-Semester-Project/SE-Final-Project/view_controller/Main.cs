@@ -38,8 +38,11 @@ namespace SE_Final_Project
         //Class constructor, do not edit. Use form load event for initialization
         public Main()
         {
+
             this.FormClosing += main_FormClosing;
             InitializeComponent();
+
+
         }
 
         //Event handlers
@@ -113,7 +116,7 @@ namespace SE_Final_Project
                 //Add host name (IP Address) sender, reciever, and smilFile name(receiver + current time stamp)
                 message.setSenderName(NetworkClient.myClientName);
                 message.setReceiverName(cboAddresses.Text.ToString());
-                message.setSmilFileName(filePath + "/" + cboAddresses.SelectedItem.ToString() + ".smil");
+                message.setSmilFilePath(filePath + "/" + cboAddresses.SelectedItem.ToString() + ".smil");
 
                 //Generate message file
                 message.GenerateMessageFile();
