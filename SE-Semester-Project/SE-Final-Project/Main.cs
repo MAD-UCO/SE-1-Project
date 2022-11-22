@@ -18,6 +18,7 @@ namespace SE_Final_Project
 
         public Main()
         {
+            
             this.FormClosing += Main_OnClose;
             InitializeComponent();
         }

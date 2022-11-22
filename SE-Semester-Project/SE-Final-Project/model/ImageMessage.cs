@@ -4,39 +4,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SE_Final_Project
+namespace SE_Final_Project.model
 {
-    public class AudioMessage
+    public class ImageMessage
     {
         public string filePath { get; set; }
         public string duration { get; set; }
         public string beginTime { get; set; }
         public string endTime { get; set; }
 
-        public AudioMessage()
+        public ImageMessage()
         {
             filePath = "";
             duration = "1s";
             beginTime = "1s";
             endTime = "2s";
         }
-        public AudioMessage(string filePath)
+        public ImageMessage(string filePath)
         {
             this.filePath = filePath;
-            duration = "10s";
-            beginTime = "0s";
-            endTime = "10s";
+            duration = "1s";
+            beginTime = "1s";
+            endTime = "2s";
         }
-        public AudioMessage(string filePath, string duration, string beginTime, string endTime)
+        public ImageMessage(string filePath, string duration, string beginTime, string endTime)
         {
             this.filePath = filePath;
             this.duration = duration;
             this.beginTime = beginTime;
             this.endTime = endTime;
         }
-
-        //getters are setup to return time in seconds
-        //THESE ARE DANGEROUS CURRENTLY!!!! ONLY CAN HANDLE CORRECT INPUT!!!
         public int getDuration()
         {
 
@@ -85,4 +82,5 @@ namespace SE_Final_Project
             }
         }
     }
+
 }

@@ -1,5 +1,6 @@
 ﻿using SE_Semester_Project;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,11 +20,18 @@ namespace SE_Final_Project
         [STAThread]
         static void Main()
         {
+
+#if PARSING_UNIT_TESTING
+            ParsingTester.RunTests();
+#endif
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             NetworkClient.Start();
             Application.Run(new Login());
             NetworkClient.Shutdown();
+
+            
         }
     }
 }
