@@ -9,11 +9,8 @@ using System.Xml.Serialization;
 using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Forms;
 using System.IO;
-<<<<<<< HEAD
 using System.ComponentModel;
 using SE_Final_Project.model;
-=======
->>>>>>> main
 
 namespace SE_Final_Project
 {
@@ -47,6 +44,7 @@ namespace SE_Final_Project
             textMessages = new List<TextMessage>();
             audioMessages = new List<AudioMessage>();
             videoMessages = new List<VideoMessage>();
+            imageMessages = new List<ImageMessage>();
         }
         //filePath to smil file to parse to Message
         public Message(String filePath)
