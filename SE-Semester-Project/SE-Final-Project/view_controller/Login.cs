@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using SE_Final_Project.model;
-using SE_Final_Project.view_controller;
 using SE_Semester_Project;
 
 namespace SE_Final_Project
@@ -83,6 +82,11 @@ namespace SE_Final_Project
         public User getUser()
         {
             return user;
+        }
+
+        private void Login_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

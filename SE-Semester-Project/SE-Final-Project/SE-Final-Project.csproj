@@ -49,7 +49,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MoveBit-Messaging">
-      <HintPath>..\..\..\..\temp\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.dll</HintPath>
+      <HintPath>..\..\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -65,8 +65,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="model\AudioMessage.cs" />
+    <Compile Include="model\Event.cs" />
     <Compile Include="model\User.cs" />
-    <Compile Include="Server_Observer\dummyClass.cs" />
     <Compile Include="view_controller\Duration.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -86,7 +86,6 @@
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
     <Compile Include="model\Message.cs" />
-    <Compile Include="view_controller\Mediator.cs" />
     <Compile Include="view_controller\Messages.cs">
       <SubType>Form</SubType>
     </Compile>

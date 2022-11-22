@@ -88,7 +88,7 @@ namespace SE_Final_Project
             this.btnSend.TabIndex = 3;
             this.btnSend.Text = "SND";
             this.btnSend.UseVisualStyleBackColor = false;
-            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
+            this.btnSend.Click += new System.EventHandler(this.BtnSend_Click);
             // 
             // btnDelete
             // 

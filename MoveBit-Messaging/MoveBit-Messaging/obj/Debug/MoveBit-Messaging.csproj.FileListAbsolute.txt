@@ -10,3 +10,9 @@ D:\School\git\SE-1-Project\SE-1-Project\MoveBit-Messaging\MoveBit-Messaging\obj\
 D:\School\git\SE-1-Project\SE-1-Project\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.csproj.CoreCompileInputs.cache
 D:\School\git\SE-1-Project\SE-1-Project\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.dll
 D:\School\git\SE-1-Project\SE-1-Project\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.pdb
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.dll
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.pdb
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.csproj.AssemblyReference.cache
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.csproj.CoreCompileInputs.cache
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.dll
+C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.pdb

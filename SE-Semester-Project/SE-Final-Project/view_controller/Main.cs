@@ -1,5 +1,4 @@
-﻿using SE_Final_Project.view_controller;
-using SE_Semester_Project;
+﻿using SE_Semester_Project;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,7 +21,7 @@ namespace SE_Final_Project
 
         public bool hardClose = false;
         
-        //private fields
+        // private fields
         private string selectedAddress;
         private string selectedFile;
         private List<String> outgoingFilepaths = new List<String>();
@@ -34,16 +33,14 @@ namespace SE_Final_Project
         private StartTimeDialog frmStartTimeDialog = new StartTimeDialog();
         private Duration frmDuration = new Duration();
 
-
-        //Class constructor, do not edit. Use form load event for initialization
+        // Class constructor, do not edit. Use form load event for initialization
         public Main()
         {
             this.FormClosing += main_FormClosing;
             InitializeComponent();
         }
 
-        //Event handlers
-
+        // Event Handlers
         private void Main_Load(object sender, EventArgs e)
         {
             //Hide media player until a preview is needed
@@ -54,9 +51,8 @@ namespace SE_Final_Project
 
         }
 
-        private void btnSend_Click(object sender, EventArgs e)
+        private void BtnSend_Click(object sender, EventArgs e)
         {
-
 
             if(cboAddresses.SelectedItem == null)
             {
@@ -110,7 +106,7 @@ namespace SE_Final_Project
                     }
                 }
 
-                //Add host name (IP Address) sender, reciever, and smilFile name(receiver + current time stamp)
+                //Add host sender, reciever, and smilFile name(receiver + current time stamp)
                 message.setSenderName(NetworkClient.myClientName);
                 message.setReceiverName(cboAddresses.Text.ToString());
                 message.setSmilFileName(filePath + "/" + cboAddresses.SelectedItem.ToString() + ".smil");
@@ -127,9 +123,6 @@ namespace SE_Final_Project
                 NetworkClient.AddMessageToOutQueue(
                     new MoveBitMessaging.SimpleTextMessage(message.receiverName, message.senderName, message.GetSmilText(message.smilFileName))
                     );
-
-                //Display simple message for testing
-
             }
         }
        
@@ -224,9 +217,6 @@ namespace SE_Final_Project
             this.Hide();
             NetworkClient.Logout();
             hardClose = false;
-            //Login frmLogin = new Login();
-            //frmLogin.Show();
-            
         }
 
         private void main_FormClosing(object sender, FormClosingEventArgs closingArgs)

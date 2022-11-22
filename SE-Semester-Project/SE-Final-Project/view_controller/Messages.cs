@@ -1,5 +1,4 @@
-﻿using SE_Final_Project.view_controller;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
