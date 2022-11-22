@@ -37,9 +37,8 @@ namespace SE_Final_Project
         public Main()
         {
 
-            this.FormClosing += main_FormClosing;
+            //this.FormClosing += main_FormClosing;
             InitializeComponent();
-
 
         }
 
@@ -81,8 +80,8 @@ namespace SE_Final_Project
                 {
                     //Create new text message and assign start/duration
                     textMessage = new TextMessage(txtOutgoing.Text);
-                    textMessage.beginTime = frmStartTimeDialog.getSeconds();
-                    textMessage.duration = frmDuration.getSeconds();
+                    //textMessage.beginTime = frmStartTimeDialog.getSeconds();
+                    //textMessage.duration = frmDuration.getSeconds();
 
 
                     //store in message object

@@ -34,7 +34,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;USE_COMMANDLINE; PARSING_UNIT_TESTING;</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -55,7 +55,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MoveBit-Messaging">
-      <HintPath>..\..\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.dll</HintPath>
+      <HintPath>..\..\..\..\temp\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -70,13 +70,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="model\AudioMessage.cs" />
-<<<<<<< HEAD
     <Compile Include="model\Event.cs" />
-=======
+    <Compile Include="model\AudioMessage.cs" />
     <Compile Include="model\ImageMessage.cs" />
     <Compile Include="model\ParsingTester.cs" />
->>>>>>> main
     <Compile Include="model\User.cs" />
     <Compile Include="view_controller\Duration.cs">
       <SubType>Form</SubType>
@@ -175,5 +172,6 @@
     <Content Include="MBMICON.ico" />
     <Content Include="MovingBitMessengingIcon.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
