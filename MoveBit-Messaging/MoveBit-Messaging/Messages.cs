@@ -205,12 +205,14 @@ namespace MoveBitMessaging
         public string senderName;
         public string recipientName;
         public string smilData;
+        public string senderFileName;
         public Dictionary<string, byte[]> mediaFileData;
-        public MediaMessage(string senderName, string recipientName, string smilData, Dictionary<string, byte[]> mediaFileData = null)
+        public MediaMessage(string senderName, string recipientName, string smilData, string senderFileName, Dictionary<string, byte[]> mediaFileData = null)
         {
             this.senderName = senderName;
             this.recipientName = recipientName;
             this.smilData = smilData;
+            this.senderName = senderFileName;
             this.mediaFileData = mediaFileData;
         }
 
@@ -219,6 +221,17 @@ namespace MoveBitMessaging
             // TODO: may need to make this data structure more robust in order to 
             //  handle instances where two different files have the same name
             mediaFileData[fileName] = fileData;
+        }
+    }
+
+    [Serializable]
+    public class MediaMessageResult : MoveBitMessage
+    {
+        public SendResult sendResult;
+
+        public MediaMessageResult(SendResult result)
+        {
+            sendResult = result;
         }
     }
 

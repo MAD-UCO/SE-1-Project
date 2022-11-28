@@ -119,7 +119,7 @@ namespace SE_Final_Project
                  * 
                  */
 
-                NetworkClient.AddMessageToOutQueue(
+                NetworkClient.SendMessage(
                     new MoveBitMessaging.SimpleTextMessage(message.receiverName, message.senderName, message.GetSmilText(message.smilFileName))
                     );
             }
