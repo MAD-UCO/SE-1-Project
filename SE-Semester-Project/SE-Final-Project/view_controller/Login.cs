@@ -22,6 +22,7 @@ namespace SE_Final_Project
         private string username = "";
         private string password = "";
         private User user;
+        private Main main;
 
         //Store successful and unsuccessful attempts
         List<bool> attempts = new List<bool>();
@@ -29,12 +30,11 @@ namespace SE_Final_Project
         //Class construcctor, do not edit. Use form load event for initialization
         public Login()
         {
-            this.FormClosing += login_FormClosing;
             InitializeComponent();
         }
 
         //Event handlers
-        private void btnLogin_Click(object sender, EventArgs e)
+        private void BtnLogin_Click(object sender, EventArgs e)
         {
             if(txtPassword.Text == "" || txtUsername.Text == "")
             {
@@ -46,47 +46,46 @@ namespace SE_Final_Project
                 user = new User(txtUsername.Text, txtPassword.Text, chkNewUser.Checked);
 
                 this.Hide();
-                Main frmMain = new Main();
-                frmMain.ShowDialog();
-                if (frmMain.hardClose)
-                    this.Close();
+                if(main == null)
+                {
+                    main = new Main();
+                    main.Show();
+                }
                 else
                 {
-                    txtUsername.Clear();
-                    txtPassword.Clear();
-                    chkNewUser.Checked = false;
-                    this.Show();
+                    main = (Main)Application.OpenForms["Main"];
                 }
+                main.Show();
+                txtUsername.Clear();
+                txtPassword.Clear();
+                chkNewUser.Checked = false;
             }
         }
 
-        private void txtUsername_TextChanged(object sender, EventArgs e)
+        private void TxtUsername_TextChanged(object sender, EventArgs e)
         {
             //Save the input text from txtUsername
             username = txtUsername.Text;
         }
 
-        private void txtPassword_TextChanged(object sender, EventArgs e)
+        private void TxtPassword_TextChanged(object sender, EventArgs e)
         {
             //Save the input text from txtPassword
             password = txtPassword.Text;
         }
 
-        private void login_FormClosing(object sender, FormClosingEventArgs closingArgs)
-        {
-            NetworkClient.Logout();
-            NetworkClient.Shutdown();
-        }
-
         //Getters
-        public User getUser()
+        public User GetUser()
         {
             return user;
         }
 
-        private void Login_Load(object sender, EventArgs e)
+        //Shut down all processes when user exits program
+        private void Login_FormClosing(object sender, FormClosingEventArgs closingArgs)
         {
-
+            NetworkClient.Shutdown();
+            NetworkClient.Logout();
+            Application.Exit();
         }
     }
 }

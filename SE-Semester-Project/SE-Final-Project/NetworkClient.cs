@@ -155,16 +155,16 @@ namespace SE_Semester_Project
                 userInput = Console.ReadLine();
 
                 // User entered something
-                if(userInput != null && userInput != "")
+                if (userInput != null && userInput != "")
                 {
                     userInput = userInput.ToLower();
-                    if(userInput == "exit")
+                    if (userInput == "exit")
                     {
                         exit = true;
                         TerminateConnection();
                         Debug.WriteLine("Diconnecting from server...");
                     }
-                    else if(userInput == "send")
+                    else if (userInput == "send")
                     {
 
                         if (clientState == ClientState.LoggedInAndConnected)
@@ -182,24 +182,24 @@ namespace SE_Semester_Project
                             Debug.WriteLine("You must log in to send messages");
 
                     }
-                    else if(userInput == "logout")
+                    else if (userInput == "logout")
                     {
-                        if((clientState & ClientState.LoggedIn) != ClientState.NotLoggedIn)
+                        if ((clientState & ClientState.LoggedIn) != ClientState.NotLoggedIn)
                         {
-                            if((clientState & ClientState.Connected) != ClientState.NotLoggedIn)
+                            if ((clientState & ClientState.Connected) != ClientState.NotLoggedIn)
                             {
                                 TerminateConnection();
                                 Debug.WriteLine("Diconnecting from server...");
                             }
                             Debug.WriteLine("Logging out");
-                        } 
+                        }
 
                     }
-                    else if(userInput == "listusers")
+                    else if (userInput == "listusers")
                     {
-                        if(clientState == ClientState.LoggedInAndConnected)
+                        if (clientState == ClientState.LoggedInAndConnected)
                             AddMessageToOutQueue(new TestListActiveUsersRequest());
-                        else if(clientState == ClientState.Connected)
+                        else if (clientState == ClientState.Connected)
                             throw new InvalidOperationException($"User state is illegal - registed as connected, but not logged in!");
                         else if (clientState != ClientState.LoggedIn)
                             Debug.WriteLine("You must log in to send messages");
@@ -208,7 +208,7 @@ namespace SE_Semester_Project
             }
 
         }
-        
+
         /// <summary>
         /// Function for retrieving the current Client state
         /// </summary>

@@ -18,8 +18,6 @@ namespace SE_Final_Project
 {
     public partial class Main : Form
     {
-
-        public bool hardClose = false;
         
         // private fields
         private string selectedAddress;
@@ -32,14 +30,13 @@ namespace SE_Final_Project
         private AudioMessage audioMessage;
         private StartTimeDialog frmStartTimeDialog = new StartTimeDialog();
         private Duration frmDuration = new Duration();
+        private Login login = (Login)Application.OpenForms["Login"];
+        private Messages messages = (Messages)Application.OpenForms["Messages"];
 
         // Class constructor, do not edit. Use form load event for initialization
         public Main()
         {
-
-            //this.FormClosing += main_FormClosing;
             InitializeComponent();
-
         }
 
         // Event Handlers
@@ -162,9 +159,15 @@ namespace SE_Final_Project
         private void btnMessages_Click(object sender, EventArgs e)
         {
             this.Hide();
-            Messages frmMessages = new Messages();
-            frmMessages.Show();
-            frmMessages.Location = this.Location;
+
+            //If this is the first time navigating to messages create a new form. Else reload existing form
+            if(messages == null)
+            {
+                messages = new Messages();
+            }
+         
+            messages.Show();
+            
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -215,21 +218,10 @@ namespace SE_Final_Project
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
-            //Create new Login form, display, and hide the current form
+            //Navigate back to the login form and logout user
             this.Hide();
+            login.Show();
             NetworkClient.Logout();
-            hardClose = false;
-        }
-
-        private void main_FormClosing(object sender, FormClosingEventArgs closingArgs)
-        {
-            //Debug.Assert(false);
-            //NetworkClient.Shutdown();
-            if (NetworkClient.GetClientState() != ClientState.NotLoggedIn)
-            {
-                hardClose = true;
-                NetworkClient.Logout();
-            }
         }
 
         //Getters
@@ -272,6 +264,14 @@ namespace SE_Final_Project
             int k = 8628;
             char sndChar = (char)k;
             btnSend.Text = sndChar.ToString();
+        }
+
+        //Shut down all processes when user exits program
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            NetworkClient.Shutdown();
+            NetworkClient.Logout();
+            Application.Exit();
         }
     }
 }
