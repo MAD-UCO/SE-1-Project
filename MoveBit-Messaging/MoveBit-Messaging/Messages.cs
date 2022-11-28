@@ -225,6 +225,17 @@ namespace MoveBitMessaging
     }
 
     [Serializable]
+    public class MediaMessageResult : MoveBitMessage
+    {
+        public SendResult sendResult;
+
+        public MediaMessageResult(SendResult result)
+        {
+            sendResult = result;
+        }
+    }
+
+    [Serializable]
     public class ServerShutdownCommand : MoveBitMessage
     {
         public ServerShutdownCommand()
