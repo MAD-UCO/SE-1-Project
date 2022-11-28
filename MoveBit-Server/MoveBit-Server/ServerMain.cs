@@ -383,6 +383,7 @@ class MoveBitServer
             // Add new messages here as needed
             if (message.GetType() == typeof(SimpleTextMessage))
             {
+                ServerLogger.Warning("Use of SimpleTextMessage is deprecated and will be removed in a future version.");
                 SimpleTextMessageResult result;
                 SimpleTextMessage msg = (SimpleTextMessage)message;
                 if (serverDatabase.UserExists(msg.recipient))
@@ -409,7 +410,25 @@ class MoveBitServer
             {
                 ServerLogger.Notice("Server has been commanded to shut down...");
                 runServer = false;
-                
+            }
+            else if (message.GetType() == typeof(MediaMessage))
+            {
+                MediaMessageResponse result;
+                MediaMessage msg = (MediaMessage)message;
+                if (serverDatabase.UserExists(msg.recipientName))
+                { 
+                    UserAccount targetUser = serverDatabase.GetUser(msg.recipientName);
+                    if (targetUser != null)
+                    {
+                        result = new MediaMessageResponse(SendResult.sendSuccess);
+                        targetUser.AddMessageToInbox(msg);
+                    }
+                    else
+                        result = new MediaMessageResponse(SendResult.sendFailure);
+                }
+                else
+                    result = new MediaMessageResponse(SendResult.sendFailure);
+                serverMessages.Add(result);
             }
             else
             {
