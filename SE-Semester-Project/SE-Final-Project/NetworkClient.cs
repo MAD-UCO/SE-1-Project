@@ -10,6 +10,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Diagnostics;
 using SE_Final_Project;
 using System.Windows.Forms;
+using Message = SE_Final_Project.Message;
+using System.IO;
+using SE_Final_Project.model;
 
 namespace SE_Semester_Project
 {
@@ -107,9 +110,49 @@ namespace SE_Semester_Project
             return success;
         }
 
-        public static List<MoveBitMessage> GetNewMessages()
+        public static List<Message> GetNewMessages()
         {
-            List<MoveBitMessage> temp = new List<MoveBitMessage>(inprocessedMessages);
+            List<Message> temp = new List<Message>();
+
+            lock (inboundMsgQueueLock)
+            {
+                foreach(MoveBitMessage msg in inprocessedMessages)
+                {
+                    if(msg.GetType() == typeof(MediaMessage))
+                    {
+                        MediaMessage media = (MediaMessage)(msg);
+                        FileInfo fi = new FileInfo(media.senderFileName);
+                        Message smilMsg = new Message(fi.Name, media.smilData);
+
+                        foreach (KeyValuePair<string, byte[]> entry in media.videoFiles)
+                        {
+                            fi = new FileInfo(entry.Key);
+                            File.WriteAllBytes(fi.Name, entry.Value);
+                            smilMsg.AddVideoMessage(new VideoMessage(fi.Name));
+                        }
+
+                        foreach (KeyValuePair<string, byte[]> entry in media.soundFiles) 
+                        {
+                            fi = new FileInfo(entry.Key);
+                            File.WriteAllBytes(fi.Name, entry.Value);
+                            smilMsg.AddAudioMessage(new AudioMessage(fi.Name));
+                        }
+
+                        foreach(KeyValuePair<string, byte[]> entry in media.imageFiles)
+                        {
+                            throw new NotImplementedException();
+                            /*
+                            fi = new FileInfo(entry.Key);
+                            File.WriteAllBytes(fi.Name, entry.Value);
+                            smilMsg.Add
+                            */
+                        }
+
+                        temp.Add(smilMsg);
+                    }
+                }
+            }
+
             inprocessedMessages.Clear();
             return temp;
         }
@@ -158,6 +201,23 @@ namespace SE_Semester_Project
         public static void SendMessage(MoveBitMessage message)
         {
             AddMessageToOutQueue(message);
+        }
+
+        public static void SendMessage(Message message)
+        {
+
+            MediaMessage mediaMessage = new MediaMessage(message.senderName, message.receiverName, message.GetSmilText(message.smilFilePath), message.getFileName());
+
+            foreach(VideoMessage vm in message.videoMessages)
+                mediaMessage.AddFile(FileType.VideoFile, vm.filePath, File.ReadAllBytes(vm.filePath));
+            foreach (AudioMessage am in message.audioMessages)
+                mediaMessage.AddFile(FileType.AudioFile, am.filePath, File.ReadAllBytes(am.filePath));
+            foreach (ImageMessage im in message.imageMessages)
+                mediaMessage.AddFile(FileType.ImageFile, im.filePath, File.ReadAllBytes(im.filePath));
+
+
+            SendMessage(mediaMessage);
+
         }
 
         /// <summary>
@@ -321,7 +381,7 @@ namespace SE_Semester_Project
             {
                 continueLoop = true;
                 bool activity;
-                while (continueLoop)//((clientState & ClientState.Connected) != ClientState.NotLoggedIn)
+                while (continueLoop)
                 {
 
                     // Someone is trying to log into the system.
@@ -332,7 +392,7 @@ namespace SE_Semester_Project
                         {
                             connectSuccess = TryConnectToServer();
                         }
-                        catch (SocketException sockExcept)
+                        catch (SocketException)
                         {
                             notifications.Add(new Notification("The server could not be reached at this time"));
                         }
@@ -429,7 +489,6 @@ namespace SE_Semester_Project
                                     InboxListUpdate update = (InboxListUpdate)msg;
                                     foreach (MediaMessage subMsg in update.messages)
                                     {
-                                        //Debug.WriteLine($"\t{subMsg.senderName} says: \"{subMsg.message
                                         inprocessedMessages.Add(subMsg);
                                     }
                                 }
@@ -469,6 +528,10 @@ namespace SE_Semester_Project
                                 {
                                     Debug.WriteLine("Forced logoff message from server... Disconnecting\n");
                                     TerminateConnection();
+                                }
+                                else if (msg.GetType() == typeof(MediaMessage))
+                                {
+                                    inprocessedMessages.Add((MediaMessage)msg);
                                 }
                                 else
                                     Debug.WriteLine("I don't know how to process this message");

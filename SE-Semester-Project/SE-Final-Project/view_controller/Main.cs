@@ -65,12 +65,12 @@ namespace SE_Final_Project
             {
 
                 //Generate a storage location and pass to message constructor
-                String filePath = "C:/OCCC_UCO/Fall 2022/Project Test Files";
+                String filePath = "";
                 message = new Message();
 
                 //Set sender and receiver name
-                message.setSenderName("Movebit User");
-                message.setReceiverName(cboAddresses.SelectedItem.ToString());
+                message.setSenderName(NetworkClient.myClientName);
+                message.setReceiverName(cboAddresses.Text.ToString());
 
                 //Store message subtypes
                 if (txtOutgoing.Text != "")
@@ -105,12 +105,9 @@ namespace SE_Final_Project
                     }
                 }
 
-                //Add host sender, reciever, and smilFile name(receiver + current time stamp)
-                message.setSenderName(NetworkClient.myClientName);
-                message.setReceiverName(cboAddresses.Text.ToString());
+                //Add host sender, reciever, and smilFile name(receiver + current time stamp
                 message.setSmilFilePath(filePath + "/" + cboAddresses.SelectedItem.ToString() + ".smil");
 
-                //Generate message file
                 message.GenerateMessageFile();
 
                 /*
@@ -119,9 +116,7 @@ namespace SE_Final_Project
                  * 
                  */
 
-                NetworkClient.SendMessage(
-                    new MoveBitMessaging.SimpleTextMessage(message.receiverName, message.senderName, message.GetSmilText(message.smilFileName))
-                    );
+                NetworkClient.SendMessage(message);
             }
         }
        
