@@ -1,4 +1,4 @@
-﻿using SE_Final_Project.view_controller;
+﻿using SE_Semester_Project;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,14 +10,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WMPLib;
+using MoveBitMessaging;
 
 namespace SE_Final_Project
 {
+   
     public partial class Messages : Form
     {
         //private fields
 
         private String selectedMessage;
+        private Main main = (Main)Application.OpenForms["Main"];
 
         //Class constructor, do not edit. Use form load event for initialization
         public Messages()
@@ -55,11 +58,7 @@ namespace SE_Final_Project
         {
             //Create a new frmMain object and display it in the current location.
             this.Hide();
-            Main frmMain = new Main();
-            frmMain.Show();
-            frmMain.Location = this.Location;
-            
-
+            main.Show();
         }
 
         private void cboMessages_SelectedIndexChanged(object sender, EventArgs e)
@@ -67,6 +66,8 @@ namespace SE_Final_Project
             //Store the selected combo box item in a string
             selectedMessage = cboMessages.SelectedItem.ToString();
 
+            
+              
             //Display the text message in the correct location
             displayTextMessage();
             
@@ -186,6 +187,14 @@ namespace SE_Final_Project
                 //Display media player and hide text canvas
                 playerMessages.Visible = true;
             }
+        }
+
+        //Shut down all processes when user exits program
+        private void Messages_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            NetworkClient.Shutdown();
+            NetworkClient.Logout();
+            Application.Exit();
         }
     }
 }

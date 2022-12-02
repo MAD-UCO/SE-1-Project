@@ -155,7 +155,8 @@
             this.Controls.Add(this.btnBack);
             this.Controls.Add(this.cboMessages);
             this.Name = "Messages";
-            this.Text = "MoveBit - Messages";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Messages_FormClosing);
             this.Load += new System.EventHandler(this.Messages_Load);
             ((System.ComponentModel.ISupportInitialize)(this.playerMessages)).EndInit();
             this.grpTextCanvas.ResumeLayout(false);

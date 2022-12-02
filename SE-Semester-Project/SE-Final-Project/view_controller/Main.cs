@@ -1,5 +1,4 @@
-﻿using SE_Final_Project.view_controller;
-using SE_Semester_Project;
+﻿using SE_Semester_Project;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,10 +18,8 @@ namespace SE_Final_Project
 {
     public partial class Main : Form
     {
-
-        public bool hardClose = false;
         
-        //private fields
+        // private fields
         private string selectedAddress;
         private string selectedFile;
         private List<String> outgoingFilepaths = new List<String>();
@@ -33,20 +30,16 @@ namespace SE_Final_Project
         private AudioMessage audioMessage;
         private StartTimeDialog frmStartTimeDialog = new StartTimeDialog();
         private Duration frmDuration = new Duration();
+        private Login login = (Login)Application.OpenForms["Login"];
+        private Messages messages = (Messages)Application.OpenForms["Messages"];
 
-
-        //Class constructor, do not edit. Use form load event for initialization
+        // Class constructor, do not edit. Use form load event for initialization
         public Main()
         {
-
-            this.FormClosing += main_FormClosing;
             InitializeComponent();
-
-
         }
 
-        //Event handlers
-
+        // Event Handlers
         private void Main_Load(object sender, EventArgs e)
         {
             //Hide media player until a preview is needed
@@ -57,9 +50,8 @@ namespace SE_Final_Project
 
         }
 
-        private void btnSend_Click(object sender, EventArgs e)
+        private void BtnSend_Click(object sender, EventArgs e)
         {
-
 
             if(cboAddresses.SelectedItem == null)
             {
@@ -73,20 +65,20 @@ namespace SE_Final_Project
             {
 
                 //Generate a storage location and pass to message constructor
-                String filePath = "C:/OCCC_UCO/Fall 2022/Project Test Files";
+                String filePath = "";
                 message = new Message();
 
                 //Set sender and receiver name
-                message.setSenderName("Movebit User");
-                message.setReceiverName(cboAddresses.SelectedItem.ToString());
+                message.setSenderName(NetworkClient.myClientName);
+                message.setReceiverName(cboAddresses.Text.ToString());
 
                 //Store message subtypes
                 if (txtOutgoing.Text != "")
                 {
                     //Create new text message and assign start/duration
                     textMessage = new TextMessage(txtOutgoing.Text);
-                    textMessage.beginTime = frmStartTimeDialog.getSeconds();
-                    textMessage.duration = frmDuration.getSeconds();
+                    //textMessage.beginTime = frmStartTimeDialog.getSeconds();
+                    //textMessage.duration = frmDuration.getSeconds();
 
 
                     //store in message object
@@ -113,12 +105,9 @@ namespace SE_Final_Project
                     }
                 }
 
-                //Add host name (IP Address) sender, reciever, and smilFile name(receiver + current time stamp)
-                message.setSenderName(NetworkClient.myClientName);
-                message.setReceiverName(cboAddresses.Text.ToString());
+                //Add host sender, reciever, and smilFile name(receiver + current time stamp
                 message.setSmilFilePath(filePath + "/" + cboAddresses.SelectedItem.ToString() + ".smil");
 
-                //Generate message file
                 message.GenerateMessageFile();
 
                 /*
@@ -127,12 +116,7 @@ namespace SE_Final_Project
                  * 
                  */
 
-                NetworkClient.AddMessageToOutQueue(
-                    new MoveBitMessaging.SimpleTextMessage(message.receiverName, message.senderName, message.GetSmilText(message.smilFileName))
-                    );
-
-                //Display simple message for testing
-
+                NetworkClient.SendMessage(message);
             }
         }
        
@@ -170,9 +154,15 @@ namespace SE_Final_Project
         private void btnMessages_Click(object sender, EventArgs e)
         {
             this.Hide();
-            Messages frmMessages = new Messages();
-            frmMessages.Show();
-            frmMessages.Location = this.Location;
+
+            //If this is the first time navigating to messages create a new form. Else reload existing form
+            if(messages == null)
+            {
+                messages = new Messages();
+            }
+         
+            messages.Show();
+            
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -223,24 +213,10 @@ namespace SE_Final_Project
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
-            //Create new Login form, display, and hide the current form
+            //Navigate back to the login form and logout user
             this.Hide();
+            login.Show();
             NetworkClient.Logout();
-            hardClose = false;
-            //Login frmLogin = new Login();
-            //frmLogin.Show();
-            
-        }
-
-        private void main_FormClosing(object sender, FormClosingEventArgs closingArgs)
-        {
-            //Debug.Assert(false);
-            //NetworkClient.Shutdown();
-            if (NetworkClient.GetClientState() != ClientState.NotLoggedIn)
-            {
-                hardClose = true;
-                NetworkClient.Logout();
-            }
         }
 
         //Getters
@@ -283,6 +259,14 @@ namespace SE_Final_Project
             int k = 8628;
             char sndChar = (char)k;
             btnSend.Text = sndChar.ToString();
+        }
+
+        //Shut down all processes when user exits program
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            NetworkClient.Shutdown();
+            NetworkClient.Logout();
+            Application.Exit();
         }
     }
 }

@@ -193,6 +193,13 @@ namespace MoveBitMessaging
         }
     }
 
+    public enum FileType
+    {
+        VideoFile,
+        AudioFile,
+        ImageFile,
+    }
+
     /// <summary>
     /// Class for sending another user a media message
     /// Contains fields for SMIL/XML string data as well as binary
@@ -205,20 +212,52 @@ namespace MoveBitMessaging
         public string senderName;
         public string recipientName;
         public string smilData;
-        public Dictionary<string, byte[]> mediaFileData;
-        public MediaMessage(string senderName, string recipientName, string smilData, Dictionary<string, byte[]> mediaFileData = null)
+        public string senderFileName;
+        public Dictionary<string, byte[]> soundFiles;
+        public Dictionary<string, byte[]> imageFiles;
+        public Dictionary<string, byte[]> videoFiles;
+        public MediaMessage(string senderName, string recipientName, string smilData, string senderFileName)
         {
             this.senderName = senderName;
             this.recipientName = recipientName;
             this.smilData = smilData;
-            this.mediaFileData = mediaFileData;
+            this.senderFileName = senderFileName;
+            this.soundFiles = new Dictionary<string, byte[]>();
+            this.imageFiles = new Dictionary<string, byte[]>();
+            this.videoFiles = new Dictionary<string, byte[]>();
         }
 
-        public void AddNecessaryFile(string fileName, byte[] fileData)
+        public void AddFile(FileType type, string fileName, byte[] fileData)
         {
-            // TODO: may need to make this data structure more robust in order to 
-            //  handle instances where two different files have the same name
-            mediaFileData[fileName] = fileData;
+            switch (type)
+            {
+                case FileType.VideoFile:
+                    videoFiles[fileName] = fileData;
+                    break;
+
+                case FileType.AudioFile:
+                    soundFiles[fileName] = fileData;
+                    break;
+
+                case FileType.ImageFile:
+                    imageFiles[fileName] = fileData;
+                    break;
+
+                default:
+                    throw new ArgumentException("Invalid file type");
+            }
+
+        }
+    }
+
+    [Serializable]
+    public class MediaMessageResult : MoveBitMessage
+    {
+        public SendResult sendResult;
+
+        public MediaMessageResult(SendResult result)
+        {
+            sendResult = result;
         }
     }
 

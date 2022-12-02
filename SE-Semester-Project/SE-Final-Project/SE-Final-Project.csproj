@@ -34,7 +34,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;USE_COMMANDLINE; PARSING_UNIT_TESTING;</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -70,11 +70,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="model\Event.cs" />
     <Compile Include="model\AudioMessage.cs" />
     <Compile Include="model\ImageMessage.cs" />
     <Compile Include="model\ParsingTester.cs" />
     <Compile Include="model\User.cs" />
-    <Compile Include="Server_Observer\dummyClass.cs" />
     <Compile Include="view_controller\Duration.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,7 +94,6 @@
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
     <Compile Include="model\Message.cs" />
-    <Compile Include="view_controller\Mediator.cs" />
     <Compile Include="view_controller\Messages.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -173,5 +172,6 @@
     <Content Include="MBMICON.ico" />
     <Content Include="MovingBitMessengingIcon.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

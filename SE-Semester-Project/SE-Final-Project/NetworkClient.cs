@@ -10,6 +10,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Diagnostics;
 using SE_Final_Project;
 using System.Windows.Forms;
+using Message = SE_Final_Project.Message;
+using System.IO;
+using SE_Final_Project.model;
 
 namespace SE_Semester_Project
 {
@@ -49,6 +52,7 @@ namespace SE_Semester_Project
 
         private static Queue<MoveBitMessage> outBoundMessages = new Queue<MoveBitMessage> ();       // Queue for messages to be sent
         private static Queue<MoveBitMessage> inBoundMessages = new Queue<MoveBitMessage> ();        // Queue for messages from the server
+        private static List<MoveBitMessage> inprocessedMessages = new List<MoveBitMessage>();
         private static int maxNumberMessagesInprocessPerIteration = 5;                              // How many messages we will inprocess in one sitting
         private static int maxNumberMesssagesOutprocessPerIteration = 5;                            // How many messages we will outprocess in one sitting
         private static ClientState clientState = ClientState.NotLoggedIn;
@@ -106,6 +110,53 @@ namespace SE_Semester_Project
             return success;
         }
 
+        public static List<Message> GetNewMessages()
+        {
+            List<Message> temp = new List<Message>();
+
+            lock (inboundMsgQueueLock)
+            {
+                foreach(MoveBitMessage msg in inprocessedMessages)
+                {
+                    if(msg.GetType() == typeof(MediaMessage))
+                    {
+                        MediaMessage media = (MediaMessage)(msg);
+                        FileInfo fi = new FileInfo(media.senderFileName);
+                        Message smilMsg = new Message(fi.Name, media.smilData);
+
+                        foreach (KeyValuePair<string, byte[]> entry in media.videoFiles)
+                        {
+                            fi = new FileInfo(entry.Key);
+                            File.WriteAllBytes(fi.Name, entry.Value);
+                            smilMsg.AddVideoMessage(new VideoMessage(fi.Name));
+                        }
+
+                        foreach (KeyValuePair<string, byte[]> entry in media.soundFiles) 
+                        {
+                            fi = new FileInfo(entry.Key);
+                            File.WriteAllBytes(fi.Name, entry.Value);
+                            smilMsg.AddAudioMessage(new AudioMessage(fi.Name));
+                        }
+
+                        foreach(KeyValuePair<string, byte[]> entry in media.imageFiles)
+                        {
+                            throw new NotImplementedException();
+                            /*
+                            fi = new FileInfo(entry.Key);
+                            File.WriteAllBytes(fi.Name, entry.Value);
+                            smilMsg.Add
+                            */
+                        }
+
+                        temp.Add(smilMsg);
+                    }
+                }
+            }
+
+            inprocessedMessages.Clear();
+            return temp;
+        }
+
         /// <summary>
         /// Function for initiating a logout
         /// </summary>
@@ -139,77 +190,6 @@ namespace SE_Semester_Project
         }
 
         /// <summary>
-        /// Function for accessing the server as a client through the command line
-        /// Meant for testing and develoment only
-        /// </summary>
-        public static void processConsoleInterface()
-        {
-            // TODO: Make useful or DELETE
-            bool exit = false;
-            string userInput;
-
-            // Loop until we are done with the program
-            while (!exit)
-            {
-                Debug.Write(">>> ");
-                userInput = Console.ReadLine();
-
-                // User entered something
-                if(userInput != null && userInput != "")
-                {
-                    userInput = userInput.ToLower();
-                    if(userInput == "exit")
-                    {
-                        exit = true;
-                        TerminateConnection();
-                        Debug.WriteLine("Diconnecting from server...");
-                    }
-                    else if(userInput == "send")
-                    {
-
-                        if (clientState == ClientState.LoggedInAndConnected)
-                        {
-                            Debug.Write("Enter desired recipient's username: ");
-                            string recipient = Console.ReadLine();
-                            Debug.Write("Enter the message you wish to send: ");
-                            string message = Console.ReadLine();
-                            SimpleTextMessage smtm = new SimpleTextMessage(recipient, myClientName, message);
-                            AddMessageToOutQueue(smtm);
-                        }
-                        else if (clientState == ClientState.Connected)
-                            throw new InvalidOperationException($"User state is illegal - registed as connected, but not logged in!");
-                        else if (clientState == ClientState.NotLoggedIn)
-                            Debug.WriteLine("You must log in to send messages");
-
-                    }
-                    else if(userInput == "logout")
-                    {
-                        if((clientState & ClientState.LoggedIn) != ClientState.NotLoggedIn)
-                        {
-                            if((clientState & ClientState.Connected) != ClientState.NotLoggedIn)
-                            {
-                                TerminateConnection();
-                                Debug.WriteLine("Diconnecting from server...");
-                            }
-                            Debug.WriteLine("Logging out");
-                        } 
-
-                    }
-                    else if(userInput == "listusers")
-                    {
-                        if(clientState == ClientState.LoggedInAndConnected)
-                            AddMessageToOutQueue(new TestListActiveUsersRequest());
-                        else if(clientState == ClientState.Connected)
-                            throw new InvalidOperationException($"User state is illegal - registed as connected, but not logged in!");
-                        else if (clientState != ClientState.LoggedIn)
-                            Debug.WriteLine("You must log in to send messages");
-                    }
-                }
-            }
-
-        }
-        
-        /// <summary>
         /// Function for retrieving the current Client state
         /// </summary>
         /// <returns></returns>
@@ -218,12 +198,34 @@ namespace SE_Semester_Project
             return clientState;
         }
 
+        public static void SendMessage(MoveBitMessage message)
+        {
+            AddMessageToOutQueue(message);
+        }
+
+        public static void SendMessage(Message message)
+        {
+
+            MediaMessage mediaMessage = new MediaMessage(message.senderName, message.receiverName, message.GetSmilText(message.smilFilePath), message.getFileName());
+
+            foreach(VideoMessage vm in message.videoMessages)
+                mediaMessage.AddFile(FileType.VideoFile, vm.filePath, File.ReadAllBytes(vm.filePath));
+            foreach (AudioMessage am in message.audioMessages)
+                mediaMessage.AddFile(FileType.AudioFile, am.filePath, File.ReadAllBytes(am.filePath));
+            foreach (ImageMessage im in message.imageMessages)
+                mediaMessage.AddFile(FileType.ImageFile, im.filePath, File.ReadAllBytes(im.filePath));
+
+
+            SendMessage(mediaMessage);
+
+        }
+
         /// <summary>
         /// Function for adding a given MoveBitMessage to the outprocess queue
         /// Messages placed here will be sent to the server by a worker thread
         /// </summary>
         /// <param name="message"></param>
-        public static void AddMessageToOutQueue(MoveBitMessage message)
+        private static void AddMessageToOutQueue(MoveBitMessage message)
         {
             // NOTE: Don't know if we should stop the client from sending messages if
             //  if they are not connected to the server, as that could require additional
@@ -241,7 +243,7 @@ namespace SE_Semester_Project
         /// processed by a worker thread.
         /// </summary>
         /// <param name="messge"></param>
-        public static void AddMessageToInQueue(MoveBitMessage messge)
+        private static void AddMessageToInQueue(MoveBitMessage messge)
         {
             // NOTE: see other NOTE in 'AddMessageToOutQueue'
             if (clientState == ClientState.NotLoggedIn)
@@ -379,7 +381,7 @@ namespace SE_Semester_Project
             {
                 continueLoop = true;
                 bool activity;
-                while (continueLoop)//((clientState & ClientState.Connected) != ClientState.NotLoggedIn)
+                while (continueLoop)
                 {
 
                     // Someone is trying to log into the system.
@@ -390,7 +392,7 @@ namespace SE_Semester_Project
                         {
                             connectSuccess = TryConnectToServer();
                         }
-                        catch (SocketException sockExcept)
+                        catch (SocketException)
                         {
                             notifications.Add(new Notification("The server could not be reached at this time"));
                         }
@@ -485,20 +487,26 @@ namespace SE_Semester_Project
                                 if (msg.GetType() == typeof(InboxListUpdate))
                                 {
                                     InboxListUpdate update = (InboxListUpdate)msg;
-                                    Debug.WriteLine("\nYou got the following new messages");
-                                    foreach (SimpleTextMessage subMsg in update.messages)
+                                    foreach (MediaMessage subMsg in update.messages)
                                     {
-                                        Debug.WriteLine($"\t{subMsg.sender} says: \"{subMsg.message}\"");
+                                        inprocessedMessages.Add(subMsg);
                                     }
-                                    Debug.WriteLine("");
+                                }
+                                else if (msg.GetType() == typeof(MediaMessageResponse))
+                                {
+                                    MediaMessageResponse result = (MediaMessageResponse)msg;
+                                    if (result.result == SendResult.sendSuccess)
+                                        MessageBox.Show("Your message was sent successfully");
+                                    else if (result.result == SendResult.sendFailure)
+                                        MessageBox.Show("You message could not be delivered");
                                 }
                                 else if (msg.GetType() == typeof(SimpleTextMessageResult))
                                 {
                                     SimpleTextMessageResult result = (SimpleTextMessageResult)msg;
                                     if (result.sendResult == SendResult.sendSuccess)
-                                        MessageBox.Show("Your message was sent successfully");
+                                        MessageBox.Show("Your message was sent successfully (THIS MESSAGE IS DEPRECATED)");
                                     else if (result.sendResult == SendResult.sendFailure)
-                                        MessageBox.Show("You message could not be delivered");
+                                        MessageBox.Show("You message could not be delivered (THIS MESSAGE IS DEPRECATED)");
                                 }
                                 else if (msg.GetType() == typeof(TestListActiveUsersResponse))
                                 {
@@ -520,6 +528,10 @@ namespace SE_Semester_Project
                                 {
                                     Debug.WriteLine("Forced logoff message from server... Disconnecting\n");
                                     TerminateConnection();
+                                }
+                                else if (msg.GetType() == typeof(MediaMessage))
+                                {
+                                    inprocessedMessages.Add((MediaMessage)msg);
                                 }
                                 else
                                     Debug.WriteLine("I don't know how to process this message");
