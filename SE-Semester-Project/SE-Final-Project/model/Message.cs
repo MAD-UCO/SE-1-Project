@@ -102,6 +102,8 @@ namespace SE_Final_Project
             catch (FileNotFoundException nofile)
             {
                 // TODO
+                x = Environment.CurrentDirectory + filePath;
+                x = System.IO.File.ReadAllText(x);
             }
 
             return x;
@@ -341,7 +343,7 @@ namespace SE_Final_Project
                 XmlWriterSettings settings = new XmlWriterSettings();
                 settings.Indent = true;
                 //settings.NewLineOnAttributes = true;
-                XmlWriter writer = XmlWriter.Create(smilFilePath, settings);
+                XmlWriter writer = XmlWriter.Create(Environment.CurrentDirectory + smilFilePath, settings);
 
                 writer.WriteStartElement("smil");
                 writer.WriteStartElement("head");
