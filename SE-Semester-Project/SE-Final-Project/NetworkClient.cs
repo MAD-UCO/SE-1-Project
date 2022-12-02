@@ -124,6 +124,7 @@ namespace SE_Semester_Project
                         FileInfo fi = new FileInfo(media.senderFileName);
                         Message smilMsg = new Message(fi.Name, media.smilData);
 
+
                         foreach (KeyValuePair<string, byte[]> entry in media.videoFiles)
                         {
                             fi = new FileInfo(entry.Key);
@@ -431,6 +432,8 @@ namespace SE_Semester_Project
                     else if ((clientState & ClientState.LoggedInAndConnected) == ClientState.LoggedInAndConnected)
                     {
 
+                        GetNewMessages();
+
                         activity = false;
                         // Ensure server hasn't dropped 
                         if (!ConnectionWithServerAlive())
@@ -522,6 +525,7 @@ namespace SE_Semester_Project
                                 else if (msg.GetType() == typeof(SimpleTextMessage))
                                 {
                                     SimpleTextMessage message = (SimpleTextMessage)msg;
+                                    inprocessedMessages.Add(message);
                                     Debug.WriteLine($"New message from {message.sender}: {message.message}");
                                 }
                                 else if (msg.GetType() == typeof(ServerToClientLogoffCommand))

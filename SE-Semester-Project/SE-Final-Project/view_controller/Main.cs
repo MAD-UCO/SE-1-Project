@@ -107,6 +107,7 @@ namespace SE_Final_Project
 
                 //Add host sender, reciever, and smilFile name(receiver + current time stamp
                 message.setSmilFilePath(filePath + "/" + cboAddresses.SelectedItem.ToString() + ".smil");
+                message.smilFileName = cboAddresses.SelectedItem.ToString();
 
                 message.GenerateMessageFile();
 

@@ -63,9 +63,18 @@ namespace SE_Final_Project
         //fileName should include extension
         public Message(String fileName, String fileStringContents)
         {
+            senderName = "N/A";
+            receiverName = "N/A";
+
+            smilFilePath = "";
+            textMessages = new List<TextMessage>();
+            audioMessages = new List<AudioMessage>();
+            videoMessages = new List<VideoMessage>();
+            imageMessages = new List<ImageMessage>();
+
             try
             {
-                File.WriteAllText(Environment.CurrentDirectory + fileName, fileStringContents);
+                File.WriteAllText(Environment.CurrentDirectory + "/" + fileName, fileStringContents);
             }
             catch (Exception ex)
             {
