@@ -80,7 +80,7 @@ namespace SE_Final_Project
             {
                 Console.WriteLine("Unable to generate file from text");
             }
-            this.ParseMessage(fileName);
+            this.ParseMessage(Environment.CurrentDirectory + fileName); //*****
         }
         public Message(string smilFileName, string senderName, string receiverName, List<TextMessage> textMessages, List<AudioMessage> audioMessages, List<VideoMessage> videoMessages) : this(smilFileName)
         {
@@ -102,7 +102,7 @@ namespace SE_Final_Project
             catch (FileNotFoundException nofile)
             {
                 // TODO
-                x = Environment.CurrentDirectory + filePath;
+                x = filePath;
                 x = System.IO.File.ReadAllText(x);
             }
 
@@ -343,7 +343,7 @@ namespace SE_Final_Project
                 XmlWriterSettings settings = new XmlWriterSettings();
                 settings.Indent = true;
                 //settings.NewLineOnAttributes = true;
-                XmlWriter writer = XmlWriter.Create(Environment.CurrentDirectory + smilFilePath, settings);
+                XmlWriter writer = XmlWriter.Create(Environment.CurrentDirectory + "/" + smilFilePath, settings);
 
                 writer.WriteStartElement("smil");
                 writer.WriteStartElement("head");

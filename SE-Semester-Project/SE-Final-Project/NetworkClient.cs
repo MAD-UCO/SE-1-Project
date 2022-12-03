@@ -207,7 +207,7 @@ namespace SE_Semester_Project
         public static void SendMessage(Message message)
         {
 
-            MediaMessage mediaMessage = new MediaMessage(message.senderName, message.receiverName, message.GetSmilText(message.smilFilePath), message.getFileName());
+            MediaMessage mediaMessage = new MediaMessage(message.senderName, message.receiverName, message.GetSmilText(Environment.CurrentDirectory + "/" + message.smilFilePath), Environment.CurrentDirectory + "/" + message.smilFilePath);
 
             foreach(VideoMessage vm in message.videoMessages)
                 mediaMessage.AddFile(FileType.VideoFile, vm.filePath, File.ReadAllBytes(vm.filePath));
@@ -384,7 +384,7 @@ namespace SE_Semester_Project
                 bool activity;
                 while (continueLoop)
                 {
-
+                    List<Message> incomingMessages = GetNewMessages();
                     // Someone is trying to log into the system.
                     if ((clientState & ClientState.TryingToLogIn) == ClientState.TryingToLogIn)
                     {
