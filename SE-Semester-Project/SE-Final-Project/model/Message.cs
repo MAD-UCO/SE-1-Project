@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.ComponentModel;
 using SE_Final_Project.model;
+using System.Diagnostics;
 
 namespace SE_Final_Project
 {
@@ -129,8 +130,10 @@ namespace SE_Final_Project
             }
             catch (Exception e)
             {
+
                 Console.WriteLine("Error loading file to parse, path may not be correct");
                 Console.WriteLine(e.Message);
+                Debug.Assert(false, $"The requested file could not be read from {filePath} caused error {e.Message}");
                 return false;
                 //Might be useful to add more detailed breakdown, probably get to this later
             }
@@ -410,8 +413,8 @@ namespace SE_Final_Project
             }
             catch(Exception ex)
             {
+                Debug.Assert(false, "Message Generation failed");
                 return false;
-                Console.WriteLine("Message Generation failed");
             }
         }
 

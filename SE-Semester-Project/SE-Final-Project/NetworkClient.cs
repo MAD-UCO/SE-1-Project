@@ -121,8 +121,10 @@ namespace SE_Semester_Project
                     if(msg.GetType() == typeof(MediaMessage))
                     {
                         MediaMessage media = (MediaMessage)(msg);
+                        Debug.Assert(media.senderFileName != null, "Media.SenderFileName is null!");
+                        Debug.Assert(File.Exists(media.senderFileName), $"System could not locate media.SenderFileName {media.senderFileName}");
                         FileInfo fi = new FileInfo(media.senderFileName);
-                        Message smilMsg = new Message(fi.Name, media.smilData);
+                        Message smilMsg = new Message("/" + fi.Name, media.smilData);
 
 
                         foreach (KeyValuePair<string, byte[]> entry in media.videoFiles)
@@ -207,7 +209,16 @@ namespace SE_Semester_Project
         public static void SendMessage(Message message)
         {
 
-            MediaMessage mediaMessage = new MediaMessage(message.senderName, message.receiverName, message.GetSmilText(Environment.CurrentDirectory + "/" + message.smilFilePath), Environment.CurrentDirectory + "/" + message.smilFilePath);
+            MediaMessage mediaMessage = new MediaMessage(
+                message.senderName, 
+                message.receiverName, 
+                message.GetSmilText(Environment.CurrentDirectory + "/" + message.smilFilePath), 
+                Environment.CurrentDirectory + "/" + message.smilFilePath
+             );
+
+
+            Debug.Assert(mediaMessage.senderFileName != null, "senderFileName is null");
+            Debug.Assert(File.Exists(mediaMessage.senderFileName), $"System did not find {mediaMessage.senderFileName}");
 
             foreach(VideoMessage vm in message.videoMessages)
                 mediaMessage.AddFile(FileType.VideoFile, vm.filePath, File.ReadAllBytes(vm.filePath));
@@ -215,7 +226,6 @@ namespace SE_Semester_Project
                 mediaMessage.AddFile(FileType.AudioFile, am.filePath, File.ReadAllBytes(am.filePath));
             foreach (ImageMessage im in message.imageMessages)
                 mediaMessage.AddFile(FileType.ImageFile, im.filePath, File.ReadAllBytes(im.filePath));
-
 
             SendMessage(mediaMessage);
 
