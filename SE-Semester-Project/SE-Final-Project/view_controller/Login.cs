@@ -18,11 +18,14 @@ namespace SE_Final_Project
 {
     public partial class Login : Form
     {
-
+        //private variables
         private string username = "";
         private string password = "";
         private User user;
         private Main main;
+
+        //constants
+        private const int HeightAdjustment = 25;
 
         //Store successful and unsuccessful attempts
         List<bool> attempts = new List<bool>();
@@ -34,6 +37,7 @@ namespace SE_Final_Project
         }
 
         //Event handlers
+
         private void BtnLogin_Click(object sender, EventArgs e)
         {
             if(txtPassword.Text == "" || txtUsername.Text == "")
@@ -48,8 +52,12 @@ namespace SE_Final_Project
                 this.Hide();
                 if(main == null)
                 {
+                    //Create new main form object
                     main = new Main();
-                    main.Show();
+
+                    //Set location to center of user screen (adjusted up by 25)
+                    main.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (main.Size.Width / 2),
+                        (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (main.Size.Height / 2) - 25);
                 }
                 else
                 {
@@ -75,10 +83,14 @@ namespace SE_Final_Project
         }
 
         //Getters
+
+        //Return the user
         public User GetUser()
         {
             return user;
         }
+
+        //Private Operations
 
         //Shut down all processes when user exits program
         private void Login_FormClosing(object sender, FormClosingEventArgs closingArgs)

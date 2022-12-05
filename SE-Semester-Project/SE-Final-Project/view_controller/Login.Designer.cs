@@ -41,7 +41,7 @@
             this.lblUsername.AutoSize = true;
             this.lblUsername.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblUsername.ForeColor = System.Drawing.Color.White;
-            this.lblUsername.Location = new System.Drawing.Point(37, 48);
+            this.lblUsername.Location = new System.Drawing.Point(54, 48);
             this.lblUsername.Name = "lblUsername";
             this.lblUsername.Size = new System.Drawing.Size(124, 29);
             this.lblUsername.TabIndex = 0;
@@ -52,7 +52,7 @@
             this.lblPassword.AutoSize = true;
             this.lblPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPassword.ForeColor = System.Drawing.Color.White;
-            this.lblPassword.Location = new System.Drawing.Point(43, 126);
+            this.lblPassword.Location = new System.Drawing.Point(60, 126);
             this.lblPassword.Name = "lblPassword";
             this.lblPassword.Size = new System.Drawing.Size(120, 29);
             this.lblPassword.TabIndex = 1;
@@ -61,7 +61,7 @@
             // txtUsername
             // 
             this.txtUsername.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtUsername.Location = new System.Drawing.Point(203, 42);
+            this.txtUsername.Location = new System.Drawing.Point(220, 42);
             this.txtUsername.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtUsername.Name = "txtUsername";
             this.txtUsername.Size = new System.Drawing.Size(249, 34);
@@ -71,7 +71,7 @@
             // txtPassword
             // 
             this.txtPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPassword.Location = new System.Drawing.Point(203, 119);
+            this.txtPassword.Location = new System.Drawing.Point(220, 119);
             this.txtPassword.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(249, 34);
@@ -81,7 +81,7 @@
             // btnLogin
             // 
             this.btnLogin.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLogin.Location = new System.Drawing.Point(353, 176);
+            this.btnLogin.Location = new System.Drawing.Point(369, 192);
             this.btnLogin.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(100, 34);
@@ -95,7 +95,7 @@
             this.chkNewUser.AutoSize = true;
             this.chkNewUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkNewUser.ForeColor = System.Drawing.Color.White;
-            this.chkNewUser.Location = new System.Drawing.Point(63, 229);
+            this.chkNewUser.Location = new System.Drawing.Point(65, 202);
             this.chkNewUser.Margin = new System.Windows.Forms.Padding(4);
             this.chkNewUser.Name = "chkNewUser";
             this.chkNewUser.Size = new System.Drawing.Size(105, 24);
@@ -108,7 +108,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.MidnightBlue;
-            this.ClientSize = new System.Drawing.Size(524, 311);
+            this.ClientSize = new System.Drawing.Size(524, 260);
             this.Controls.Add(this.chkNewUser);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.txtPassword);

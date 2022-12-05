@@ -73,10 +73,9 @@
             this.Controls.Add(this.btnAccept);
             this.Controls.Add(this.lblPrompt);
             this.Name = "StartTimeDialog";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "StartTimeDialogue";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.StartTimeDialog_FormClosing);
-            this.Load += new System.EventHandler(this.StartTimeDialog_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

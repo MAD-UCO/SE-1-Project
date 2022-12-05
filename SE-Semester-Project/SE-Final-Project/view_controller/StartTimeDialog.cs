@@ -35,9 +35,9 @@ namespace SE_Final_Project
             return this.seconds;
         }
 
-        private void StartTimeDialog_Load(object sender, EventArgs e)
+        public TextBox getTxtSS()
         {
-
+            return txtSS;
         }
 
         private void StartTimeDialog_FormClosing(object sender, FormClosingEventArgs e)
@@ -45,5 +45,7 @@ namespace SE_Final_Project
             this.Hide();
             e.Cancel = true;
         }
+
+       
     }
 }

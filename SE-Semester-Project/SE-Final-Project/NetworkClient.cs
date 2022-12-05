@@ -394,7 +394,7 @@ namespace SE_Semester_Project
                 bool activity;
                 while (continueLoop)
                 {
-                    List<Message> incomingMessages = GetNewMessages();
+                    //List<Message> incomingMessages = GetNewMessages();
                     // Someone is trying to log into the system.
                     if ((clientState & ClientState.TryingToLogIn) == ClientState.TryingToLogIn)
                     {
@@ -442,7 +442,7 @@ namespace SE_Semester_Project
                     else if ((clientState & ClientState.LoggedInAndConnected) == ClientState.LoggedInAndConnected)
                     {
 
-                        GetNewMessages();
+                        //GetNewMessages();
 
                         activity = false;
                         // Ensure server hasn't dropped 
