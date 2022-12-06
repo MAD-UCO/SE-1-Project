@@ -128,6 +128,17 @@ namespace SE_Final_Project
             NetworkClient.Logout();
             Application.Exit();
         }
+
+        private void Messages_VisibleChanged(object sender, EventArgs e)
+        {
+            //Get new messages from the Network Client when form loads
+            incomingMessages = NetworkClient.GetNewMessages();
+            foreach (var m in incomingMessages)
+            {
+                cboMessages.Items.Add(m);
+            }
+
+        }
     }
 }
 

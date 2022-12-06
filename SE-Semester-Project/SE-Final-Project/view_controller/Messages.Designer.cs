@@ -173,6 +173,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Messages_FormClosing);
             this.Load += new System.EventHandler(this.Messages_Load);
+            this.VisibleChanged += new System.EventHandler(this.Messages_VisibleChanged);
             ((System.ComponentModel.ISupportInitialize)(this.playerMessages)).EndInit();
             this.grpTextCanvas.ResumeLayout(false);
             this.grpTextCanvas.PerformLayout();
