@@ -14,6 +14,9 @@ using System.Xml.Serialization;
 using System.Net;
 using static System.Net.WebRequestMethods;
 using System.Diagnostics;
+using File = System.IO.File;
+using System.Media;
+using AxWMPLib;
 
 namespace SE_Final_Project
 {
@@ -26,11 +29,17 @@ namespace SE_Final_Project
         private string selectedAddress;
         private string selectedFile;
         private List<String> outgoingFilepaths = new List<String>();
+        private List<String> paths = new List<String>();
+        private int seconds = 0;
+        string begin, end = "";
+
+
 
         private Message message;
         private TextMessage textMessage;
         private VideoMessage videoMessage;
         private AudioMessage audioMessage;
+        private SoundPlayer soundPlayer;    
         private StartTimeDialog frmStartTimeDialog = new StartTimeDialog();
         private Duration frmDuration = new Duration();
 
@@ -51,7 +60,7 @@ namespace SE_Final_Project
         {
             //Hide media player until a preview is needed
             playerMain.Visible = false;
-
+            tableLayoutPanel1.Visible = false;
             //Generate button symbols
             generateButtonSymbols();
 
@@ -73,7 +82,10 @@ namespace SE_Final_Project
             {
 
                 //Generate a storage location and pass to message constructor
-                String filePath = "C:/OCCC_UCO/Fall 2022/Project Test Files";
+                // String filePath = "C:\\Users\\vicat\\source\\repos\\SE-1-Project\\SE-Project-3\\SE-Semester-Project";
+                String filePath = @"C:\\Users\\vicat\\source\\repos\\SE-1-Project\\SE-Final\";
+
+                //                String filePath = "C:/OCCC_UCO/Fall 2022/Project Test Files";
                 message = new Message();
 
                 //Set sender and receiver name
@@ -94,20 +106,60 @@ namespace SE_Final_Project
                 }
 
                 //If a selection was made in the file list combo box
+                //If a selection was made in the file list combo box
                 if (cboFileList.SelectedIndex > -1)
                 {
                     //Check file extension from selectedFile and store in the appropriate object
                     if (selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
                     {
                         audioMessage = new AudioMessage(selectedFile);
+                  /*      string sourcePath = @"C:\Users\vicat\Videos";
+                        string moveTo = @"C:\Users\vicat\source\repos\SE-1-Project\SE-Project-3\SE-Semester-Project\SE-Final-Project\bin\Debug";
 
+                        string sourceFile = Path.Combine(sourcePath, selectedFile);
+                        string destinationFile = Path.Combine(moveTo, selectedFile);
+                        Directory.CreateDirectory(moveTo);
+                        File.Copy(sourceFile, destinationFile, true);
+                        if (Directory.Exists(sourcePath))
+                        {
+                            string[] files = Directory.GetFiles(sourcePath);
+
+                            // Copy the files and overwrite destination files if they already exist.
+                            foreach (string s in files)
+                            {
+                                if (s == selectedFile)
+                                {
+                                    // Use static Path methods to extract only the file name from the path.
+                                    selectedFile = Path.GetFileName(s);
+                                    destinationFile = Path.Combine(moveTo, selectedFile);
+                                    System.IO.File.Copy(s, destinationFile, true);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Source path does not exist!");
+                        }*/
                         //Store in message object
+
                         message.AddAudioMessage(audioMessage);
                     }
                     else if (selectedFile.Contains(".mp4"))
                     {
+                        string dir = @"C:\Users\vicat\source\repos\SE-1-Project\SE-Final\SE-Semester-Project\SE-Final-Project\bin\Debug\" + cboAddresses.SelectedItem.ToString();
+                        Console.WriteLine(dir);
+                        if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
                         videoMessage = new VideoMessage(selectedFile);
+                        //                        string[] pathsInFolder = Directory.GetFiles(C:\Users\vicat\source\repos\SE-1-Project\SE-Project-3\SE-Semester-Project\SE-Final-Project\bin\Debug)
+                        string sourceFile = @"C:\Users\vicat\Videos\" + selectedFile;
+                       // string destFile = @"C:\Users\vicat\source\repos\SE-1-Project\SE-Final\SE-Semester-Project\SE-Final-Project\bin\Debug\" + selectedFile;
+                        string destFile = @""+dir + @"\" + selectedFile;
+                        // dir = dir + "\";
+                        //string slash = @"\";
+                        Console.WriteLine(destFile);
+  //                      string destFile = @":\Users\vicat\source\repos\SE-1-Project\SE-Final\SE-Semester-Project\SE-Final-Project\bin\Debug\"+ cboAddresses.SelectedItem.ToString()  + selectedFile;
 
+                        File.Copy(sourceFile, destFile);
                         //Store in message object
                         message.AddVideoMessage(videoMessage);
                     }
@@ -127,9 +179,9 @@ namespace SE_Final_Project
                  * 
                  */
 
-                NetworkClient.AddMessageToOutQueue(
+         /*       NetworkClient.AddMessageToOutQueue(
                     new MoveBitMessaging.SimpleTextMessage(message.receiverName, message.senderName, message.GetSmilText(message.smilFileName))
-                    );
+                    );*/
 
                 //Display simple message for testing
 
@@ -140,6 +192,7 @@ namespace SE_Final_Project
         {
             //Create an OpenFileDialog object which provides file browser functionality
             OpenFileDialog browser = new OpenFileDialog();
+            browser.Multiselect = true;
          
 
             //If a file is selected, result == Dialgoue.OK, otherwise result == Dialogue.Cancel
@@ -147,11 +200,24 @@ namespace SE_Final_Project
             String path = browser.FileName;
             String pathTrimmed = Path.GetFileName(path);
 
+            String[] paths = browser.FileNames;
+            String[] files = browser.SafeFileNames;
+            outgoingFilepaths = browser.FileNames.ToList();
             //If a file is selected, store the full path into class List<> and add trimmed path to cboFileList
             if (result == DialogResult.OK)
             {
-                outgoingFilepaths.Add(path);
-                cboFileList.Items.Add(pathTrimmed);
+                /*outgoingFilepaths.Add(path);
+                cboFileList.Items.Add(pathTrimmed);*/
+                for (int i = 0; i < outgoingFilepaths.Count; i++)
+
+                {
+                    Console.WriteLine(files[i].ToString());
+                    //outgoingFilepaths.Add(paths[i]);
+                    //  cboFileList.Items.Add(pathTrimmed);
+                    // safe file names cboFileList.Items.Add(files[i]);    
+                    // paths ref
+                    cboFileList.Items.Add(outgoingFilepaths[i]);
+                }
             }
         }
 
@@ -169,10 +235,39 @@ namespace SE_Final_Project
 
         private void btnMessages_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            Messages frmMessages = new Messages();
-            frmMessages.Show();
-            frmMessages.Location = this.Location;
+            playerMain.Visible = false;
+            /*   this.Hide();
+               Messages frmMessages = new Messages();
+               frmMessages.Show();
+               frmMessages.Location = this.Location;
+               message = new Message();*/
+            message = new Message();
+            bool yes;
+            yes = message.ParseMessage(@"C:\Users\vicat\source\repos\SE-1-Project\SE-Project-3\SE-Semester-Project\cole.smil");
+            string x = "";
+            end = message.textMessages[0].duration;
+            begin = message.textMessages[0].beginTime;
+            x = message.textMessages[0].text;
+            txtOutgoing.Text = x;
+        //    string x = "";
+          //  string xy = "";
+           // x = message.audioMessages[0].filePath;
+        //    xy = Environment.CurrentDirectory;
+        //    String pathTrimmed = Path.GetFileName(x);
+          //  Console.WriteLine(pathTrimmed);
+           // Console.WriteLine(xy);
+            //playerMain.Visible = true;
+            // playerMain.URL = Path.GetFileName(x);
+          //  playerMain.URL = pathTrimmed;
+            string xy = "";
+            xy = Environment.CurrentDirectory;
+            Console.WriteLine(xy);
+            /*   this.Hide();
+               Messages frmMessages = new Messages();
+               frmMessages.Show();
+               frmMessages.Location = this.Location;*/
+            timer1.Start();
+
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -211,13 +306,29 @@ namespace SE_Final_Project
             //Display media player for preview if audio or video file is selected.
             selectedFile = cboFileList.SelectedItem.ToString();
 
-            if(selectedFile == "test.wav" || selectedFile == "test.mp3")
+            if (selectedFile.Contains("txt"))
             {
-                playerMain.Visible = true;
+                playerMain.Visible = false;
+                txtOutgoing.Visible = true;
+                string viewText = File.ReadAllText(outgoingFilepaths[cboFileList.SelectedIndex]);
+                txtOutgoing.Text = viewText;
+            }
+            else if (selectedFile.Contains("mp3") || selectedFile.Contains(".wav"))
+            {
+                soundPlayer = new SoundPlayer(@"" + cboFileList.SelectedItem.ToString());
+                soundPlayer.Play();
+
+                playerMain.Visible = false;
+                txtOutgoing.Visible = true;
+                txtOutgoing.Text = "AUDIO PLAYING...";
             }
             else
             {
-                playerMain.Visible = false;
+                playerMain.Visible = true;
+                txtOutgoing.Visible = false;
+
+                playerMain.URL = outgoingFilepaths[cboFileList.SelectedIndex];
+            
             }
         }
 
@@ -283,6 +394,102 @@ namespace SE_Final_Project
             int k = 8628;
             char sndChar = (char)k;
             btnSend.Text = sndChar.ToString();
+        }
+
+        private void clearbtn_Click(object sender, EventArgs e)
+        {
+
+            cboFileList.Items.Clear();
+            cboFileList.Update();
+            cboFileList.Text = "";
+            outgoingFilepaths.Clear();
+        }
+
+        private void preview_Click(object sender, EventArgs e)
+        {
+            txtOutgoing.Visible = false;
+            playerMain.Visible = false;
+            tableLayoutPanel1.Visible = true;
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            txtOutgoing.Visible = false;
+            playerMain.Visible = false;
+            tableLayoutPanel1.Visible = true;
+            radioButton1.Enabled = false;
+        }
+
+        private void radioButton1_Click(object sender, EventArgs e)
+        {
+            txtOutgoing.Visible = false;
+            playerMain.Visible = false;
+            tableLayoutPanel1.Visible = true;
+            //radioButton1.
+            //radioButton1.Enabled = false;
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if(checkBox1.Checked == true)
+            {
+                txtOutgoing.Visible = false;
+                playerMain.Visible = false;
+                tableLayoutPanel1.Visible = true;
+                //radioButton1.Enabled = false;
+            }
+            else
+            {
+                txtOutgoing.Visible = true;
+                playerMain.Visible = true;
+                tableLayoutPanel1.Visible = false;
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            //timer1.Start();
+            seconds = 0;
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            seconds++;
+            /*  while(seconds >= begin && seconds <= end)
+              {
+                  textBox1.Text = seconds.ToString();
+              }*/
+            if (seconds.ToString().Insert(1,"s") == begin)
+            {
+                // textBox1.Text = _firstText;
+                // textBox1.Visible = false;
+                // axWindowsMediaPlayer1.URL = @"C:\Users\vicat\Videos\test.wav";
+                txtOutgoing.Visible = true;
+                txtOutgoing.Text = "HI";
+
+                Console.WriteLine("started");
+            }
+            if (seconds.ToString().Insert(1,"s") == end)
+            {
+                txtOutgoing.Visible = false;
+                /*                textBox1.Text = _secText;
+                                textBox1.Visible = true;
+                                axWindowsMediaPlayer1.Ctlcontrols.stop();*/
+                Console.WriteLine("done");
+            }
+
+            Console.WriteLine(seconds.ToString());
+            if (seconds == 6)
+            {
+                Console.WriteLine("at 6");
+
+
+            }// going = false; timer1.Stop(); testing = false; }
+
+            if (seconds > 9)
+            {
+                timer1.Stop();
+            }
         }
     }
 }

@@ -24,7 +24,8 @@ namespace SE_Final_Project
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
-            seconds = txtSS.Text + "s";
+            //seconds = txtSS.Text + "s";
+            seconds = "1s";
 
             this.Hide();
         }

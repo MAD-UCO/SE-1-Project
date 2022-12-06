@@ -1,0 +1,701 @@
+DEBUG:          Loading database
+DEBUG:          Loading database with dummy data
+INFO:           The program is operating with the following variables set:
+INFO:           Networking on localHost only: True
+INFO:           Listening on port #5005
+INFO:           Kicking idle users: False
+INFO:           Set Log level: TRACE
+
+NOTICE:         Starting the MoveBit Server...
+DEBUG:          Server listening on loopback only
+TRACE:          Starting the login service
+DEBUG:          Beginning the user connection processing function
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+INFO:           Connection processer has been idle for 100 cycles
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Logging in new user
+DEBUG:          Connection to new user accepted: ming (new user) has been allowed to connect
+INFO:           ming logged in
+TRACE:          Finished with user login
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+TRACE:          Starting new processing service for ming
+TRACE:          Updating user info
+INFO:           A session with ming was ended
+TRACE:          Session with ming successfully ended
+TRACE:          Connection with ming successfully closed
+INFO:           ming is no longer online
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+INFO:           Connection processer has been idle for 100 cycles
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info

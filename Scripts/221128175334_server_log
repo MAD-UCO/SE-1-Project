@@ -1,0 +1,101 @@
+DEBUG:          Loading database
+DEBUG:          Loading database with dummy data
+INFO:           The program is operating with the following variables set:
+INFO:           Networking on localHost only: True
+INFO:           Listening on port #5005
+INFO:           Kicking idle users: False
+INFO:           Set Log level: TRACE
+
+NOTICE:         Starting the MoveBit Server...
+DEBUG:          Server listening on loopback only
+TRACE:          Starting the login service
+DEBUG:          Beginning the user connection processing function
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info
+TRACE:          Updating user info

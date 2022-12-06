@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<smil>
+  <head>
+    <body>
+      <video src="video2.mp4" dur="10s" begin="0s" />
+    </body>
+  </head>
+</smil>
