@@ -481,6 +481,7 @@ namespace SE_Final_Project
             Console.WriteLine(seconds.ToString());
             if (seconds == 6)
             {
+                //new change
                 Console.WriteLine("at 6");
                 //change this is new.
 
