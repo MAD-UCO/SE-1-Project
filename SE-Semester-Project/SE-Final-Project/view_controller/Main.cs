@@ -407,20 +407,7 @@ namespace SE_Final_Project
 
         }
 
-      /*  private void preview_Click(object sender, EventArgs e)
-        {
-          
-        }
-
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton1_Click(object sender, EventArgs e)
-        {
-         
-        }*/
+      
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
