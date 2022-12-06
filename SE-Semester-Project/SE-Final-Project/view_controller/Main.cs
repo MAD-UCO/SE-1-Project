@@ -233,8 +233,9 @@ namespace SE_Final_Project
             btnUpload.Visible = true;
         }
 
-        private void btnMessages_Click(object sender, EventArgs e)
+        private void btnMessages_Click(object sender, EventArgs e) 
         {
+            // this is  to create the message and start the timer.
             playerMain.Visible = false;
             /*   this.Hide();
                Messages frmMessages = new Messages();
@@ -398,36 +399,28 @@ namespace SE_Final_Project
 
         private void clearbtn_Click(object sender, EventArgs e)
         {
-
+            //clear the listbox with files added there 
             cboFileList.Items.Clear();
             cboFileList.Update();
             cboFileList.Text = "";
             outgoingFilepaths.Clear();
+
         }
 
-        private void preview_Click(object sender, EventArgs e)
+      /*  private void preview_Click(object sender, EventArgs e)
         {
-            txtOutgoing.Visible = false;
-            playerMain.Visible = false;
-            tableLayoutPanel1.Visible = true;
+          
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            txtOutgoing.Visible = false;
-            playerMain.Visible = false;
-            tableLayoutPanel1.Visible = true;
-            radioButton1.Enabled = false;
+
         }
 
         private void radioButton1_Click(object sender, EventArgs e)
         {
-            txtOutgoing.Visible = false;
-            playerMain.Visible = false;
-            tableLayoutPanel1.Visible = true;
-            //radioButton1.
-            //radioButton1.Enabled = false;
-        }
+         
+        }*/
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
@@ -482,7 +475,7 @@ namespace SE_Final_Project
             if (seconds == 6)
             {
                 //new change
-                //one more
+
                 Console.WriteLine("at 6");
                 //change this is new.
 

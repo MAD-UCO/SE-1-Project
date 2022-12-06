@@ -47,7 +47,6 @@ namespace SE_Final_Project
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.playerMain = new AxWMPLib.AxWindowsMediaPlayer();
             this.clearbtn = new System.Windows.Forms.Button();
-            this.preview = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -58,7 +57,6 @@ namespace SE_Final_Project
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.textBox6 = new System.Windows.Forms.TextBox();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -228,16 +226,6 @@ namespace SE_Final_Project
             this.clearbtn.UseVisualStyleBackColor = false;
             this.clearbtn.Click += new System.EventHandler(this.clearbtn_Click);
             // 
-            // preview
-            // 
-            this.preview.Location = new System.Drawing.Point(451, 120);
-            this.preview.Name = "preview";
-            this.preview.Size = new System.Drawing.Size(72, 21);
-            this.preview.TabIndex = 14;
-            this.preview.Text = "button1";
-            this.preview.UseVisualStyleBackColor = true;
-            this.preview.Click += new System.EventHandler(this.preview_Click);
-            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 3;
@@ -337,19 +325,6 @@ namespace SE_Final_Project
             this.textBox6.Size = new System.Drawing.Size(128, 20);
             this.textBox6.TabIndex = 8;
             // 
-            // radioButton1
-            // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(449, 85);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(85, 17);
-            this.radioButton1.TabIndex = 16;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "radioButton1";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
-            this.radioButton1.Click += new System.EventHandler(this.radioButton1_Click);
-            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
@@ -373,9 +348,7 @@ namespace SE_Final_Project
             this.BackColor = System.Drawing.Color.MidnightBlue;
             this.ClientSize = new System.Drawing.Size(593, 583);
             this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Controls.Add(this.preview);
             this.Controls.Add(this.clearbtn);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btnLogout);
@@ -421,7 +394,6 @@ namespace SE_Final_Project
         private System.Windows.Forms.Button btnLogout;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button clearbtn;
-        private System.Windows.Forms.Button preview;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.TextBox textBox5;
@@ -432,7 +404,6 @@ namespace SE_Final_Project
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Timer timer1;
     }
