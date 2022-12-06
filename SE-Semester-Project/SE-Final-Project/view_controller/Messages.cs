@@ -17,9 +17,9 @@ namespace SE_Final_Project
    
     public partial class Messages : Form
     {
-        //private fields
-
-        private String selectedMessage;
+        //private variables
+        private List<Message> incomingMessages = new List<Message>();
+        private List<Label> locationLabels = new List<Label>();
         private Main main = (Main)Application.OpenForms["Main"];
 
         //Class constructor, do not edit. Use form load event for initialization
@@ -33,15 +33,21 @@ namespace SE_Final_Project
         //Runs immediately after form loads
         private void Messages_Load(object sender, EventArgs e)
         {
+            //Initialize list of location labels
+            locationLabels.Add(lblCenter);
+            locationLabels.Add(lblNorth);
+            locationLabels.Add(lblSouth);
+            locationLabels.Add(lblEast);
+            locationLabels.Add(lblWest);
+            locationLabels.Add(lblDefault);
 
-            //Hard coded items for visual/test purposes
-            cboMessages.Items.Add("testDefault");
-            cboMessages.Items.Add("testCenter");
-            cboMessages.Items.Add("testNorth");
-            cboMessages.Items.Add("testSouth");
-            cboMessages.Items.Add("testEast");
-            cboMessages.Items.Add("testWest");
-            cboMessages.Items.Add("TestMedia");
+            //Get new messages from the Network Client when form loads
+            incomingMessages = NetworkClient.GetNewMessages();
+            foreach(var m in incomingMessages)
+            {
+                cboMessages.Items.Add(m);
+            }
+
 
             //Set initial visibility for labels to false
             lblDefault.Visible = false;
@@ -63,130 +69,56 @@ namespace SE_Final_Project
 
         private void cboMessages_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //Store the selected combo box item in a string
-            selectedMessage = cboMessages.SelectedItem.ToString();
 
-            
+            SE_Final_Project.Message temp = (SE_Final_Project.Message)cboMessages.SelectedItem;
+            List<TextMessage> textMessages = temp.textMessages;
+            foreach(var t in textMessages)
+            {
+                lblDefault.Visible = true;
+                lblDefault.Text = t.text;
+            }
               
             //Display the text message in the correct location
-            displayTextMessage();
-            
+            //displayTextMessage();
         }
 
         //Getters
-
-        public string getSelectedMessage()
+        
+        //Return cboMessages control object
+        public ComboBox getCboMessages()
         {
-            return selectedMessage;
+            return cboMessages;
         }
 
-        //Operations
+        //Return all labels
+        public List<Label> getLabels()
+        {
+            //load list and return
+            return locationLabels;
+        }
+        
+
+        //Private Operations
 
         //Display text message in the correct location
         private void displayTextMessage()
         {
-            if (selectedMessage == "testDefault")
-            {
+            
+            //if (selectedMessage == "testDefault")
+            //{
                 //Hide media player
-                playerMessages.Visible = false;
+             //   playerMessages.Visible = false;
 
                 //Hide all locations other than default
-                grpTextCanvas.Visible = true;
+               // grpTextCanvas.Visible = true;
 
-                lblCenter.Visible = false;
-                lblNorth.Visible = false;
-                lblSouth.Visible = false;
-                lblEast.Visible = false;
-                lblWest.Visible = false;
-                lblDefault.Visible = true;
-                lblDefault.Text = "Default test message";
-            }
-            else if (selectedMessage == "testCenter")
-            {
-                //Hide media player
-                playerMessages.Visible = false;
-
-                //Hide all locations other than center
-                grpTextCanvas.Visible = true;
-
-                lblDefault.Visible = false;
-                lblNorth.Visible = false;
-                lblSouth.Visible = false;
-                lblEast.Visible = false;
-                lblWest.Visible = false;
-                lblCenter.Visible = true;
-                lblCenter.Text = "Center test message";
-
-            }
-            else if (selectedMessage == "testNorth")
-            {
-                //Hide media player
-                playerMessages.Visible = false;
-
-                //Hide all locations other than North
-                grpTextCanvas.Visible = true;
-
-                lblDefault.Visible = false;
-                lblCenter.Visible = false;
-                lblSouth.Visible = false;
-                lblEast.Visible = false;
-                lblWest.Visible = false;
-                lblNorth.Visible = true;
-                lblNorth.Text = "North location test message";
-            }
-            else if (selectedMessage == "testSouth")
-            {
-                //Hide media player
-                playerMessages.Visible = false;
-
-                //Hide all locations other than south
-                grpTextCanvas.Visible = true;
-
-                lblDefault.Visible = false;
-                lblCenter.Visible = false;
-                lblNorth.Visible = false;
-                lblEast.Visible = false;
-                lblWest.Visible = false;
-                lblSouth.Visible = true;
-                lblSouth.Text = "South location test message";
-            }
-            else if (selectedMessage == "testEast")
-            {
-                //Hide media player
-                playerMessages.Visible = false;
-
-                //Hide all locations other than east
-                grpTextCanvas.Visible = true;
-
-                lblDefault.Visible = false;
-                lblCenter.Visible = false;
-                lblNorth.Visible = false;
-                lblSouth.Visible = false;
-                lblWest.Visible = false;
-                lblEast.Visible = true;
-                lblEast.Text = "East Location test message";
-            }
-            else if (selectedMessage == "testWest")
-            {
-                //Hide media player
-                playerMessages.Visible = false;
-
-                //Hide all locations other than west
-                grpTextCanvas.Visible = true;
-
-                lblDefault.Visible = false;
-                lblCenter.Visible = false;
-                lblNorth.Visible = false;
-                lblSouth.Visible = false;
-                lblEast.Visible = false;
-                lblWest.Visible = true;
-                lblWest.Text = "West Location test message";
-            }
-            else
-            {
-                //Display media player and hide text canvas
-                playerMessages.Visible = true;
-            }
+                //lblCenter.Visible = false;
+                //lblNorth.Visible = false;
+                //lblSouth.Visible = false;
+                //lblEast.Visible = false;
+                //lblWest.Visible = false;
+                //lblDefault.Visible = true;
+                //lblDefault.Text = "Default test message";
         }
 
         //Shut down all processes when user exits program
@@ -195,6 +127,17 @@ namespace SE_Final_Project
             NetworkClient.Shutdown();
             NetworkClient.Logout();
             Application.Exit();
+        }
+
+        private void Messages_VisibleChanged(object sender, EventArgs e)
+        {
+            //Get new messages from the Network Client when form loads
+            incomingMessages = NetworkClient.GetNewMessages();
+            foreach (var m in incomingMessages)
+            {
+                cboMessages.Items.Add(m);
+            }
+
         }
     }
 }

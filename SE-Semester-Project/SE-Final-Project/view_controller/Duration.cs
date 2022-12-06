@@ -36,6 +36,11 @@ namespace SE_Final_Project
             return seconds;
         }
 
+        public TextBox getTxtSS()
+        {
+            return txtSS;
+        }
+
         private void Duration_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.Hide();

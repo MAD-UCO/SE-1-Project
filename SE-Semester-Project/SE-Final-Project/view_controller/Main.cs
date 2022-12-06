@@ -19,11 +19,10 @@ namespace SE_Final_Project
     public partial class Main : Form
     {
         
-        // private fields
+        // private variables
         private string selectedAddress;
         private string selectedFile;
         private List<String> outgoingFilepaths = new List<String>();
-
         private Message message;
         private TextMessage textMessage;
         private VideoMessage videoMessage;
@@ -32,6 +31,9 @@ namespace SE_Final_Project
         private Duration frmDuration = new Duration();
         private Login login = (Login)Application.OpenForms["Login"];
         private Messages messages = (Messages)Application.OpenForms["Messages"];
+
+        //constants
+        private const int HeightAdjustment = 25;
 
         // Class constructor, do not edit. Use form load event for initialization
         public Main()
@@ -77,9 +79,9 @@ namespace SE_Final_Project
                 {
                     //Create new text message and assign start/duration
                     textMessage = new TextMessage(txtOutgoing.Text);
-                    //textMessage.beginTime = frmStartTimeDialog.getSeconds();
-                    //textMessage.duration = frmDuration.getSeconds();
 
+                    textMessage.beginTime = frmStartTimeDialog.getSeconds();
+                    textMessage.duration = frmDuration.getSeconds();
 
                     //store in message object
                     message.AddTextMessage(textMessage);
@@ -105,17 +107,14 @@ namespace SE_Final_Project
                     }
                 }
 
-                //Add host sender, reciever, and smilFile name(receiver + current time stamp
-                message.setSmilFilePath(filePath + "/" + cboAddresses.SelectedItem.ToString() + ".smil");
+                //Add sender, reciever, and smilFile name(receiver + current time stamp
+                message.setSmilFilePath(filePath + cboAddresses.SelectedItem.ToString() + ".smil");
+                message.smilFileName = cboAddresses.SelectedItem.ToString();
 
                 message.GenerateMessageFile();
 
-                /*
-                 * 
-                 * Pass message along to the server
-                 * 
-                 */
-
+               
+                //Pass message to the network client to store in outgoing queue
                 NetworkClient.SendMessage(message);
             }
         }
@@ -141,14 +140,8 @@ namespace SE_Final_Project
 
         private void btnCompose_Click(object sender, EventArgs e)
         {
-            //Enable composition controls
-            txtOutgoing.Enabled = true;
-            btnUpload.Enabled = true;
-            cboFileList.Enabled = true;
-
-            //Change file combo box and file browser button visibility to true
-            cboFileList.Visible = true;
-            btnUpload.Visible = true;
+            //Reset text box contents
+            txtOutgoing.Text = "";
         }
 
         private void btnMessages_Click(object sender, EventArgs e)
@@ -159,23 +152,31 @@ namespace SE_Final_Project
             if(messages == null)
             {
                 messages = new Messages();
+                //Set location to center of user screen (adjusted higher by 25 pixels
+                messages.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (messages.Size.Width / 2),
+                    (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (messages.Size.Height / 2) - HeightAdjustment);
             }
-         
             messages.Show();
-            
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            
+            //Set location to center of user screen (adjusted higher by 25 pixels)
+            frmStartTimeDialog.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (frmStartTimeDialog.Size.Width / 2),
+                (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (frmStartTimeDialog.Size.Height / 2) - HeightAdjustment);
+
+            //Display StartTimeDialog form
             frmStartTimeDialog.Show();
-            frmStartTimeDialog.Location = new Point(this.Location.X + 150, this.Location.Y + 150);
         }
 
         private void btnDuration_Click(object sender, EventArgs e)
         {
+            //Set location to center of user screen (adjusted higher by 25 pixels)
+            frmDuration.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (frmDuration.Size.Width / 2),
+                (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (frmDuration.Size.Height / 2) - HeightAdjustment);
+
+            //Display Duration form
             frmDuration.Show();
-            frmDuration.Location = new Point(this.Location.X + 150, this.Location.Y + 150);
         }
 
         private void cboAddresses_SelectedIndexChanged(object sender, EventArgs e)
@@ -213,10 +214,22 @@ namespace SE_Final_Project
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
+
+            //Clear old contents for new user
+            clearOldContents();
+
             //Navigate back to the login form and logout user
             this.Hide();
             login.Show();
             NetworkClient.Logout();
+        }
+
+        //Shut down all processes when user exits program
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            NetworkClient.Shutdown();
+            NetworkClient.Logout();
+            Application.Exit();
         }
 
         //Getters
@@ -261,12 +274,30 @@ namespace SE_Final_Project
             btnSend.Text = sndChar.ToString();
         }
 
-        //Shut down all processes when user exits program
-        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        //Clear old contents for all forms after logging out
+        private void clearOldContents()
         {
-            NetworkClient.Shutdown();
-            NetworkClient.Logout();
-            Application.Exit();
+            //clear Main.cs text box
+            txtOutgoing.Clear();
+
+            //clear Main.cs address combo box items and text
+            cboAddresses.Items.Clear();
+            cboAddresses.Text = "";
+
+            //Clear Duration.cs and StartTimeDialog.cs textboxes
+            frmStartTimeDialog.getTxtSS().Text = "";
+            frmDuration.getTxtSS().Text = "";
+
+            //Clear Messages.cs combo box and labels (If the form has been loaded at least once)
+            if(messages != null)
+            {
+                messages.getCboMessages().Items.Clear();
+                messages.getCboMessages().Text = "";
+                foreach (var label in messages.getLabels())
+                {
+                    label.Text = "";
+                }
+            }
         }
     }
 }

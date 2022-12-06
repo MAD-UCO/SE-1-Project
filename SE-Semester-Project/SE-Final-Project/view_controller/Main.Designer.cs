@@ -182,7 +182,7 @@ namespace SE_Final_Project
             // playerMain
             // 
             this.playerMain.Enabled = true;
-            this.playerMain.Location = new System.Drawing.Point(14, 213);
+            this.playerMain.Location = new System.Drawing.Point(15, 247);
             this.playerMain.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.playerMain.MaximumSize = new System.Drawing.Size(651, 425);
             this.playerMain.Name = "playerMain";
@@ -193,7 +193,7 @@ namespace SE_Final_Project
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(15, 15);
+            this.pictureBox1.Location = new System.Drawing.Point(166, 13);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(452, 194);
@@ -206,7 +206,7 @@ namespace SE_Final_Project
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.MidnightBlue;
-            this.ClientSize = new System.Drawing.Size(784, 718);
+            this.ClientSize = new System.Drawing.Size(784, 683);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btnLogout);
             this.Controls.Add(this.playerMain);

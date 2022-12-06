@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{40D5630A-27DB-4F2B-92E6-F7838ADE2852}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>SE_Final_Project</RootNamespace>
     <AssemblyName>SE-Final-Project</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -53,9 +53,12 @@
   <PropertyGroup>
     <ApplicationIcon>MBMICON.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MoveBit-Messaging">
-      <HintPath>..\..\..\..\temp\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.dll</HintPath>
+      <HintPath>..\..\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

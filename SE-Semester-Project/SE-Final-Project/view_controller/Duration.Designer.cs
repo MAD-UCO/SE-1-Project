@@ -73,7 +73,7 @@
             this.Controls.Add(this.btnAccept);
             this.Controls.Add(this.lblPrompt);
             this.Name = "Duration";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "EndTimeDialogue";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Duration_FormClosing);
             this.ResumeLayout(false);

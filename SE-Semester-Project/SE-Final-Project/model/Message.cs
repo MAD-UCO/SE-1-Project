@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.ComponentModel;
 using SE_Final_Project.model;
+using System.Diagnostics;
 
 namespace SE_Final_Project
 {
@@ -63,15 +64,24 @@ namespace SE_Final_Project
         //fileName should include extension
         public Message(String fileName, String fileStringContents)
         {
+            senderName = "N/A";
+            receiverName = "N/A";
+
+            smilFilePath = "";
+            textMessages = new List<TextMessage>();
+            audioMessages = new List<AudioMessage>();
+            videoMessages = new List<VideoMessage>();
+            imageMessages = new List<ImageMessage>();
+
             try
             {
-                File.WriteAllText(Environment.CurrentDirectory + fileName, fileStringContents);
+                File.WriteAllText(Environment.CurrentDirectory + "/" + fileName, fileStringContents);
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Unable to generate file from text");
             }
-            this.ParseMessage(fileName);
+            this.ParseMessage(Environment.CurrentDirectory + fileName); //*****
         }
         public Message(string smilFileName, string senderName, string receiverName, List<TextMessage> textMessages, List<AudioMessage> audioMessages, List<VideoMessage> videoMessages) : this(smilFileName)
         {
@@ -93,6 +103,8 @@ namespace SE_Final_Project
             catch (FileNotFoundException nofile)
             {
                 // TODO
+                x = filePath;
+                x = System.IO.File.ReadAllText(x);
             }
 
             return x;
@@ -118,8 +130,10 @@ namespace SE_Final_Project
             }
             catch (Exception e)
             {
+
                 Console.WriteLine("Error loading file to parse, path may not be correct");
                 Console.WriteLine(e.Message);
+                Debug.Assert(false, $"The requested file could not be read from {filePath} caused error {e.Message}");
                 return false;
                 //Might be useful to add more detailed breakdown, probably get to this later
             }
@@ -332,7 +346,7 @@ namespace SE_Final_Project
                 XmlWriterSettings settings = new XmlWriterSettings();
                 settings.Indent = true;
                 //settings.NewLineOnAttributes = true;
-                XmlWriter writer = XmlWriter.Create(smilFilePath, settings);
+                XmlWriter writer = XmlWriter.Create(Environment.CurrentDirectory + "/" + smilFilePath, settings);
 
                 writer.WriteStartElement("smil");
                 writer.WriteStartElement("head");
@@ -399,8 +413,8 @@ namespace SE_Final_Project
             }
             catch(Exception ex)
             {
+                Debug.Assert(false, "Message Generation failed");
                 return false;
-                Console.WriteLine("Message Generation failed");
             }
         }
 
