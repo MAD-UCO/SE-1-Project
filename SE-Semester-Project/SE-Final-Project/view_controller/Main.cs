@@ -482,7 +482,7 @@ namespace SE_Final_Project
             if (seconds == 6)
             {
                 Console.WriteLine("at 6");
-
+                //change this is new.
 
             }// going = false; timer1.Stop(); testing = false; }
 
