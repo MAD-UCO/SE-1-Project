@@ -31,7 +31,6 @@ namespace MoveBit_Server
 
     internal class ServerTester
     {
-        // TODO: Set these parameters
         private static Dictionary<string, TestClient> persitentUserConnections = new Dictionary<string, TestClient>();      // Dictionary for connections that need to get referrenced across test cases
         private static Dictionary<string, Action> testFunctions = new Dictionary<string, Action>();                         // A dictonary of functions to call, where each funciton is a test case. Keys are the test names
         private static List<string> results = new List<string>();                                                           // A list of strings to store any resulting error messages
@@ -58,6 +57,7 @@ namespace MoveBit_Server
                 success = true;
                 try
                 {
+                    ServerLogger.Debug($"Running test '{test.Key}'");
                     // Call the test
                     test.Value();
                     Thread.Sleep(100); // Here to ensure activities from previous tests have time to end
@@ -144,76 +144,72 @@ namespace MoveBit_Server
         /// </summary>
         private static void LoadTests()
         {
-            testFunctions["TestNewUserLogon"] = TestNewUserLogon;
-            testFunctions["TestUserLogoutSimple"] = TestUserLogoutSimple;
+            testFunctions["TestNewUserLogon"] = TestNewUser;
             testFunctions["TestExistingUserLogon"] = TestExistingUserLogon;
             testFunctions["TestPasswordFail"] = TestPasswordFail;
             testFunctions["TestUsernameTaken"] = TestUsernameTaken;
             testFunctions["TestMultiSession"] = TestMultiSession;
             testFunctions["TestBadUserSend"] = TestBadUserSend;
+            testFunctions["TestSendMessage"] = TestSendMessage;
             testFunctions["TestManyUsers"] = TestManyUsers;
         }
 
-        /// <summary>
-        /// Test for making sure server properly handles new user
-        /// </summary>
-        private static void TestNewUserLogon()
+        private static void TestNewUser()
         {
-            Tuple<string, string> userCreds = ClientFactory.GetNewUserValid();
-            TestClient tc = ClientFactory.GetNewConnectionObjects();
-            persitentUserConnections[userCreds.Item1] = tc;
-
+            Tuple<string, string> info = ClientFactory.GetNewUserValid();
+            TestClient tc = new TestClient();
             tc.Connect();
-            tc.Send(new ClientConnectRequest(userCreds.Item1, SHA256HashShortcut(userCreds.Item2), true));
+
+            tc.Send(new ClientConnectRequest(info.Item1, SHA256HashShortcut(info.Item2), true));
             ClientConnectResponse resp = (ClientConnectResponse)tc.GetMessage();
 
             // Assert that a new user may join the server
             MoveBitAssert(
-                resp.response == serverConnectResponse.success, $"The client '{userCreds.Item1}' could not connect to the server, got response type {resp.response}, password was {userCreds.Item2}"
+                resp.response == serverConnectResponse.success, $"The client '{info.Item1}' could not connect to the server, got response type {resp.response}, password was {info.Item2}"
                 );
 
             // Assert that the databse will track new users
             MoveBitAssert(
-                serverDatabase.UserExists(userCreds.Item1),
-                $"The client '{userCreds.Item1}' received a connect response, but the database has not registered them"
+                serverDatabase.UserExists(info.Item1),
+                $"The client '{info.Item1}' received a connect response, but the database has not registered them"
                 );
 
-            int numSessions = serverDatabase.GetUserConnections(userCreds.Item1).Count;
-            
+            int numSessions = serverDatabase.GetUserConnections(info.Item1).Count;
+
             // Assert that a new user that has connected one (1) time will have exactly one (1) session
             MoveBitAssert(
                 numSessions == 1,
-                $"Expected client '{userCreds.Item1}' to have exactly one session in the database, got {numSessions}"
+                $"Expected client '{info.Item1}' to have exactly one session in the database, got {numSessions}"
                 );
 
-        }
 
+            // Now that login has passed, make sure we can log out
 
-        /// <summary>
-        /// Test to make sure the logout functionality is working.
-        /// Test requires 'TestNewUserLogon' to have run
-        /// </summary>
-        private static void TestUserLogoutSimple()
-        { 
-            string username = ClientFactory.GetLastUser();
-            ServerDatabase serverDatabase = ServerDatabase.GetTheDatabase();
-            // Disconnect this user
-            persitentUserConnections[username].Disconnect();
-            Thread.Sleep(250);
+            tc.Disconnect();
 
-            // Asser that even though the user disconnected, they still exist in the DB
+            // Allow a little time to pass for the server to update
+            Thread.Sleep(50);
+
+            // Assert that the user still exists in the database
             MoveBitAssert(
-                serverDatabase.UserExists(username),
-                $"The client '{username}' did not exist in the servers records"
+                serverDatabase.UserExists(info.Item1),
+                $"The client '{info.Item1}' no longer exists in the database"
                 );
 
-            int numSessions = serverDatabase.GetUserConnections(username).Count;
-
-            // Asser that after the user disconnects, their sessions will automatically be upated
+            // Assert that the server can tell they are offline
             MoveBitAssert(
-                numSessions == 0,
-                $"Expected client '{username}' to have exactly zero session in the database after logout, got {numSessions}"
+                serverDatabase.GetUser(info.Item1).IsOnline(),
+                $"The client, '{info.Item1}' is no longer online, but the server reported them as being online"
                 );
+
+            numSessions = serverDatabase.GetUserConnections(info.Item1).Count;
+
+            // Assert that after the user disconnects, their sessions will automatically be upated
+            MoveBitAssert(
+                numSessions == 1,
+                $"Expected client '{info.Item1}' to have exactly zero session in the database after logout, got {numSessions}"
+                );
+
 
         }
 
@@ -224,8 +220,10 @@ namespace MoveBit_Server
         /// </summary>
         private static void TestExistingUserLogon()
         {
-            string username = ClientFactory.GetLastUser();
-            string password = ClientFactory.GetUserPassword(username);
+            // For setup, load user into database
+            string username = "Testman";
+            string password = "Testman's Password";
+            serverDatabase.InsertUserIfNotExist(username, SHA256HashShortcut(password));
             TestClient tc = new TestClient();
             tc.Connect();
             tc.Send(new ClientConnectRequest(username, SHA256HashShortcut(password), false));
@@ -249,8 +247,10 @@ namespace MoveBit_Server
         /// </summary>
         private static void TestPasswordFail()
         {
-            string username = ClientFactory.GetLastUser();
-            string rightPassword = ClientFactory.GetUserPassword(username);
+            // For setup, make a new user in the DB
+            string username = "UsernameHere";
+            string password = "password123";
+            serverDatabase.InsertUserIfNotExist(username, SHA256HashShortcut(password));
             string wrongpassword = "thisisntthepassword";
 
             TestClient tc = new TestClient();
@@ -267,13 +267,13 @@ namespace MoveBit_Server
 
             Thread.Sleep(250);
             tc.Reset();
-            tc.Send(new ClientConnectRequest(username, SHA256HashShortcut(rightPassword), false));
+            tc.Send(new ClientConnectRequest(username, SHA256HashShortcut(password), false));
             resp = (ClientConnectResponse)tc.GetMessage();
 
-            // Assert that a known user who gives a correct password after giving an incorrec password is allowed connection to the server
+            // Assert that a known user who gives a correct password after giving an incorrect password is allowed connection to the server
             MoveBitAssert(
                 resp.response == serverConnectResponse.success,
-                $"The client '{username}' could not connect to the server, got response type {resp.response}, password was {rightPassword}"
+                $"The client '{username}' could not connect to the server, got response type {resp.response}, password was {password}"
                 );
 
             tc.Disconnect();
@@ -286,33 +286,152 @@ namespace MoveBit_Server
         /// </summary>
         private static void TestUsernameTaken()
         {
-            string username = ClientFactory.GetLastUser();
-            string password = ClientFactory.GeneratePassword();
+            // For setup, insert new database user
+            string username = "MiracleMax";
+            string password = "asdfghhjkl";
+            serverDatabase.InsertUserIfNotExist(username, SHA256HashShortcut(password));
+
+            string newUsername = username;
+
 
             TestClient tc = new TestClient();
             tc.Connect();
 
-            tc.Send(new ClientConnectRequest(username, SHA256HashShortcut(password), true));
+            // New user is set as TRUE, so the server should reject this since MiracleMax already is in the DB 
+            tc.Send(new ClientConnectRequest(newUsername, SHA256HashShortcut(password), true));
             ClientConnectResponse resp = (ClientConnectResponse)tc.GetMessage();
 
             // Assert that a new user who is trying to register with same username as an existing user is denied and given proper feedback
             MoveBitAssert(
                 resp.response == serverConnectResponse.usernameTaken,
-                $"The client '{username}' should not have been allowed to log in due to duplicate username, but was - Response code was {resp.response}, password was {password}"
+                $"The client '{newUsername}' should not have been allowed to log in due to duplicate username, but was - Response code was {resp.response}, password was {password}"
                 );
 
             tc.Reset();
-            username = "ThrowAway";
-            tc.Send(new ClientConnectRequest(username, SHA256HashShortcut(password), true));
+            newUsername = "The_Six_Fingered_Man";
+            tc.Send(new ClientConnectRequest(newUsername, SHA256HashShortcut(password), true));
             resp = (ClientConnectResponse)tc.GetMessage();
 
             // Assert that a previous user who attempted to register taken username is allowed connection after changing to something not taken
             MoveBitAssert(
                 resp.response == serverConnectResponse.success,
-                $"The client '{username}' could not connect to the server, got response type {resp.response}, password was {password}"
+                $"The client '{newUsername}' could not connect to the server, got response type {resp.response}, password was {password}"
                 );
 
             tc.Disconnect();
+        }
+
+        /// <summary>
+        /// Test simple sending of messages to a user who is non-existant, a user who is online,
+        /// and a user is offline
+        /// </summary>
+        private static void TestSendMessage()
+        {
+            string usernameA = "DarthVader";
+            string passwordA = "ComeToTheDarkSide";
+
+            string usernameB = "Luke";
+            string passwordB = "IKissedMySister";
+
+            string usernameC = "Yoda";
+            string passwordC = "DoOrDoNotThereIsNoTryCatch";
+
+            string usernameD = "Obi-Wan";
+
+            serverDatabase.InsertUserIfNotExist(usernameA, SHA256HashShortcut(passwordA));
+            serverDatabase.InsertUserIfNotExist(usernameB, SHA256HashShortcut(passwordB));
+            serverDatabase.InsertUserIfNotExist(usernameC, SHA256HashShortcut(passwordC));
+
+            TestClient tca   = new TestClient();
+            TestClient tcb = new TestClient();
+            TestClient tcc = new TestClient();
+
+            // Not real smil data, but to the server it makes no difference
+            string smilData = "Luke, I am your father";
+            string fileName = "plottwist.smil";
+
+            tca.Connect();
+            tca.Send(new ClientConnectRequest(usernameA, SHA256HashShortcut(passwordA), false));
+            tcb.Connect();
+            tcb.Send(new ClientConnectRequest(usernameB, SHA256HashShortcut(passwordB), false));
+
+            // Send to user who is not in the database
+            MediaMessage plotTwist = new MediaMessage(usernameA, usernameD, smilData, fileName);
+
+            // Make sure server has enough time to set up...
+            Thread.Sleep(500);
+
+            tca.Send(plotTwist);
+
+            // Assign the connectResponses to dummy variable
+            MoveBitMessage _ = tca.GetMessage();
+            _ = tcb.GetMessage();
+
+            MediaMessageResponse mResp = (MediaMessageResponse)tca.GetMessage();
+
+            MoveBitAssert(
+                mResp.result == SendResult.sendFailure,
+                $"Expected sending message to '{usernameD}' who is not in databse to return a failure. It instead succeeded"
+                );
+
+            // Send to correct user this time
+            plotTwist.recipientName = usernameB;
+
+            tca.Send(plotTwist);
+            mResp = (MediaMessageResponse)tca.GetMessage();
+
+
+            MoveBitAssert(
+                mResp.result == SendResult.sendSuccess,
+                $"Expected sending message to '{usernameB}' to return a success, it instead failed"
+                );
+
+            MediaMessage incoming = (MediaMessage)tcb.GetMessage();
+            MoveBitAssert(
+                incoming.senderName == usernameA
+                    && incoming.recipientName == usernameB
+                    && incoming.senderFileName == fileName
+                    && incoming.smilData == smilData,
+                $"The message sent to {usernameB} did not have the proper data in the assigned fields!"
+                );
+
+
+            // Finally, send to user who is offline but in DB
+            plotTwist.recipientName = usernameC;
+
+            tca.Send(plotTwist);
+
+
+            MoveBitAssert(
+                mResp.result == SendResult.sendSuccess,
+                $"Expected sending message to '{usernameC}' to return a success, it instead failed"
+                );
+
+            Thread.Sleep(1000);
+
+            tcc.Connect();
+            tcc.Send(new ClientConnectRequest(usernameC, SHA256HashShortcut(passwordC), false));
+
+            MoveBitMessage ma = tcc.GetMessage();
+            MoveBitMessage mb = tcc.GetMessage();
+
+            if (ma.GetType() != typeof(ClientConnectResponse))
+                    ma = mb;
+
+
+            MediaMessage mm = (MediaMessage)(mb);
+            MoveBitAssert(
+                mm.senderName == usernameA
+                    && mm.recipientName == usernameC
+                    && mm.senderFileName == fileName
+                    && mm.smilData == smilData,
+                $"The message sent to {usernameC} did not have the proper data in the assigned fields!"
+                );
+
+            tca.Disconnect();
+            tcb.Disconnect();
+            tcc.Disconnect();
+
         }
 
         /// <summary>
@@ -320,8 +439,10 @@ namespace MoveBit_Server
         /// </summary>
         private static void TestMultiSession()
         {
-            string userName = ClientFactory.GetLastUser();
-            string password = ClientFactory.GetUserPassword(userName);
+            // For setup, make new user
+            string userName = "Romeo";
+            string password = "ILoveJuliet";
+            serverDatabase.InsertUserIfNotExist(userName, SHA256HashShortcut(password));
 
             TestClient tc1 = new TestClient();
             tc1.Connect();
@@ -373,7 +494,7 @@ namespace MoveBit_Server
 
 
             tc1.Disconnect();
-            Thread.Sleep(100);  // Give a little time for server to update. 
+            Thread.Sleep(200);  // Give a little time for server to update. 
 
             // Assert that after having one connection close, the number of active connections for this user is only 1
             MoveBitAssert(
@@ -420,7 +541,7 @@ namespace MoveBit_Server
             string username;
             string password;
             TestClient tc;
-            for(int i = 0; i < 200; i++)
+            for(int i = 0; i < 120; i++)
             {
                 Tuple<string, string> info = ClientFactory.GetNewUserValid();
                 tc = new TestClient();
@@ -439,7 +560,6 @@ namespace MoveBit_Server
             }
         }
 
-        // TODO make public, static, or put somewhere common
         /// <summary>
         /// Quick shortcut for applying a Sha256 password hash in the same way the client does
         /// </summary>
