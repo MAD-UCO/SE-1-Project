@@ -170,7 +170,7 @@
             this.Controls.Add(this.btnBack);
             this.Controls.Add(this.cboMessages);
             this.Name = "Messages";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Messages_FormClosing);
             this.Load += new System.EventHandler(this.Messages_Load);
             this.VisibleChanged += new System.EventHandler(this.Messages_VisibleChanged);

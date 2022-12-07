@@ -59,8 +59,8 @@ namespace SE_Final_Project
             this.cboAddresses.Name = "cboAddresses";
             this.cboAddresses.Size = new System.Drawing.Size(225, 28);
             this.cboAddresses.TabIndex = 0;
-            this.cboAddresses.SelectedIndexChanged += new System.EventHandler(this.cboAddresses_SelectedIndexChanged);
-            this.cboAddresses.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cboAddresses_KeyUp);
+            this.cboAddresses.SelectedIndexChanged += new System.EventHandler(this.CboAddresses_SelectedIndexChanged);
+            this.cboAddresses.KeyUp += new System.Windows.Forms.KeyEventHandler(this.CboAddresses_KeyUp);
             // 
             // btnCompose
             // 
@@ -72,7 +72,7 @@ namespace SE_Final_Project
             this.btnCompose.TabIndex = 1;
             this.btnCompose.Text = "comp";
             this.btnCompose.UseVisualStyleBackColor = true;
-            this.btnCompose.Click += new System.EventHandler(this.btnCompose_Click);
+            this.btnCompose.Click += new System.EventHandler(this.BtnCompose_Click);
             // 
             // txtOutgoing
             // 
@@ -108,7 +108,7 @@ namespace SE_Final_Project
             this.btnRegion.TabIndex = 4;
             this.btnRegion.Text = "REGION";
             this.btnRegion.UseVisualStyleBackColor = false;
-            this.btnRegion.Click += new System.EventHandler(this.btnRegion_Click);
+            this.btnRegion.Click += new System.EventHandler(this.BtnRegion_Click);
             // 
             // btnStart
             // 
@@ -120,7 +120,7 @@ namespace SE_Final_Project
             this.btnStart.TabIndex = 5;
             this.btnStart.Text = "START";
             this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
+            this.btnStart.Click += new System.EventHandler(this.BtnStart_Click);
             // 
             // btnDuration
             // 
@@ -132,7 +132,7 @@ namespace SE_Final_Project
             this.btnDuration.TabIndex = 6;
             this.btnDuration.Text = "Duration";
             this.btnDuration.UseVisualStyleBackColor = true;
-            this.btnDuration.Click += new System.EventHandler(this.btnDuration_Click);
+            this.btnDuration.Click += new System.EventHandler(this.BtnDuration_Click);
             // 
             // btnMessages
             // 
@@ -144,7 +144,7 @@ namespace SE_Final_Project
             this.btnMessages.TabIndex = 7;
             this.btnMessages.Text = "msgs";
             this.btnMessages.UseVisualStyleBackColor = true;
-            this.btnMessages.Click += new System.EventHandler(this.btnMessages_Click);
+            this.btnMessages.Click += new System.EventHandler(this.BtnMessages_Click);
             // 
             // cboFileList
             // 
@@ -155,7 +155,7 @@ namespace SE_Final_Project
             this.cboFileList.Name = "cboFileList";
             this.cboFileList.Size = new System.Drawing.Size(175, 28);
             this.cboFileList.TabIndex = 8;
-            this.cboFileList.SelectedIndexChanged += new System.EventHandler(this.cboFileList_SelectedIndexChanged);
+            this.cboFileList.SelectedIndexChanged += new System.EventHandler(this.CboFileList_SelectedIndexChanged);
             // 
             // btnUpload
             // 
@@ -167,7 +167,7 @@ namespace SE_Final_Project
             this.btnUpload.TabIndex = 9;
             this.btnUpload.Text = "BROWSE";
             this.btnUpload.UseVisualStyleBackColor = true;
-            this.btnUpload.Click += new System.EventHandler(this.btnUpload_Click);
+            this.btnUpload.Click += new System.EventHandler(this.BtnUpload_Click);
             // 
             // btnLogout
             // 
@@ -179,7 +179,7 @@ namespace SE_Final_Project
             this.btnLogout.TabIndex = 11;
             this.btnLogout.Text = "Logout";
             this.btnLogout.UseVisualStyleBackColor = true;
-            this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
+            this.btnLogout.Click += new System.EventHandler(this.BtnLogout_Click);
             // 
             // playerMain
             // 
@@ -237,7 +237,7 @@ namespace SE_Final_Project
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Main";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "MoveBit - Composer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.Load += new System.EventHandler(this.Main_Load);

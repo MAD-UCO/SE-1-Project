@@ -140,7 +140,7 @@ namespace SE_Final_Project
             }
         }
        
-        private void btnUpload_Click(object sender, EventArgs e)
+        private void BtnUpload_Click(object sender, EventArgs e)
         {
             //Create an OpenFileDialog object which provides file browser functionality
             OpenFileDialog browser = new OpenFileDialog();
@@ -159,13 +159,13 @@ namespace SE_Final_Project
             }
         }
 
-        private void btnCompose_Click(object sender, EventArgs e)
+        private void BtnCompose_Click(object sender, EventArgs e)
         {
             //Reset text box contents
             txtOutgoing.Text = "";
         }
 
-        private void btnMessages_Click(object sender, EventArgs e)
+        private void BtnMessages_Click(object sender, EventArgs e)
         {
             this.Hide();
 
@@ -180,10 +180,12 @@ namespace SE_Final_Project
                 messages.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (messages.Size.Width / 2),
                     (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (messages.Size.Height / 2) - HeightAdjustment);
             }
+            messages.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (messages.Size.Width / 2),
+                    (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (messages.Size.Height / 2) - HeightAdjustment);
             messages.Show();
         }
 
-        private void btnStart_Click(object sender, EventArgs e)
+        private void BtnStart_Click(object sender, EventArgs e)
         {
             if(frmStartTimeDialog == null)
             {
@@ -196,7 +198,7 @@ namespace SE_Final_Project
             frmStartTimeDialog.Show();
         }
 
-        private void btnDuration_Click(object sender, EventArgs e)
+        private void BtnDuration_Click(object sender, EventArgs e)
         {
             if(frmDuration == null)
             {
@@ -210,7 +212,7 @@ namespace SE_Final_Project
             frmDuration.Show();
         }
 
-        private void btnRegion_Click(object sender, EventArgs e)
+        private void BtnRegion_Click(object sender, EventArgs e)
         {
             if(region == null)
             {
@@ -223,14 +225,14 @@ namespace SE_Final_Project
             region.Show();
         }
 
-        private void cboAddresses_SelectedIndexChanged(object sender, EventArgs e)
+        private void CboAddresses_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Store selected address in a string variable
             selectedAddress = cboAddresses.SelectedItem.ToString();
         }
 
         //Add an address to the combo box that has been typed in by the user
-        private void cboAddresses_KeyUp(object sender, KeyEventArgs e)
+        private void CboAddresses_KeyUp(object sender, KeyEventArgs e)
         {
             //After the user has typed the address and pressed enter, add it to the list
             if(e.KeyCode == Keys.Enter)
@@ -241,7 +243,7 @@ namespace SE_Final_Project
             }
         }
 
-        private void cboFileList_SelectedIndexChanged(object sender, EventArgs e)
+        private void CboFileList_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Display media player for preview if audio or video file is selected.
             selectedFile = cboFileList.SelectedItem.ToString();
@@ -256,7 +258,7 @@ namespace SE_Final_Project
             }
         }
 
-        private void btnLogout_Click(object sender, EventArgs e)
+        private void BtnLogout_Click(object sender, EventArgs e)
         {
 
             //Clear old contents for new user
@@ -269,7 +271,7 @@ namespace SE_Final_Project
         }
 
         //Call getNewMessages() every second
-        private void timer_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object sender, EventArgs e)
         {
             //Add messages names to the message combo box and the objects to a hidden list
             incomingMessages = NetworkClient.GetNewMessages();
@@ -371,7 +373,7 @@ namespace SE_Final_Project
         private void initializeTimer()
         {
             timer = new Timer();
-            timer.Tick += new EventHandler(timer_Tick);
+            timer.Tick += new EventHandler(Timer_Tick);
 
             // 1000ms = 1s intervals
             timer.Interval = 1000;
