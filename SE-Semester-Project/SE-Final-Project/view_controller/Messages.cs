@@ -18,7 +18,6 @@ namespace SE_Final_Project
     public partial class Messages : Form
     {
         //private variables
-        private List<Message> incomingMessages = new List<Message>();
         private List<Label> locationLabels = new List<Label>();
         private Main main = (Main)Application.OpenForms["Main"];
 
@@ -40,14 +39,6 @@ namespace SE_Final_Project
             locationLabels.Add(lblEast);
             locationLabels.Add(lblWest);
             locationLabels.Add(lblDefault);
-
-            //Get new messages from the Network Client when form loads
-            incomingMessages = NetworkClient.GetNewMessages();
-            foreach(var m in incomingMessages)
-            {
-                cboMessages.Items.Add(m);
-            }
-
 
             //Set initial visibility for labels to false
             lblDefault.Visible = false;
@@ -74,12 +65,8 @@ namespace SE_Final_Project
             List<TextMessage> textMessages = temp.textMessages;
             foreach(var t in textMessages)
             {
-                lblDefault.Visible = true;
-                lblDefault.Text = t.text;
+                displayMessage(t);
             }
-              
-            //Display the text message in the correct location
-            //displayTextMessage();
         }
 
         //Getters
@@ -96,48 +83,68 @@ namespace SE_Final_Project
             //load list and return
             return locationLabels;
         }
-        
-
-        //Private Operations
-
-        //Display text message in the correct location
-        private void displayTextMessage()
-        {
-            
-            //if (selectedMessage == "testDefault")
-            //{
-                //Hide media player
-             //   playerMessages.Visible = false;
-
-                //Hide all locations other than default
-               // grpTextCanvas.Visible = true;
-
-                //lblCenter.Visible = false;
-                //lblNorth.Visible = false;
-                //lblSouth.Visible = false;
-                //lblEast.Visible = false;
-                //lblWest.Visible = false;
-                //lblDefault.Visible = true;
-                //lblDefault.Text = "Default test message";
-        }
 
         //Shut down all processes when user exits program
         private void Messages_FormClosing(object sender, FormClosingEventArgs e)
         {
             NetworkClient.Shutdown();
             NetworkClient.Logout();
-            Application.Exit();
+            Environment.Exit(0);
         }
 
         private void Messages_VisibleChanged(object sender, EventArgs e)
         {
             //Get new messages from the Network Client when form loads
-            incomingMessages = NetworkClient.GetNewMessages();
-            foreach (var m in incomingMessages)
-            {
-                cboMessages.Items.Add(m);
-            }
+            //incomingMessages = NetworkClient.GetNewMessages();
+            //foreach (var m in incomingMessages)
+            //{
+              //  cboMessages.Items.Add(m);
+            //}
 
+        }
+
+        //Private Operations
+
+        //Display text message in the correct location
+        private void displayMessage(TextMessage t)
+        {
+            //Clear old text
+            lblCenter.Text = "";
+            lblNorth.Text = "";
+            lblSouth.Text = "";
+            lblEast.Text = "";
+            lblWest.Text = "";
+
+            if(t.region.ToUpper() == "CENTER")
+            {
+                lblCenter.Visible = true;
+                lblCenter.Text = t.text;
+            }
+            else if(t.region.ToUpper() == "NORTH")
+            {
+                lblNorth.Visible = true;
+                lblNorth.Text = t.text;
+            }
+            else if(t.region.ToUpper() == "SOUTH")
+            {
+                lblSouth.Visible = true;
+                lblSouth.Text = t.text;
+            }
+            else if(t.region.ToUpper() == "EAST")
+            {
+                lblEast.Visible = true;
+                lblEast.Text = t.text;
+            }
+            else if(t.region.ToUpper() == "WEST")
+            {
+                lblWest.Visible = true;
+                lblWest.Text = t.text;
+            }
+            else
+            {
+                lblDefault.Visible = true;
+                lblDefault.Text = t.text;
+            }
         }
     }
 }

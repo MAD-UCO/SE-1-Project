@@ -13,6 +13,8 @@ using System.Xml.Serialization;
 using System.Net;
 using static System.Net.WebRequestMethods;
 using System.Diagnostics;
+using SE_Final_Project.view_controller;
+using System.Windows.Forms.VisualStyles;
 
 namespace SE_Final_Project
 {
@@ -27,10 +29,15 @@ namespace SE_Final_Project
         private TextMessage textMessage;
         private VideoMessage videoMessage;
         private AudioMessage audioMessage;
-        private StartTimeDialog frmStartTimeDialog = new StartTimeDialog();
-        private Duration frmDuration = new Duration();
+        private StartTimeDialog frmStartTimeDialog = (StartTimeDialog)Application.OpenForms["StartTimeDialog"];
+        private Duration frmDuration = (Duration)Application.OpenForms["frmDuration"];
         private Login login = (Login)Application.OpenForms["Login"];
+        private TextRegion region = (TextRegion)Application.OpenForms["TextRegion"];
         private Messages messages = (Messages)Application.OpenForms["Messages"];
+
+
+        private Timer timer;
+
 
         //constants
         private const int HeightAdjustment = 25;
@@ -49,6 +56,12 @@ namespace SE_Final_Project
 
             //Generate button symbols
             generateButtonSymbols();
+
+            //Initialize timer to call getNewMessages() every second
+            initializeTimer();
+
+            //Initialize messages form
+            messages = new Messages();
 
         }
 
@@ -82,6 +95,7 @@ namespace SE_Final_Project
 
                     textMessage.beginTime = frmStartTimeDialog.getSeconds();
                     textMessage.duration = frmDuration.getSeconds();
+                    textMessage.region = region.getLocation();
 
                     //store in message object
                     message.AddTextMessage(textMessage);
@@ -148,10 +162,13 @@ namespace SE_Final_Project
         {
             this.Hide();
 
+            //hide new message icon
+            btnNewMessageIcon.Visible = false;
+
             //If this is the first time navigating to messages create a new form. Else reload existing form
             if(messages == null)
             {
-                messages = new Messages();
+                //Messages form gets created early during initialization so getNewMessages() can be called immediately
                 //Set location to center of user screen (adjusted higher by 25 pixels
                 messages.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (messages.Size.Width / 2),
                     (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (messages.Size.Height / 2) - HeightAdjustment);
@@ -161,22 +178,42 @@ namespace SE_Final_Project
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            //Set location to center of user screen (adjusted higher by 25 pixels)
-            frmStartTimeDialog.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (frmStartTimeDialog.Size.Width / 2),
-                (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (frmStartTimeDialog.Size.Height / 2) - HeightAdjustment);
-
+            if(frmStartTimeDialog == null)
+            {
+                frmStartTimeDialog = new StartTimeDialog();
+                //Set location to center of user screen (adjusted higher by 25 pixels)
+                frmStartTimeDialog.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (frmStartTimeDialog.Size.Width / 2),
+                    (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (frmStartTimeDialog.Size.Height / 2) - HeightAdjustment);
+            }
             //Display StartTimeDialog form
             frmStartTimeDialog.Show();
         }
 
         private void btnDuration_Click(object sender, EventArgs e)
         {
-            //Set location to center of user screen (adjusted higher by 25 pixels)
-            frmDuration.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (frmDuration.Size.Width / 2),
-                (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (frmDuration.Size.Height / 2) - HeightAdjustment);
+            if(frmDuration == null)
+            {
+                frmDuration = new Duration();
+                //Set location to center of user screen (adjusted higher by 25 pixels)
+                frmDuration.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (frmDuration.Size.Width / 2),
+                    (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (frmDuration.Size.Height / 2) - HeightAdjustment);
 
+            }
             //Display Duration form
             frmDuration.Show();
+        }
+
+        private void btnRegion_Click(object sender, EventArgs e)
+        {
+            if(region == null)
+            {
+                region = new TextRegion();
+                //Set location to center of user screen (adjusted higher by 25 pixels)
+                region.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (region.Size.Width / 2),
+                    (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (region.Size.Height / 2) - HeightAdjustment);
+            }
+            //Display Duration form
+            region.Show();
         }
 
         private void cboAddresses_SelectedIndexChanged(object sender, EventArgs e)
@@ -227,9 +264,10 @@ namespace SE_Final_Project
         //Shut down all processes when user exits program
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
+            //Shut down program
             NetworkClient.Shutdown();
             NetworkClient.Logout();
-            Application.Exit();
+            Environment.Exit(0);
         }
 
         //Getters
@@ -284,9 +322,10 @@ namespace SE_Final_Project
             cboAddresses.Items.Clear();
             cboAddresses.Text = "";
 
-            //Clear Duration.cs and StartTimeDialog.cs textboxes
+            //Clear Duration.cs, StartTimeDialog.cs, and Region.cs textboxes
             frmStartTimeDialog.getTxtSS().Text = "";
             frmDuration.getTxtSS().Text = "";
+            region.getcboDisplayLocation().Text = "";
 
             //Clear Messages.cs combo box and labels (If the form has been loaded at least once)
             if(messages != null)
@@ -299,5 +338,29 @@ namespace SE_Final_Project
                 }
             }
         }
+
+        //Start timer to continuously call getMessages()
+        private void initializeTimer()
+        {
+            timer = new Timer();
+            timer.Tick += new EventHandler(timer_Tick);
+
+            // 1000ms = 1s intervals
+            timer.Interval = 1000;
+            timer.Start();
+
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            List<Message> incomingMessages = new List<Message>();
+            incomingMessages = NetworkClient.GetNewMessages();
+            foreach (var m in incomingMessages)
+            {
+                btnNewMessageIcon.Visible = true;
+                messages.getCboMessages().Items.Add(m);
+            }
+        }
+
     }
 }

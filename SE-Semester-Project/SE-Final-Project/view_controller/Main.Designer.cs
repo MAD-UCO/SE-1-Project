@@ -36,7 +36,7 @@ namespace SE_Final_Project
             this.btnCompose = new System.Windows.Forms.Button();
             this.txtOutgoing = new System.Windows.Forms.RichTextBox();
             this.btnSend = new System.Windows.Forms.Button();
-            this.btnDelete = new System.Windows.Forms.Button();
+            this.btnRegion = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnDuration = new System.Windows.Forms.Button();
             this.btnMessages = new System.Windows.Forms.Button();
@@ -45,6 +45,7 @@ namespace SE_Final_Project
             this.btnLogout = new System.Windows.Forms.Button();
             this.playerMain = new AxWMPLib.AxWindowsMediaPlayer();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.btnNewMessageIcon = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.playerMain)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -96,17 +97,18 @@ namespace SE_Final_Project
             this.btnSend.UseVisualStyleBackColor = false;
             this.btnSend.Click += new System.EventHandler(this.BtnSend_Click);
             // 
-            // btnDelete
+            // btnRegion
             // 
-            this.btnDelete.BackColor = System.Drawing.Color.Silver;
-            this.btnDelete.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDelete.Location = new System.Drawing.Point(671, 420);
-            this.btnDelete.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(100, 50);
-            this.btnDelete.TabIndex = 4;
-            this.btnDelete.Text = "(X|";
-            this.btnDelete.UseVisualStyleBackColor = false;
+            this.btnRegion.BackColor = System.Drawing.Color.Silver;
+            this.btnRegion.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRegion.Location = new System.Drawing.Point(671, 420);
+            this.btnRegion.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnRegion.Name = "btnRegion";
+            this.btnRegion.Size = new System.Drawing.Size(100, 50);
+            this.btnRegion.TabIndex = 4;
+            this.btnRegion.Text = "REGION";
+            this.btnRegion.UseVisualStyleBackColor = false;
+            this.btnRegion.Click += new System.EventHandler(this.btnRegion_Click);
             // 
             // btnStart
             // 
@@ -201,12 +203,24 @@ namespace SE_Final_Project
             this.pictureBox1.TabIndex = 12;
             this.pictureBox1.TabStop = false;
             // 
+            // btnNewMessageIcon
+            // 
+            this.btnNewMessageIcon.BackColor = System.Drawing.Color.Red;
+            this.btnNewMessageIcon.Enabled = false;
+            this.btnNewMessageIcon.Location = new System.Drawing.Point(756, 609);
+            this.btnNewMessageIcon.Name = "btnNewMessageIcon";
+            this.btnNewMessageIcon.Size = new System.Drawing.Size(25, 25);
+            this.btnNewMessageIcon.TabIndex = 13;
+            this.btnNewMessageIcon.UseVisualStyleBackColor = false;
+            this.btnNewMessageIcon.Visible = false;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.MidnightBlue;
             this.ClientSize = new System.Drawing.Size(784, 683);
+            this.Controls.Add(this.btnNewMessageIcon);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btnLogout);
             this.Controls.Add(this.playerMain);
@@ -215,7 +229,7 @@ namespace SE_Final_Project
             this.Controls.Add(this.btnMessages);
             this.Controls.Add(this.btnDuration);
             this.Controls.Add(this.btnStart);
-            this.Controls.Add(this.btnDelete);
+            this.Controls.Add(this.btnRegion);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.txtOutgoing);
             this.Controls.Add(this.btnCompose);
@@ -239,7 +253,7 @@ namespace SE_Final_Project
         private System.Windows.Forms.Button btnCompose;
         private System.Windows.Forms.RichTextBox txtOutgoing;
         private System.Windows.Forms.Button btnSend;
-        private System.Windows.Forms.Button btnDelete;
+        private System.Windows.Forms.Button btnRegion;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnDuration;
         private System.Windows.Forms.Button btnMessages;
@@ -248,6 +262,7 @@ namespace SE_Final_Project
         private AxWMPLib.AxWindowsMediaPlayer playerMain;
         private System.Windows.Forms.Button btnLogout;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button btnNewMessageIcon;
     }
 }
 

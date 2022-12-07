@@ -95,7 +95,7 @@
             // lblDefault
             // 
             this.lblDefault.AutoSize = true;
-            this.lblDefault.Location = new System.Drawing.Point(0, 0);
+            this.lblDefault.Location = new System.Drawing.Point(-1, 0);
             this.lblDefault.Name = "lblDefault";
             this.lblDefault.Size = new System.Drawing.Size(73, 25);
             this.lblDefault.TabIndex = 5;
