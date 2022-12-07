@@ -252,7 +252,9 @@ namespace MoveBit_Server
             if (!successful)
                 throw new Exception("The server could not initialize the test accounts!");
 #else
-            throw new NotImplementedException("This functionality has not been completed for the release build!");
+            // Would have liked to put a load here for data being saved. 
+            // Just don't have time though, so anytime the server dies, everyone's profiles go with it
+            // Oh well...
 #endif
         }
 
@@ -261,7 +263,9 @@ namespace MoveBit_Server
         /// </summary>
         public void SaveDataBase()
         {
-            // TODO
+            // Could not get to in time...
+            // If I did, I'd serialize the different users into a file along with the other data, 
+            // then deserialize upon load.
         }
 
         /// <summary>
