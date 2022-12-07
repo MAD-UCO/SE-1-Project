@@ -51,7 +51,7 @@
             this.cboMessages.FormattingEnabled = true;
             this.cboMessages.Location = new System.Drawing.Point(12, 214);
             this.cboMessages.Name = "cboMessages";
-            this.cboMessages.Size = new System.Drawing.Size(225, 28);
+            this.cboMessages.Size = new System.Drawing.Size(299, 28);
             this.cboMessages.TabIndex = 0;
             this.cboMessages.SelectedIndexChanged += new System.EventHandler(this.cboMessages_SelectedIndexChanged);
             // 

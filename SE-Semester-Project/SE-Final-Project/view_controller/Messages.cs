@@ -19,6 +19,7 @@ namespace SE_Final_Project
     {
         //private variables
         private List<Label> locationLabels = new List<Label>();
+        private List<Message> messageObjects = new List<Message>();
         private Main main = (Main)Application.OpenForms["Main"];
 
         //Class constructor, do not edit. Use form load event for initialization
@@ -60,8 +61,10 @@ namespace SE_Final_Project
 
         private void cboMessages_SelectedIndexChanged(object sender, EventArgs e)
         {
+            int selectedIndex = cboMessages.SelectedIndex;
 
-            SE_Final_Project.Message temp = (SE_Final_Project.Message)cboMessages.SelectedItem;
+            //Use selected index of cboMessages to find message object in parallel list. Then display text
+            SE_Final_Project.Message temp = (SE_Final_Project.Message)messageObjects[selectedIndex];
             List<TextMessage> textMessages = temp.textMessages;
             foreach(var t in textMessages)
             {
@@ -92,6 +95,12 @@ namespace SE_Final_Project
             Environment.Exit(0);
         }
 
+        //return message object list
+        public List<Message> getMessageObjects()
+        {
+            return this.messageObjects;
+        }
+
         private void Messages_VisibleChanged(object sender, EventArgs e)
         {
             //Get new messages from the Network Client when form loads
@@ -115,7 +124,12 @@ namespace SE_Final_Project
             lblEast.Text = "";
             lblWest.Text = "";
 
-            if(t.region.ToUpper() == "CENTER")
+            if(t.region.ToUpper() == "DEFAULT")
+            {
+                lblDefault.Visible = true;
+                lblDefault.Text = t.text;
+            }
+            else if(t.region.ToUpper() == "CENTER")
             {
                 lblCenter.Visible = true;
                 lblCenter.Text = t.text;

@@ -16,6 +16,7 @@ namespace SE_Final_Project.view_controller
         public TextRegion()
         {
             InitializeComponent();
+            cboDisplayLocation.Items.Add("Default");
             cboDisplayLocation.Items.Add("Center");
             cboDisplayLocation.Items.Add("North");
             cboDisplayLocation.Items.Add("South");

@@ -15,6 +15,7 @@ using static System.Net.WebRequestMethods;
 using System.Diagnostics;
 using SE_Final_Project.view_controller;
 using System.Windows.Forms.VisualStyles;
+using System.Collections;
 
 namespace SE_Final_Project
 {
@@ -34,6 +35,7 @@ namespace SE_Final_Project
         private Login login = (Login)Application.OpenForms["Login"];
         private TextRegion region = (TextRegion)Application.OpenForms["TextRegion"];
         private Messages messages = (Messages)Application.OpenForms["Messages"];
+        List<Message> incomingMessages = new List<Message>();
 
 
         private Timer timer;
@@ -63,6 +65,7 @@ namespace SE_Final_Project
             //Initialize messages form
             messages = new Messages();
 
+
         }
 
         private void BtnSend_Click(object sender, EventArgs e)
@@ -75,6 +78,10 @@ namespace SE_Final_Project
             else if(frmStartTimeDialog.getSeconds() == "" || frmDuration.getSeconds() == "")
             {
                 MessageBox.Show("Missing start time or end time duration");
+            }
+            else if(region.getcboDisplayLocation().SelectedItem == null)
+            {
+                MessageBox.Show("Missing display location");
             }
             else
             {
@@ -96,7 +103,7 @@ namespace SE_Final_Project
                     textMessage.beginTime = frmStartTimeDialog.getSeconds();
                     textMessage.duration = frmDuration.getSeconds();
                     textMessage.region = region.getLocation();
-
+                   
                     //store in message object
                     message.AddTextMessage(textMessage);
                 }
@@ -261,6 +268,19 @@ namespace SE_Final_Project
             NetworkClient.Logout();
         }
 
+        //Call getNewMessages() every second
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            //Add messages names to the message combo box and the objects to a hidden list
+            incomingMessages = NetworkClient.GetNewMessages();
+            foreach (var m in incomingMessages)
+            {
+                btnNewMessageIcon.Visible = true;
+                messages.getCboMessages().Items.Add(m.smilFileName + ": " + DateTime.Now.ToString());
+                messages.getMessageObjects().Add(m);
+            }
+        }
+
         //Shut down all processes when user exits program
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -289,6 +309,11 @@ namespace SE_Final_Project
         public Message getMessage()
         {
             return message;
+        }
+
+        public List<Message> getIncomingMessages()
+        {
+            return incomingMessages;
         }
 
         //Operations
@@ -337,6 +362,9 @@ namespace SE_Final_Project
                     label.Text = "";
                 }
             }
+
+            //Clear messages messageObject List
+            messages.getMessageObjects().Clear();
         }
 
         //Start timer to continuously call getMessages()
@@ -350,17 +378,5 @@ namespace SE_Final_Project
             timer.Start();
 
         }
-
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            List<Message> incomingMessages = new List<Message>();
-            incomingMessages = NetworkClient.GetNewMessages();
-            foreach (var m in incomingMessages)
-            {
-                btnNewMessageIcon.Visible = true;
-                messages.getCboMessages().Items.Add(m);
-            }
-        }
-
     }
 }
