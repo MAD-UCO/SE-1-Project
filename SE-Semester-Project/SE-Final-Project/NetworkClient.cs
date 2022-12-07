@@ -44,7 +44,7 @@ namespace SE_Semester_Project
         public static NetworkStream netStream;                          // Our network stream to write and get messages from
         public static string myClientName = null;      // The name of this client
 
-        private static string ipAddress = "127.0.0.1";                  // IP address of our server
+        private static string ipAddress = "192.168.0.101";//""127.0.0.1";                  // IP address of our server
         private static int portNumber = 5005;                           // The port we are connecting to
         private static bool continueLoop = false;
 
@@ -122,9 +122,9 @@ namespace SE_Semester_Project
                     {
                         MediaMessage media = (MediaMessage)(msg);
                         Debug.Assert(media.senderFileName != null, "Media.SenderFileName is null!");
-                        Debug.Assert(File.Exists(media.senderFileName), $"System could not locate media.SenderFileName {media.senderFileName}");
                         FileInfo fi = new FileInfo(media.senderFileName);
                         Message smilMsg = new Message("/" + fi.Name, media.smilData);
+                        smilMsg.setSmilFilePath(Environment.CurrentDirectory + "/" + fi.Name);
 
 
                         foreach (KeyValuePair<string, byte[]> entry in media.videoFiles)
@@ -150,7 +150,7 @@ namespace SE_Semester_Project
                             smilMsg.Add
                             */
                         }
-
+                        Debug.Assert(File.Exists(smilMsg.smilFilePath), $"System could not locate smilMsg.smilFilePath {smilMsg.smilFilePath}");
                         temp.Add(smilMsg);
                     }
                 }
