@@ -53,7 +53,7 @@
             this.cboMessages.Name = "cboMessages";
             this.cboMessages.Size = new System.Drawing.Size(299, 28);
             this.cboMessages.TabIndex = 0;
-            this.cboMessages.SelectedIndexChanged += new System.EventHandler(this.cboMessages_SelectedIndexChanged);
+            this.cboMessages.SelectedIndexChanged += new System.EventHandler(this.CboMessages_SelectedIndexChanged);
             // 
             // btnBack
             // 
@@ -64,7 +64,7 @@
             this.btnBack.TabIndex = 3;
             this.btnBack.Text = "<";
             this.btnBack.UseVisualStyleBackColor = true;
-            this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
+            this.btnBack.Click += new System.EventHandler(this.BtnBack_Click);
             // 
             // playerMessages
             // 
@@ -95,7 +95,7 @@
             // lblDefault
             // 
             this.lblDefault.AutoSize = true;
-            this.lblDefault.Location = new System.Drawing.Point(-1, 0);
+            this.lblDefault.Location = new System.Drawing.Point(0, 0);
             this.lblDefault.Name = "lblDefault";
             this.lblDefault.Size = new System.Drawing.Size(73, 25);
             this.lblDefault.TabIndex = 5;
@@ -104,7 +104,8 @@
             // lblSouth
             // 
             this.lblSouth.AutoSize = true;
-            this.lblSouth.Location = new System.Drawing.Point(250, 392);
+            this.lblSouth.Location = new System.Drawing.Point(250, 326);
+            this.lblSouth.MaximumSize = new System.Drawing.Size(200, 110);
             this.lblSouth.Name = "lblSouth";
             this.lblSouth.Size = new System.Drawing.Size(83, 25);
             this.lblSouth.TabIndex = 4;
@@ -113,8 +114,8 @@
             // lblEast
             // 
             this.lblEast.AutoSize = true;
-            this.lblEast.Location = new System.Drawing.Point(507, 204);
-            this.lblEast.MaximumSize = new System.Drawing.Size(175, 0);
+            this.lblEast.Location = new System.Drawing.Point(437, 200);
+            this.lblEast.MaximumSize = new System.Drawing.Size(200, 0);
             this.lblEast.Name = "lblEast";
             this.lblEast.Size = new System.Drawing.Size(66, 25);
             this.lblEast.TabIndex = 3;
@@ -123,7 +124,8 @@
             // lblCenter
             // 
             this.lblCenter.AutoSize = true;
-            this.lblCenter.Location = new System.Drawing.Point(250, 204);
+            this.lblCenter.Location = new System.Drawing.Point(250, 200);
+            this.lblCenter.MaximumSize = new System.Drawing.Size(200, 0);
             this.lblCenter.Name = "lblCenter";
             this.lblCenter.Size = new System.Drawing.Size(93, 25);
             this.lblCenter.TabIndex = 2;
@@ -132,7 +134,8 @@
             // lblWest
             // 
             this.lblWest.AutoSize = true;
-            this.lblWest.Location = new System.Drawing.Point(0, 204);
+            this.lblWest.Location = new System.Drawing.Point(0, 200);
+            this.lblWest.MaximumSize = new System.Drawing.Size(200, 0);
             this.lblWest.Name = "lblWest";
             this.lblWest.Size = new System.Drawing.Size(72, 25);
             this.lblWest.TabIndex = 1;
@@ -142,6 +145,7 @@
             // 
             this.lblNorth.AutoSize = true;
             this.lblNorth.Location = new System.Drawing.Point(250, 0);
+            this.lblNorth.MaximumSize = new System.Drawing.Size(200, 0);
             this.lblNorth.Name = "lblNorth";
             this.lblNorth.Size = new System.Drawing.Size(82, 25);
             this.lblNorth.TabIndex = 0;
@@ -173,7 +177,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Messages_FormClosing);
             this.Load += new System.EventHandler(this.Messages_Load);
-            this.VisibleChanged += new System.EventHandler(this.Messages_VisibleChanged);
             ((System.ComponentModel.ISupportInitialize)(this.playerMessages)).EndInit();
             this.grpTextCanvas.ResumeLayout(false);
             this.grpTextCanvas.PerformLayout();

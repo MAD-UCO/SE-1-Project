@@ -24,7 +24,7 @@ namespace SE_Final_Project.view_controller
             cboDisplayLocation.Items.Add("West");
         }
 
-        private void btnAccept_Click(object sender, EventArgs e)
+        private void BtnAccept_Click(object sender, EventArgs e)
         {
             if(cboDisplayLocation.SelectedItem != null)
             {
@@ -34,12 +34,12 @@ namespace SE_Final_Project.view_controller
         }
 
         //Getters
-        public String getLocation()
+        public String GetLocation()
         {
             return this.location;
         }
 
-        public ComboBox getcboDisplayLocation()
+        public ComboBox GetcboDisplayLocation()
         {
             return cboDisplayLocation;
         }

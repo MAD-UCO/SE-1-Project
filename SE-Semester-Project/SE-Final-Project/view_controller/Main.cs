@@ -39,8 +39,6 @@ namespace SE_Final_Project
         private Messages messages = (Messages)Application.OpenForms["Messages"];
         List<Message> incomingMessages = new List<Message>();
         SoundPlayer soundPlayer;
-
-
         private Timer timer;
 
 
@@ -54,6 +52,8 @@ namespace SE_Final_Project
         }
 
         // Event Handlers
+
+        //Executes as soon as Main.cs is loaded
         private void Main_Load(object sender, EventArgs e)
         {
             //Hide media player until a preview is needed
@@ -63,10 +63,10 @@ namespace SE_Final_Project
             pnlStartDuration.Visible = false;
 
             //Generate button symbols
-            generateButtonSymbols();
+            GenerateButtonSymbols();
 
             //Initialize timer to call getNewMessages() every second
-            initializeTimer();
+            InitializeTimer();
 
             //Initialize messages form
             messages = new Messages();
@@ -77,8 +77,10 @@ namespace SE_Final_Project
 
         }
 
+        //Executes each time btnSend is clicked by the user
         private void BtnSend_Click(object sender, EventArgs e)
         {
+            //Error handling messages for missing fields
             if(cboAddresses.SelectedItem == null)
             {
                 MessageBox.Show("Recipient Not Selected");
@@ -87,7 +89,7 @@ namespace SE_Final_Project
             {
                 MessageBox.Show("Missing start time or end time duration");
             }
-            else if(region.getcboDisplayLocation().SelectedItem == null)
+            else if(region.GetcboDisplayLocation().SelectedItem == null)
             {
                 MessageBox.Show("Missing display location");
             }
@@ -110,7 +112,7 @@ namespace SE_Final_Project
 
                     textMessage.beginTime = txtTextStart.Text + "s";
                     textMessage.duration = txtTextDuration.Text + "s";
-                    textMessage.region = region.getLocation();
+                    textMessage.region = region.GetLocation();
                    
                     //store in message object
                     message.AddTextMessage(textMessage);
@@ -152,6 +154,7 @@ namespace SE_Final_Project
             }
         }
        
+        //Executes each time btnUpload is clicked by the user
         private void BtnUpload_Click(object sender, EventArgs e)
         {
             //Create an OpenFileDialog object which provides file browser functionality
@@ -171,12 +174,14 @@ namespace SE_Final_Project
             }
         }
 
+        //Executes each time btnCompose is clicked by the user
         private void BtnCompose_Click(object sender, EventArgs e)
         {
             //Reset text box contents
             txtOutgoing.Text = "";
         }
 
+        //Executes each time btnMessages is clicked by the user
         private void BtnMessages_Click(object sender, EventArgs e)
         {
             this.Hide();
@@ -197,6 +202,7 @@ namespace SE_Final_Project
             messages.Show();
         }
 
+        //Executes each time btnStart is clicked by the user
         private void BtnStart_Click(object sender, EventArgs e)
         {
             if(frmStartTimeDialog == null)
@@ -210,6 +216,7 @@ namespace SE_Final_Project
             frmStartTimeDialog.Show();
         }
 
+        //Executes each time btnDuration is clicked by the user
         private void BtnDuration_Click(object sender, EventArgs e)
         {
             if(frmDuration == null)
@@ -224,6 +231,7 @@ namespace SE_Final_Project
             frmDuration.Show();
         }
 
+        //Executes each tiem btnRegion is clicked by the user
         private void BtnRegion_Click(object sender, EventArgs e)
         {
             //Set location to center of user screen (adjusted higher by 25 pixels)
@@ -233,13 +241,14 @@ namespace SE_Final_Project
             region.Show();
         }
 
+        //Executes each time an item is selected in the cboAddresses combo box
         private void CboAddresses_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Store selected address in a string variable
             selectedAddress = cboAddresses.SelectedItem.ToString();
         }
 
-        //Add an address to the combo box that has been typed in by the user
+        //Executes when a user has pressed the enter button after entering text into cboAddresses 
         private void CboAddresses_KeyUp(object sender, KeyEventArgs e)
         {
             //After the user has typed the address and pressed enter, add it to the list
@@ -251,11 +260,13 @@ namespace SE_Final_Project
             }
         }
 
+        //Executes each time an item is selected in the cboFileList combo box
         private void CboFileList_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Display media player for preview if audio or video file is selected.
             selectedFile = cboFileList.SelectedItem.ToString();
 
+            //Identify the file type and handle accordingly
             if (selectedFile.Contains("txt"))
             {
                 playerMain.Visible = false;
@@ -281,11 +292,12 @@ namespace SE_Final_Project
             }
         }
 
+        //Executes each time btnLogout is clicked by the user
         private void BtnLogout_Click(object sender, EventArgs e)
         {
 
             //Clear old contents for new user
-            clearOldContents();
+            ClearOldContents();
 
             //Navigate back to the login form and logout user
             this.Hide();
@@ -301,80 +313,94 @@ namespace SE_Final_Project
             foreach (var m in incomingMessages)
             {
                 btnNewMessageIcon.Visible = true;
-                messages.getCboMessages().Items.Add(m.smilFileName + ": " + DateTime.Now.ToString());
-                messages.getMessageObjects().Add(m);
+                messages.GetCboMessages().Items.Add(m.smilFileName + ": " + DateTime.Now.ToString());
+                messages.GetMessageObjects().Add(m);
             }
         }
 
-        //Shut down all processes when user exits program
+        //Executes each time Main.cs closes
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //Shut down program
+            //Shut down all processes except the server
             NetworkClient.Shutdown();
             NetworkClient.Logout();
             Environment.Exit(0);
         }
 
+        //Executes each time chkStartDuration is selected or unselected by the user
+        private void ChkStartDuration_CheckedChanged(object sender, EventArgs e)
+        {
+            //Display table layout panel for users to select start and duration times
+            if (chkStartDuration.Checked)
+            {
+                pnlStartDuration.Visible = true;
+            }
+            else
+            {
+                pnlStartDuration.Visible = false;
+            }
+        }
+
         //Getters
-        public string getSelectedAddress()
+        public string GetSelectedAddress()
         {
             return selectedAddress;
         }
 
-        public string getSelectedFile()
+        public string GetSelectedFile()
         {
             return selectedFile;
         }
 
-        public List<string> getOutgoingFilePaths()
+        public List<string> GetOutgoingFilePaths()
         {
             return outgoingFilepaths;
         }
 
-        public Message getMessage()
+        public Message GetMessage()
         {
             return message;
         }
 
-        public List<Message> getIncomingMessages()
+        public List<Message> GetIncomingMessages()
         {
             return incomingMessages;
         }
 
-        public TextBox getTxtTextStart()
+        public TextBox GetTxtTextStart()
         {
             return txtTextStart;
         }
 
-        public TextBox getTxtTextDuration()
+        public TextBox GetTxtTextDuration()
         {
             return txtTextDuration;
         }
 
-        public TextBox getTxtAudioStart()
+        public TextBox GetTxtAudioStart()
         {
             return txtAudioStart;
         }
 
-        public TextBox getTxtAudioDuration()
+        public TextBox GetTxtAudioDuration()
         {
             return txtAudioDuration; 
         }
 
-        public TextBox getTxtVideoStart()
+        public TextBox GetTxtVideoStart()
         {
             return txtVideoStart;
         }
 
-        public TextBox getTxtVideoDuration()
+        public TextBox GetTxtVideoDuration()
         {
-            return getTxtVideoDuration();
+            return txtVideoDuration;
         }
 
         //Operations
 
         //Generate button symbols during initialization
-        private void generateButtonSymbols()
+        private void GenerateButtonSymbols()
         {
             //store compose symbol and display on btnCompose
             int i = 11036;
@@ -393,7 +419,7 @@ namespace SE_Final_Project
         }
 
         //Clear old contents for all forms after logging out
-        private void clearOldContents()
+        private void ClearOldContents()
         {
             //clear Main.cs text box
             txtOutgoing.Clear();
@@ -407,7 +433,7 @@ namespace SE_Final_Project
             cboFileList.Text = "";
 
             //Clear TextRegion.cs combo box text
-            region.getcboDisplayLocation().Text = "";
+            region.GetcboDisplayLocation().Text = "";
 
             //Clear start time and duration text boxes
             txtTextStart.Text = "";
@@ -420,20 +446,20 @@ namespace SE_Final_Project
             //Clear Messages.cs combo box and labels (If the form has been loaded at least once)
             if(messages != null)
             {
-                messages.getCboMessages().Items.Clear();
-                messages.getCboMessages().Text = "";
-                foreach (var label in messages.getLabels())
+                messages.GetCboMessages().Items.Clear();
+                messages.GetCboMessages().Text = "";
+                foreach (var label in messages.GetLabels())
                 {
                     label.Text = "";
                 }
             }
 
             //Clear messages messageObject List
-            messages.getMessageObjects().Clear();
+            messages.GetMessageObjects().Clear();
         }
 
         //Start timer to continuously call getMessages()
-        private void initializeTimer()
+        private void InitializeTimer()
         {
             timer = new Timer();
             timer.Tick += new EventHandler(Timer_Tick);
@@ -444,17 +470,5 @@ namespace SE_Final_Project
 
         }
 
-        private void chkStartDuration_CheckedChanged(object sender, EventArgs e)
-        {
-            //Display table layout panel for users to select start and duration times
-            if(chkStartDuration.Checked)
-            {
-                pnlStartDuration.Visible = true;
-            }
-            else
-            {
-                pnlStartDuration.Visible = false;
-            }
-        }
     }
 }

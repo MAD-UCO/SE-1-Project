@@ -41,7 +41,7 @@
             this.btnAccept.TabIndex = 0;
             this.btnAccept.Text = "ACCEPT";
             this.btnAccept.UseVisualStyleBackColor = true;
-            this.btnAccept.Click += new System.EventHandler(this.btnAccept_Click);
+            this.btnAccept.Click += new System.EventHandler(this.BtnAccept_Click);
             // 
             // lblDisplayLocation
             // 
