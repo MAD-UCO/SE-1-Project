@@ -272,9 +272,8 @@ namespace SE_Final_Project
             this.chkStartDuration.ForeColor = System.Drawing.Color.White;
             this.chkStartDuration.Location = new System.Drawing.Point(672, 488);
             this.chkStartDuration.Name = "chkStartDuration";
-            this.chkStartDuration.Size = new System.Drawing.Size(93, 20);
+            this.chkStartDuration.Size = new System.Drawing.Size(18, 17);
             this.chkStartDuration.TabIndex = 15;
-            this.chkStartDuration.Text = "ST. / DUR.";
             this.chkStartDuration.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkStartDuration.UseVisualStyleBackColor = true;
             this.chkStartDuration.CheckedChanged += new System.EventHandler(this.chkStartDuration_CheckedChanged);
