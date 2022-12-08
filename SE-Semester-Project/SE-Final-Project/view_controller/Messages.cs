@@ -22,7 +22,11 @@ namespace SE_Final_Project
         private List<Label> locationLabels = new List<Label>();
         private Main main = (Main)Application.OpenForms["Main"];
 
-        private string[] begin;
+        private string[] begin = new string[3];
+        private string[] end = new string[3];
+        //  private List<string> begin = new List<string>();
+
+        private string begin2;
         private string end1,end2, end3 = "";
         private int seconds1, seconds2, seconds3 = 0;
         private string tempText;
@@ -74,10 +78,9 @@ namespace SE_Final_Project
 
         private void cboMessages_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // string end1 = "";
-
-            playerMessages.Visible = true;
-            grpTextCanvas.Visible = false;
+          
+           // playerMessages.Visible = true;
+           // grpTextCanvas.Visible = false;
 
             SE_Final_Project.Message temp = (SE_Final_Project.Message)cboMessages.SelectedItem;
             List<TextMessage> textMessages = temp.textMessages;
@@ -85,36 +88,28 @@ namespace SE_Final_Project
             foreach(var t in textMessages)
             {
                 lblDefault.Visible = true;
-                lblDefault.Text = t.text;
+                lblDefault.Text = "";
                 tempText = t.text;
-                
-                end1 = t.duration;
-                //end[0] = textMessages[0].duration;
+              //  Console.WriteLine(t.getBeginTime().ToString() + "herehere");
+                begin[0] = t.beginTime;
+              //  begin2 = t.beginTime;
+                end[0] = t.duration;
+               
+
+             
             }
             foreach (var v in videoMessages)
             {
                 Console.WriteLine(v.filePath);
-                playerMessages.URL = v.filePath;
+               // playerMessages.URL = v.filePath;
                // end1 = v.endTime;
                 Console.WriteLine(v.beginTime);
                 Console.WriteLine(v.endTime);
                 //end[0] = textMessages[0].duration;
             }
+            Console.WriteLine(begin[0] + "      here is start time for text");
+            Console.WriteLine(end[0] + "        here is end time for text");
 
-            /*  Console.WriteLine(tempText);
-              Console.WriteLine(end1);*/
-
-            /*  Console.WriteLine(textMessages[0].beginTime);
-              Console.WriteLine(textMessages[0].duration);*/
-
-
-            //  begin[0] = textMessages[0].beginTime;
-            //  Console.WriteLine(textMessages[0]);
-
-            //  end[0] = textMessages[0].duration;
-            // Console.WriteLine(end[0]+ "nice nice");
-            /*  Console.WriteLine(begin[0].ToString());
-              Console.WriteLine(end[0].ToString());*/
             timer1.Start();
               
             //Display the text message in the correct location
@@ -182,29 +177,30 @@ namespace SE_Final_Project
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-           /* if (incomingMessages == null)
+            if (incomingMessages == null)
+
             {
+                timer1.Stop();
                 Console.WriteLine("nothing here");
                 return;
-            }*/
+            }
             seconds1++;
             Console.WriteLine(seconds1.ToString());
 
-         /*   if (seconds1.ToString() == begin[0] ){
-                lblDefault.Text = tempText;
-            }*/
-          /*  if (seconds1.ToString().Trim('s') == end[0])
+            if (seconds1.ToString() == begin[0].Trim('s'))
             {
-                lblDefault.Text = "";
-            }*/
+                lblDefault.Text = tempText;
+            }
+           
 
-         /*   if(seconds1.ToString() == end1.Trim('s'))
+            if (seconds1.ToString() == end[0].Trim('s'))
             {
                 timer1.Stop();
                 seconds1 = 0;
                 lblDefault.Text = "";
-            }*/
-         if(seconds1 == 9)
+            }
+
+            if (seconds1 > 9)
             {
                 timer1.Stop();
                 seconds1 = 0;
