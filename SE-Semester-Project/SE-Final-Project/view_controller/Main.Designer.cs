@@ -37,8 +37,6 @@ namespace SE_Final_Project
             this.txtOutgoing = new System.Windows.Forms.RichTextBox();
             this.btnSend = new System.Windows.Forms.Button();
             this.btnRegion = new System.Windows.Forms.Button();
-            this.btnStart = new System.Windows.Forms.Button();
-            this.btnDuration = new System.Windows.Forms.Button();
             this.btnMessages = new System.Windows.Forms.Button();
             this.cboFileList = new System.Windows.Forms.ComboBox();
             this.btnUpload = new System.Windows.Forms.Button();
@@ -46,8 +44,20 @@ namespace SE_Final_Project
             this.playerMain = new AxWMPLib.AxWindowsMediaPlayer();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnNewMessageIcon = new System.Windows.Forms.Button();
+            this.pnlStartDuration = new System.Windows.Forms.TableLayoutPanel();
+            this.txtVideoDuration = new System.Windows.Forms.TextBox();
+            this.txtVideoStart = new System.Windows.Forms.TextBox();
+            this.txtAudioDuration = new System.Windows.Forms.TextBox();
+            this.txtAudioStart = new System.Windows.Forms.TextBox();
+            this.txtTextDuration = new System.Windows.Forms.TextBox();
+            this.txtTextStart = new System.Windows.Forms.TextBox();
+            this.chkStartDuration = new System.Windows.Forms.CheckBox();
+            this.lblTextMessage = new System.Windows.Forms.Label();
+            this.lblAudioMessage = new System.Windows.Forms.Label();
+            this.lblVideoMessage = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.playerMain)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.pnlStartDuration.SuspendLayout();
             this.SuspendLayout();
             // 
             // cboAddresses
@@ -65,7 +75,7 @@ namespace SE_Final_Project
             // btnCompose
             // 
             this.btnCompose.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCompose.Location = new System.Drawing.Point(673, 284);
+            this.btnCompose.Location = new System.Drawing.Point(672, 285);
             this.btnCompose.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnCompose.Name = "btnCompose";
             this.btnCompose.Size = new System.Drawing.Size(99, 52);
@@ -109,30 +119,6 @@ namespace SE_Final_Project
             this.btnRegion.Text = "REGION";
             this.btnRegion.UseVisualStyleBackColor = false;
             this.btnRegion.Click += new System.EventHandler(this.BtnRegion_Click);
-            // 
-            // btnStart
-            // 
-            this.btnStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStart.Location = new System.Drawing.Point(671, 487);
-            this.btnStart.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(100, 50);
-            this.btnStart.TabIndex = 5;
-            this.btnStart.Text = "START";
-            this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new System.EventHandler(this.BtnStart_Click);
-            // 
-            // btnDuration
-            // 
-            this.btnDuration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDuration.Location = new System.Drawing.Point(671, 554);
-            this.btnDuration.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.btnDuration.Name = "btnDuration";
-            this.btnDuration.Size = new System.Drawing.Size(100, 50);
-            this.btnDuration.TabIndex = 6;
-            this.btnDuration.Text = "Duration";
-            this.btnDuration.UseVisualStyleBackColor = true;
-            this.btnDuration.Click += new System.EventHandler(this.BtnDuration_Click);
             // 
             // btnMessages
             // 
@@ -214,12 +200,125 @@ namespace SE_Final_Project
             this.btnNewMessageIcon.UseVisualStyleBackColor = false;
             this.btnNewMessageIcon.Visible = false;
             // 
+            // pnlStartDuration
+            // 
+            this.pnlStartDuration.ColumnCount = 3;
+            this.pnlStartDuration.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.pnlStartDuration.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.pnlStartDuration.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.pnlStartDuration.Controls.Add(this.txtTextDuration, 2, 0);
+            this.pnlStartDuration.Controls.Add(this.txtAudioDuration, 2, 1);
+            this.pnlStartDuration.Controls.Add(this.txtVideoDuration, 2, 2);
+            this.pnlStartDuration.Controls.Add(this.txtTextStart, 1, 0);
+            this.pnlStartDuration.Controls.Add(this.txtAudioStart, 1, 1);
+            this.pnlStartDuration.Controls.Add(this.txtVideoStart, 1, 2);
+            this.pnlStartDuration.Controls.Add(this.lblTextMessage, 0, 0);
+            this.pnlStartDuration.Controls.Add(this.lblAudioMessage, 0, 1);
+            this.pnlStartDuration.Controls.Add(this.lblVideoMessage, 0, 2);
+            this.pnlStartDuration.Location = new System.Drawing.Point(114, 285);
+            this.pnlStartDuration.Name = "pnlStartDuration";
+            this.pnlStartDuration.RowCount = 3;
+            this.pnlStartDuration.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.pnlStartDuration.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.pnlStartDuration.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.pnlStartDuration.Size = new System.Drawing.Size(488, 299);
+            this.pnlStartDuration.TabIndex = 14;
+            // 
+            // txtVideoDuration
+            // 
+            this.txtVideoDuration.Location = new System.Drawing.Point(327, 201);
+            this.txtVideoDuration.Name = "txtVideoDuration";
+            this.txtVideoDuration.Size = new System.Drawing.Size(156, 22);
+            this.txtVideoDuration.TabIndex = 8;
+            // 
+            // txtVideoStart
+            // 
+            this.txtVideoStart.Location = new System.Drawing.Point(165, 201);
+            this.txtVideoStart.Name = "txtVideoStart";
+            this.txtVideoStart.Size = new System.Drawing.Size(156, 22);
+            this.txtVideoStart.TabIndex = 7;
+            // 
+            // txtAudioDuration
+            // 
+            this.txtAudioDuration.Location = new System.Drawing.Point(327, 102);
+            this.txtAudioDuration.Name = "txtAudioDuration";
+            this.txtAudioDuration.Size = new System.Drawing.Size(156, 22);
+            this.txtAudioDuration.TabIndex = 6;
+            // 
+            // txtAudioStart
+            // 
+            this.txtAudioStart.Location = new System.Drawing.Point(165, 102);
+            this.txtAudioStart.Name = "txtAudioStart";
+            this.txtAudioStart.Size = new System.Drawing.Size(156, 22);
+            this.txtAudioStart.TabIndex = 5;
+            // 
+            // txtTextDuration
+            // 
+            this.txtTextDuration.Location = new System.Drawing.Point(327, 3);
+            this.txtTextDuration.Name = "txtTextDuration";
+            this.txtTextDuration.Size = new System.Drawing.Size(156, 22);
+            this.txtTextDuration.TabIndex = 4;
+            // 
+            // txtTextStart
+            // 
+            this.txtTextStart.Location = new System.Drawing.Point(165, 3);
+            this.txtTextStart.Name = "txtTextStart";
+            this.txtTextStart.Size = new System.Drawing.Size(156, 22);
+            this.txtTextStart.TabIndex = 3;
+            // 
+            // chkStartDuration
+            // 
+            this.chkStartDuration.AutoSize = true;
+            this.chkStartDuration.ForeColor = System.Drawing.Color.White;
+            this.chkStartDuration.Location = new System.Drawing.Point(672, 488);
+            this.chkStartDuration.Name = "chkStartDuration";
+            this.chkStartDuration.Size = new System.Drawing.Size(18, 17);
+            this.chkStartDuration.TabIndex = 15;
+            this.chkStartDuration.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkStartDuration.UseVisualStyleBackColor = true;
+            this.chkStartDuration.CheckedChanged += new System.EventHandler(this.chkStartDuration_CheckedChanged);
+            // 
+            // lblTextMessage
+            // 
+            this.lblTextMessage.AutoSize = true;
+            this.lblTextMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTextMessage.ForeColor = System.Drawing.Color.White;
+            this.lblTextMessage.Location = new System.Drawing.Point(3, 0);
+            this.lblTextMessage.Name = "lblTextMessage";
+            this.lblTextMessage.Size = new System.Drawing.Size(143, 25);
+            this.lblTextMessage.TabIndex = 9;
+            this.lblTextMessage.Text = "Text Message:";
+            // 
+            // lblAudioMessage
+            // 
+            this.lblAudioMessage.AutoSize = true;
+            this.lblAudioMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAudioMessage.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.lblAudioMessage.Location = new System.Drawing.Point(3, 99);
+            this.lblAudioMessage.Name = "lblAudioMessage";
+            this.lblAudioMessage.Size = new System.Drawing.Size(155, 25);
+            this.lblAudioMessage.TabIndex = 10;
+            this.lblAudioMessage.Text = "Audio Message:";
+            // 
+            // lblVideoMessage
+            // 
+            this.lblVideoMessage.AutoSize = true;
+            this.lblVideoMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblVideoMessage.ForeColor = System.Drawing.Color.White;
+            this.lblVideoMessage.Location = new System.Drawing.Point(3, 198);
+            this.lblVideoMessage.Name = "lblVideoMessage";
+            this.lblVideoMessage.Size = new System.Drawing.Size(155, 25);
+            this.lblVideoMessage.TabIndex = 11;
+            this.lblVideoMessage.Text = "Video Message:";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.MidnightBlue;
-            this.ClientSize = new System.Drawing.Size(784, 683);
+            this.ClientSize = new System.Drawing.Size(787, 683);
+            this.Controls.Add(this.chkStartDuration);
+            this.Controls.Add(this.pnlStartDuration);
             this.Controls.Add(this.btnNewMessageIcon);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btnLogout);
@@ -227,8 +326,6 @@ namespace SE_Final_Project
             this.Controls.Add(this.btnUpload);
             this.Controls.Add(this.cboFileList);
             this.Controls.Add(this.btnMessages);
-            this.Controls.Add(this.btnDuration);
-            this.Controls.Add(this.btnStart);
             this.Controls.Add(this.btnRegion);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.txtOutgoing);
@@ -243,7 +340,10 @@ namespace SE_Final_Project
             this.Load += new System.EventHandler(this.Main_Load);
             ((System.ComponentModel.ISupportInitialize)(this.playerMain)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.pnlStartDuration.ResumeLayout(false);
+            this.pnlStartDuration.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -254,8 +354,6 @@ namespace SE_Final_Project
         private System.Windows.Forms.RichTextBox txtOutgoing;
         private System.Windows.Forms.Button btnSend;
         private System.Windows.Forms.Button btnRegion;
-        private System.Windows.Forms.Button btnStart;
-        private System.Windows.Forms.Button btnDuration;
         private System.Windows.Forms.Button btnMessages;
         private System.Windows.Forms.ComboBox cboFileList;
         private System.Windows.Forms.Button btnUpload;
@@ -263,6 +361,17 @@ namespace SE_Final_Project
         private System.Windows.Forms.Button btnLogout;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button btnNewMessageIcon;
+        private System.Windows.Forms.TableLayoutPanel pnlStartDuration;
+        private System.Windows.Forms.TextBox txtVideoDuration;
+        private System.Windows.Forms.TextBox txtVideoStart;
+        private System.Windows.Forms.TextBox txtAudioDuration;
+        private System.Windows.Forms.TextBox txtAudioStart;
+        private System.Windows.Forms.TextBox txtTextDuration;
+        private System.Windows.Forms.TextBox txtTextStart;
+        private System.Windows.Forms.CheckBox chkStartDuration;
+        private System.Windows.Forms.Label lblTextMessage;
+        private System.Windows.Forms.Label lblAudioMessage;
+        private System.Windows.Forms.Label lblVideoMessage;
     }
 }
 

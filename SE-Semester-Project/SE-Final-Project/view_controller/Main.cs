@@ -16,6 +16,8 @@ using System.Diagnostics;
 using SE_Final_Project.view_controller;
 using System.Windows.Forms.VisualStyles;
 using System.Collections;
+using File = System.IO.File;
+using System.Media;
 
 namespace SE_Final_Project
 {
@@ -36,6 +38,7 @@ namespace SE_Final_Project
         private TextRegion region = (TextRegion)Application.OpenForms["TextRegion"];
         private Messages messages = (Messages)Application.OpenForms["Messages"];
         List<Message> incomingMessages = new List<Message>();
+        SoundPlayer soundPlayer;
 
 
         private Timer timer;
@@ -56,6 +59,9 @@ namespace SE_Final_Project
             //Hide media player until a preview is needed
             playerMain.Visible = false;
 
+            //Hide table layout panel
+            pnlStartDuration.Visible = false;
+
             //Generate button symbols
             generateButtonSymbols();
 
@@ -65,17 +71,19 @@ namespace SE_Final_Project
             //Initialize messages form
             messages = new Messages();
 
+            //Initialize text region form
+            region = new TextRegion();
+
 
         }
 
         private void BtnSend_Click(object sender, EventArgs e)
         {
-
             if(cboAddresses.SelectedItem == null)
             {
                 MessageBox.Show("Recipient Not Selected");
             }
-            else if(frmStartTimeDialog.getSeconds() == "" || frmDuration.getSeconds() == "")
+            else if(txtTextStart.Text == "" || txtTextDuration.Text == "")
             {
                 MessageBox.Show("Missing start time or end time duration");
             }
@@ -100,8 +108,8 @@ namespace SE_Final_Project
                     //Create new text message and assign start/duration
                     textMessage = new TextMessage(txtOutgoing.Text);
 
-                    textMessage.beginTime = frmStartTimeDialog.getSeconds();
-                    textMessage.duration = frmDuration.getSeconds();
+                    textMessage.beginTime = txtTextStart.Text + "s";
+                    textMessage.duration = txtTextDuration.Text + "s";
                     textMessage.region = region.getLocation();
                    
                     //store in message object
@@ -115,6 +123,8 @@ namespace SE_Final_Project
                     if (selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
                     {
                         audioMessage = new AudioMessage(selectedFile);
+                        audioMessage.beginTime = txtTextStart.Text + "s";
+                        audioMessage.duration = txtTextDuration.Text + "s";
 
                         //Store in message object
                         message.AddAudioMessage(audioMessage);
@@ -122,6 +132,8 @@ namespace SE_Final_Project
                     else if (selectedFile.Contains(".mp4"))
                     {
                         videoMessage = new VideoMessage(selectedFile);
+                        videoMessage.beginTime = txtVideoStart.Text + "s";
+                        videoMessage.duration = txtVideoDuration.Text + "s";
 
                         //Store in message object
                         message.AddVideoMessage(videoMessage);
@@ -214,13 +226,9 @@ namespace SE_Final_Project
 
         private void BtnRegion_Click(object sender, EventArgs e)
         {
-            if(region == null)
-            {
-                region = new TextRegion();
-                //Set location to center of user screen (adjusted higher by 25 pixels)
-                region.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (region.Size.Width / 2),
+            //Set location to center of user screen (adjusted higher by 25 pixels)
+            region.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (region.Size.Width / 2),
                     (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (region.Size.Height / 2) - HeightAdjustment);
-            }
             //Display Duration form
             region.Show();
         }
@@ -248,13 +256,28 @@ namespace SE_Final_Project
             //Display media player for preview if audio or video file is selected.
             selectedFile = cboFileList.SelectedItem.ToString();
 
-            if(selectedFile == "test.wav" || selectedFile == "test.mp3")
+            if (selectedFile.Contains("txt"))
             {
-                playerMain.Visible = true;
+                playerMain.Visible = false;
+                txtOutgoing.Visible = true;
+                string viewText = File.ReadAllText(outgoingFilepaths[cboFileList.SelectedIndex]);
+                txtOutgoing.Text = viewText;
+            }
+            else if (selectedFile.Contains("mp3") || selectedFile.Contains(".wav"))
+            {
+                soundPlayer = new SoundPlayer(@"" + cboFileList.SelectedItem.ToString());
+                soundPlayer.Play();
+
+                playerMain.Visible = false;
+                txtOutgoing.Visible = true;
+                txtOutgoing.Text = "AUDIO PLAYING...";
             }
             else
             {
-                playerMain.Visible = false;
+                playerMain.Visible = true;
+                txtOutgoing.Visible = false;
+
+                playerMain.URL = outgoingFilepaths[cboFileList.SelectedIndex];
             }
         }
 
@@ -318,6 +341,36 @@ namespace SE_Final_Project
             return incomingMessages;
         }
 
+        public TextBox getTxtTextStart()
+        {
+            return txtTextStart;
+        }
+
+        public TextBox getTxtTextDuration()
+        {
+            return txtTextDuration;
+        }
+
+        public TextBox getTxtAudioStart()
+        {
+            return txtAudioStart;
+        }
+
+        public TextBox getTxtAudioDuration()
+        {
+            return txtAudioDuration; 
+        }
+
+        public TextBox getTxtVideoStart()
+        {
+            return txtVideoStart;
+        }
+
+        public TextBox getTxtVideoDuration()
+        {
+            return getTxtVideoDuration();
+        }
+
         //Operations
 
         //Generate button symbols during initialization
@@ -349,10 +402,20 @@ namespace SE_Final_Project
             cboAddresses.Items.Clear();
             cboAddresses.Text = "";
 
-            //Clear Duration.cs, StartTimeDialog.cs, and Region.cs textboxes
-            frmStartTimeDialog.getTxtSS().Text = "";
-            frmDuration.getTxtSS().Text = "";
+            //clear files from cboFileList
+            cboFileList.Items.Clear();
+            cboFileList.Text = "";
+
+            //Clear TextRegion.cs combo box text
             region.getcboDisplayLocation().Text = "";
+
+            //Clear start time and duration text boxes
+            txtTextStart.Text = "";
+            txtTextDuration.Text = "";
+            txtAudioStart.Text  = "";
+            txtAudioDuration.Text = "";
+            txtVideoStart.Text = "";
+            txtAudioStart.Text = "";
 
             //Clear Messages.cs combo box and labels (If the form has been loaded at least once)
             if(messages != null)
@@ -379,6 +442,19 @@ namespace SE_Final_Project
             timer.Interval = 1000;
             timer.Start();
 
+        }
+
+        private void chkStartDuration_CheckedChanged(object sender, EventArgs e)
+        {
+            //Display table layout panel for users to select start and duration times
+            if(chkStartDuration.Checked)
+            {
+                pnlStartDuration.Visible = true;
+            }
+            else
+            {
+                pnlStartDuration.Visible = false;
+            }
         }
     }
 }

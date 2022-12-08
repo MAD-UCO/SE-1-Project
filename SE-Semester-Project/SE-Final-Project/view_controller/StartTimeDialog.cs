@@ -45,7 +45,5 @@ namespace SE_Final_Project
             this.Hide();
             e.Cancel = true;
         }
-
-       
     }
 }
