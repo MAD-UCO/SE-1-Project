@@ -276,7 +276,7 @@ namespace SE_Final_Project
             this.chkStartDuration.TabIndex = 15;
             this.chkStartDuration.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkStartDuration.UseVisualStyleBackColor = true;
-            this.chkStartDuration.CheckedChanged += new System.EventHandler(this.chkStartDuration_CheckedChanged);
+            this.chkStartDuration.CheckedChanged += new System.EventHandler(this.ChkStartDuration_CheckedChanged);
             // 
             // lblTextMessage
             // 
