@@ -302,6 +302,7 @@ namespace SE_Final_Project
             //Navigate back to the login form and logout user
             this.Hide();
             login.Show();
+            Message.UnsetUsername();
             NetworkClient.Logout();
         }
 

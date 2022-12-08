@@ -30,7 +30,17 @@ namespace SE_Final_Project
         public List<VideoMessage> videoMessages { get; private set; }
         public List<ImageMessage> imageMessages  { get; private set; }
 
-        
+        public static String theUsername = "";
+
+        public static void SetUsername(string username)
+        {
+            theUsername = "/" + username;
+        }
+
+        public static void UnsetUsername()
+        {
+            theUsername = "";
+        }
 
 
 
@@ -75,7 +85,7 @@ namespace SE_Final_Project
 
             try
             {
-                File.WriteAllText(Environment.CurrentDirectory + "/" + fileName, fileStringContents);
+                File.WriteAllText(Environment.CurrentDirectory + $"{theUsername}/" + fileName, fileStringContents);
             }
             catch (Exception ex)
             {
@@ -346,7 +356,7 @@ namespace SE_Final_Project
                 XmlWriterSettings settings = new XmlWriterSettings();
                 settings.Indent = true;
                 //settings.NewLineOnAttributes = true;
-                XmlWriter writer = XmlWriter.Create(Environment.CurrentDirectory + "/" + smilFilePath, settings);
+                XmlWriter writer = XmlWriter.Create(Environment.CurrentDirectory + $"{theUsername}/" + smilFilePath, settings);
 
                 writer.WriteStartElement("smil");
                 writer.WriteStartElement("head");
@@ -458,11 +468,11 @@ namespace SE_Final_Project
             
             foreach(AudioMessage audio in audioMessages)
             {
-                audio.filePath =Environment.CurrentDirectory + Path.GetFileName(audio.filePath);
+                audio.filePath =Environment.CurrentDirectory + $"{theUsername}/" + Path.GetFileName(audio.filePath);
             }
             foreach(VideoMessage video in videoMessages)
             {
-                video.filePath =Environment.CurrentDirectory + Path.GetFileName(video.filePath);
+                video.filePath =Environment.CurrentDirectory + $"{theUsername}/" + Path.GetFileName(video.filePath);
             }
 
         }

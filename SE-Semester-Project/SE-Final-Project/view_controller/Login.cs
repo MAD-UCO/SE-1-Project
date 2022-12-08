@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,6 +49,14 @@ namespace SE_Final_Project
             {
                 //Create a user instance
                 user = new User(txtUsername.Text, txtPassword.Text, chkNewUser.Checked);
+
+                // Check that a user folder exists. If it doesn't, make one
+                string userFolder = $"{Environment.CurrentDirectory}/{NetworkClient.myClientName}/";
+                if (!Directory.Exists(userFolder))
+                {
+                    Directory.CreateDirectory(userFolder);
+                }
+                Message.SetUsername(NetworkClient.myClientName);
 
                 this.Hide();
                 if(main == null)
