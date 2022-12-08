@@ -24,10 +24,14 @@ namespace SE_Final_Project
         private Main main = (Main)Application.OpenForms["Main"];
         private string[] begin = new string[3];
         private string[] end = new string[3];
-        private int secondsText = 0;
-        private string tempText;
-        private Timer timerText;
-        private string displayLocation = "";
+        private string[] texts = new string[3];
+        private string[] textsStart = new string[3];
+        private string[] textsEnd = new string[3];
+        private int secondsText, second2, seconds3 = 0;
+        // private string tempText;
+        private List<Timer> timers = new List<Timer>();
+        Timer timer1, timer2, timer3;
+        private string[] displayLocations = new string[3];
 
         
 
@@ -42,6 +46,9 @@ namespace SE_Final_Project
         //Runs immediately after form loads
         private void Messages_Load(object sender, EventArgs e)
         {
+            //Initialize timers
+            InitializeTimers();
+
             //Initialize list of location labels
             locationLabels.Add(lblCenter);
             locationLabels.Add(lblNorth);
@@ -79,70 +86,240 @@ namespace SE_Final_Project
             List<TextMessage> textMessages = temp.textMessages;
             List<AudioMessage> audioMessages = temp.audioMessages;
             List<VideoMessage> videoMessages = temp.videoMessages;
-            foreach(var t in textMessages)
+           /* foreach(var t in textMessages)
             {
                 DisplayTextMessage(t);
+            }*/
+            if (textMessages.Count >= 0)
+            {
+
+                for (int i = 0; i < textMessages.Count; i++)
+                {
+                 
+
+                    texts[i] = textMessages[i].text;
+                    textsStart[i] = textMessages[i].beginTime;
+                    textsEnd[i] = textMessages[i].duration;
+                    Console.WriteLine(texts[i]);
+                    Console.WriteLine(textsStart[i]);
+                    Console.WriteLine(textsEnd[i]);
+
+                    DisplayTextMessage(textMessages[i], i);
+
+                }
+            }
+            if (textMessages.Count >= 0)
+            {
+                if (textMessages.Count == 1)
+                {
+                    timers[0].Start();
+                }
+                if (textMessages.Count == 2)
+                {
+                    timers[0].Start();
+                    timers[1].Start();
+                }
+                if (textMessages.Count == 3)
+                {
+                    timers[0].Start();
+                    timers[1].Start();
+                    timers[2].Start();
+                }
             }
         }
 
         //Executes each time the timer timerText ticks
-        private void TimerText_Tick(object sender, EventArgs e)
+        private void Timer1_Tick(object sender, EventArgs e)
         {
             //increment secondsText for each 1 second interval of the ticking timer
             secondsText++;
 
             //When the timer interval matches the message start time. Display message in correct location
-            if(secondsText.ToString() == begin[0].Trim('s'))
+            if(secondsText.ToString() == textsStart[0].Trim('s'))
             {
-                if(displayLocation == "DEFAULT")
+                if (displayLocations[0] == "DEFAULT")
                 {
-                    lblDefault.Text = tempText;
+                    lblDefault.Text = texts[0];
                 }
-                else if(displayLocation == "CENTER")
+                else if(displayLocations[0] == "CENTER")
                 {
-                    lblCenter.Text = tempText;
+                    lblCenter.Text = texts[0];
                 }
-                else if(displayLocation == "NORTH")
+                else if(displayLocations[0] == "NORTH")
                 {
-                    lblNorth.Text = tempText;
+                    lblNorth.Text = texts[0];
                 }
-                else if(displayLocation == "SOUTH")
+                else if(displayLocations[0] == "SOUTH")
                 {
-                    lblSouth.Text = tempText;
+                    lblSouth.Text = texts[0];
                 }
-                else if(displayLocation == "EAST")
+                else if(displayLocations[0] == "EAST")
                 {
-                    lblEast.Text = tempText;
+                    lblEast.Text = texts[0];
                 }
                 else
                 {
-                    lblWest.Text = tempText;    
+                    lblWest.Text = texts[0];    
                 }
             }
 
             //When the timer interval matches the end time. Hide the message
-            if(secondsText.ToString() == end[0].Trim('s'))
+            if(secondsText.ToString() == textsEnd[0].Trim('s'))
             {
                 //reset and hide message
-                timerText.Stop();
+                timer1.Stop();
                 secondsText = 0;
-                if (displayLocation == "DEFAULT")
+                if (displayLocations[0] == "DEFAULT")
                 {
                     lblDefault.Text = "";
                 }
-                else if (displayLocation == "CENTER")
+                else if (displayLocations[0] == "CENTER")
                 {
                     lblCenter.Text = "";
                 }
-                else if (displayLocation == "NORTH")
+                else if (displayLocations[0] == "NORTH")
                 {
                     lblNorth.Text = "";
                 }
-                else if (displayLocation == "SOUTH")
+                else if (displayLocations[0] == "SOUTH")
                 {
                     lblSouth.Text = "";
                 }
-                else if (displayLocation == "EAST")
+                else if (displayLocations[0] == "EAST")
+                {
+                    lblEast.Text = "";
+                }
+                else
+                {
+                    lblWest.Text = "";
+                }
+            }
+        }
+
+        private void Timer2_Tick(object sender, EventArgs e)
+        {
+            //increment secondsText for each 1 second interval of the ticking timer
+            second2++;
+
+            //When the timer interval matches the message start time. Display message in correct location
+            if (second2.ToString() == textsStart[1].Trim('s'))
+            {
+                if (displayLocations[1] == "DEFAULT")
+                {
+                    lblDefault.Text = texts[1];
+                }
+                else if (displayLocations[1] == "CENTER")
+                {
+                    lblCenter.Text = texts[1];
+                }
+                else if (displayLocations[1] == "NORTH")
+                {
+                    lblNorth.Text = texts[1];
+                }
+                else if (displayLocations[1] == "SOUTH")
+                {
+                    lblSouth.Text = texts[1];
+                }
+                else if (displayLocations[1] == "EAST")
+                {
+                    lblEast.Text = texts[1];
+                }
+                else
+                {
+                    lblWest.Text = texts[1];
+                }
+            }
+
+            //When the timer interval matches the end time. Hide the message
+            if (second2.ToString() == textsEnd[1].Trim('s'))
+            {
+                //reset and hide message
+                timer2.Stop();
+                 second2 = 0;
+                if (displayLocations[1] == "DEFAULT")
+                {
+                    lblDefault.Text = "";
+                }
+                else if (displayLocations[1] == "CENTER")
+                {
+                    lblCenter.Text = "";
+                }
+                else if (displayLocations[1] == "NORTH")
+                {
+                    lblNorth.Text = "";
+                }
+                else if (displayLocations[1] == "SOUTH")
+                {
+                    lblSouth.Text = "";
+                }
+                else if (displayLocations[1] == "EAST")
+                {
+                    lblEast.Text = "";
+                }
+                else
+                {
+                    lblWest.Text = "";
+                }
+            }
+        }
+
+        private void Timer3_Tick(object sender, EventArgs e)
+        {
+            //increment secondsText for each 1 second interval of the ticking timer
+            seconds3++;
+
+            if (seconds3.ToString() == textsStart[2].Trim('s'))
+            {
+                if (displayLocations[2] == "DEFAULT")
+                {
+                    lblDefault.Text = texts[2];
+                }
+                else if (displayLocations[2] == "CENTER")
+                {
+                    lblCenter.Text = texts[2];
+                }
+                else if (displayLocations[2] == "NORTH")
+                {
+                    lblNorth.Text = texts[2];
+                }
+                else if (displayLocations[2] == "SOUTH")
+                {
+                    lblSouth.Text = texts[2];
+                }
+                else if (displayLocations[2] == "EAST")
+                {
+                    lblEast.Text = texts[2];
+                }
+                else
+                {
+                    lblWest.Text = texts[2];
+                }
+            }
+
+            //When the timer interval matches the end time. Hide the message
+            if (seconds3.ToString() == textsEnd[2].Trim('s'))
+            {
+                Console.WriteLine("Made it to timer stop 3");
+                //reset and hide message
+                timer3.Stop();
+                seconds3 = 0;
+                if (displayLocations[2] == "DEFAULT")
+                {
+                    lblDefault.Text = "";
+                }
+                else if (displayLocations[2] == "CENTER")
+                {
+                    lblCenter.Text = "";
+                }
+                else if (displayLocations[2] == "NORTH")
+                {
+                    lblNorth.Text = "";
+                }
+                else if (displayLocations[2] == "SOUTH")
+                {
+                    lblSouth.Text = "";
+                }
+                else if (displayLocations[2] == "EAST")
                 {
                     lblEast.Text = "";
                 }
@@ -185,8 +362,9 @@ namespace SE_Final_Project
         //Private Operations
 
         //Display text message in the correct location
-        private void DisplayTextMessage(TextMessage t)
+        private void DisplayTextMessage(TextMessage t, int i)
         {
+            int count = i;
             //Clear old text
             lblDefault.Text = "";
             lblCenter.Text = "";
@@ -199,99 +377,91 @@ namespace SE_Final_Project
             {
                 //Enable the message label and store temp information for direct access from timer_tick event handler
                 lblDefault.Visible = true;
-                displayLocation = "DEFAULT";
-                tempText = t.text;
+                displayLocations[count] = "DEFAULT";
 
                 //Setup timer using message start/duration fields
-                tempText = t.text;
-                begin[0] = t.beginTime;
-                end[0] = t.duration;
-                InitializeTimers();
-                timerText.Start();
-
+                texts[count] = t.text;
+                textsStart[count] = t.beginTime;
+                textsEnd[count] = t.duration;
             }
             else if (t.region.ToUpper() == "CENTER")
             {
                 //Enable the message label and store temp information for direct access from timer_tick event handler
                 lblCenter.Visible = true;
-                displayLocation = "CENTER";
-                tempText = t.text;
+                displayLocations[count] = "CENTER";
 
                 //Setup timer using message start/duration fields
-                tempText = t.text;
-                begin[0] = t.beginTime;
-                end[0] = t.duration;
-                InitializeTimers();
-                timerText.Start();
+                texts[count] = t.text;
+                textsStart[count] = t.beginTime;
+                textsEnd[count] = t.duration;
             }
             else if (t.region.ToUpper() == "NORTH")
             {
                 //Enable the message label and store temp information for direct access from timer_tick event handler
                 lblNorth.Visible = true;
-                displayLocation = "NORTH";
-                tempText = t.text;
+                displayLocations[count] = "NORTH";
 
                 //Setup timer using message start/duration fields
-                tempText = t.text;
-                begin[0] = t.beginTime;
-                end[0] = t.duration;
-                InitializeTimers();
-                timerText.Start();
+                texts[count] = t.text;
+                textsStart[count] = t.beginTime;
+                textsEnd[count] = t.duration;
             }
             else if (t.region.ToUpper() == "SOUTH")
             {
                 //Enable the message label and store temp information for direct access from timer_tick event handler
                 lblSouth.Visible = true;
-                displayLocation = "SOUTH";
-                tempText = t.text;
+                displayLocations[count] = "SOUTH";
 
                 //Setup timer using message start/duration fields
-                tempText = t.text;
-                begin[0] = t.beginTime;
-                end[0] = t.duration;
-                InitializeTimers();
-                timerText.Start();
+                texts[count] = t.text;
+                textsStart[count] = t.beginTime;
+                textsEnd[count] = t.duration;
+
             }
             else if (t.region.ToUpper() == "EAST")
             {
                 //Enable the message label and store temp information for direct access from timer_tick event handler
                 lblEast.Visible = true;
-                displayLocation = "EAST";
-                tempText = t.text;
+                displayLocations[count] = "EAST";
 
                 //Setup timer using message start/duration fields
-                tempText = t.text;
-                begin[0] = t.beginTime;
-                end[0] = t.duration;
-                InitializeTimers();
-                timerText.Start();
+                texts[count] = t.text;
+                textsStart[count] = t.beginTime;
+                textsEnd[count] = t.duration;
             }
             else if (t.region.ToUpper() == "WEST")
             {
                 //Enable the message label and store temp information for direct access from timer_tick event handler
                 lblWest.Visible = true;
-                displayLocation = "WEST";
-                tempText = t.text;
+                displayLocations[count] = "WEST";
 
                 //Setup timer using message start/duration fields
                 lblWest.Text = "";
-                tempText = t.text;
-                begin[0] = t.beginTime;
-                end[0] = t.duration;
-                InitializeTimers();
-                timerText.Start();
+                texts[count] = t.text;
+                textsStart[count] = t.beginTime;
+                textsEnd[count] = t.duration;
             }
+
         }
 
         //Initialize timers for text, audio, or and video. 
         private void InitializeTimers()
         {
             //Initialize text timer
-            timerText = new Timer();
-            timerText.Tick += new EventHandler(TimerText_Tick);
+            timer1 = new Timer();
+            timers.Add(timer1);
+            timers[0].Tick += new EventHandler(Timer1_Tick);
+            timers[0].Interval = 1000;
 
-            // 1000ms = 1s intervals
-            timerText.Interval = 1000;
+            timer2 = new Timer();
+            timers.Add(timer2);
+            timers[1].Tick += new EventHandler(Timer2_Tick);
+            timers[1].Interval = 1000;
+
+            timer3 = new Timer();
+            timers.Add(timer3);
+            timers[2].Tick += new EventHandler(Timer3_Tick);
+            timers[2].Interval = 1000;
         }
     }
 }
