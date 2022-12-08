@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<smil>
+  <head>
+    <body>
+      <smilText dur="4s" begin="1s" region="Center">hi how are ya</smilText>
+    </body>
+  </head>
+</smil>

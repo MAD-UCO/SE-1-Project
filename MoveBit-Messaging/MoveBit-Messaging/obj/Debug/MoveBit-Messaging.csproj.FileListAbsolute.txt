@@ -16,3 +16,10 @@ C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\Move
 C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.csproj.CoreCompileInputs.cache
 C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.dll
 C:\OCCC_UCO\Fall 2022\Movebit\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.pdb
+C:\Users\vicat\source\repos\SE-1-Project\SE-Development\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.dll
+C:\Users\vicat\source\repos\SE-1-Project\SE-Development\MoveBit-Messaging\MoveBit-Messaging\bin\Debug\MoveBit-Messaging.pdb
+C:\Users\vicat\source\repos\SE-1-Project\SE-Development\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.csproj.AssemblyReference.cache
+C:\Users\vicat\source\repos\SE-1-Project\SE-Development\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.csproj.CoreCompileInputs.cache
+C:\Users\vicat\source\repos\SE-1-Project\SE-Development\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.dll
+C:\Users\vicat\source\repos\SE-1-Project\SE-Development\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.pdb
+C:\Users\vicat\source\repos\SE-1-Project\SE-Development\MoveBit-Messaging\MoveBit-Messaging\obj\Debug\MoveBit-Messaging.csproj.CopyComplete

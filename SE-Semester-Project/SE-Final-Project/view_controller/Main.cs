@@ -13,6 +13,7 @@ using System.Xml.Serialization;
 using System.Net;
 using static System.Net.WebRequestMethods;
 using System.Diagnostics;
+using File = System.IO.File;
 
 namespace SE_Final_Project
 {
@@ -50,23 +51,31 @@ namespace SE_Final_Project
             //Generate button symbols
             generateButtonSymbols();
 
+            frmStartTimeDialog.setSeconds("2s");
+            frmDuration.setSeconds("8s");
+            cboAddresses.Items.Add("vt");
+
         }
 
         private void BtnSend_Click(object sender, EventArgs e)
         {
-
+            
             if(cboAddresses.SelectedItem == null)
             {
+                cboAddresses.SelectedItem = "vt";
                 MessageBox.Show("Recipient Not Selected");
             }
             else if(frmStartTimeDialog.getSeconds() == "" || frmDuration.getSeconds() == "")
             {
-                MessageBox.Show("Missing start time or end time duration");
+                frmStartTimeDialog.setSeconds("2s");
+                frmDuration.setSeconds("8s");
+                // MessageBox.Show("Missing start time or end time duration");
             }
             else
             {
 
                 //Generate a storage location and pass to message constructor
+                //String filePath = @"C:\Users\vicat\source\repos\SE-1-Project\SE-Development\";
                 String filePath = "";
                 message = new Message();
 
@@ -85,6 +94,7 @@ namespace SE_Final_Project
 
                     //store in message object
                     message.AddTextMessage(textMessage);
+                    Console.WriteLine("added successfully");
                 }
 
                 //If a selection was made in the file list combo box
@@ -100,7 +110,18 @@ namespace SE_Final_Project
                     }
                     else if (selectedFile.Contains(".mp4"))
                     {
+                       // string dir = @"C:\Users\vicat\source\repos\SE-1-Project\SE-Project-3\SE-Semester-Project\SE-Final-Project\bin\Debug\" + cboAddresses.SelectedItem.ToString();
+                        string dir = @"C:\Users\vicat\source\repos\SE-1-Project\SE-Development\SE-Semester-Project\SE-Final-Project\bin\Debug\";
+                        Console.WriteLine(dir);
+                      //  if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
                         videoMessage = new VideoMessage(selectedFile);
+                        //                        string[] pathsInFolder = Directory.GetFiles(C:\Users\vicat\source\repos\SE-1-Project\SE-Project-3\SE-Semester-Project\SE-Final-Project\bin\Debug)
+                        /*tring sourceFile = @"C:\Users\vicat\Videos\" + selectedFile;
+                        string destFile = @"C:\Users\vicat\source\repos\SE-1-Project\SE-Development\SE-Semester-Project\SE-Final-Project\bin\Debug\" + selectedFile;
+                        File.Copy(sourceFile, destFile);*/
+                        //Store in message object
+                        //message.AddVideoMessage(videoMessage);
+                       // videoMessage = new VideoMessage(selectedFile);
 
                         //Store in message object
                         message.AddVideoMessage(videoMessage);
@@ -108,14 +129,22 @@ namespace SE_Final_Project
                 }
 
                 //Add sender, reciever, and smilFile name(receiver + current time stamp
-                message.setSmilFilePath(filePath + cboAddresses.SelectedItem.ToString() + ".smil");
-                message.smilFileName = cboAddresses.SelectedItem.ToString();
+                try
+                {
+                    message.setSmilFilePath(filePath + cboAddresses.SelectedItem.ToString() + ".smil");
+                    message.smilFileName = cboAddresses.SelectedItem.ToString();
 
-                message.GenerateMessageFile();
 
-               
-                //Pass message to the network client to store in outgoing queue
-                NetworkClient.SendMessage(message);
+                    message.GenerateMessageFile();
+
+
+                    //Pass message to the network client to store in outgoing queue
+                    NetworkClient.SendMessage(message);
+                } 
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
             }
         }
        
@@ -167,6 +196,7 @@ namespace SE_Final_Project
 
             //Display StartTimeDialog form
             frmStartTimeDialog.Show();
+            
         }
 
         private void btnDuration_Click(object sender, EventArgs e)

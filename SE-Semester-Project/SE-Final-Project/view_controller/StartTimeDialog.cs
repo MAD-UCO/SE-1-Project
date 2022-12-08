@@ -34,6 +34,10 @@ namespace SE_Final_Project
         {
             return this.seconds;
         }
+        public void setSeconds(string seconds)
+        {
+            this.seconds = seconds;
+        }
 
         public TextBox getTxtSS()
         {

@@ -22,6 +22,11 @@ namespace SE_Final_Project
         private List<Label> locationLabels = new List<Label>();
         private Main main = (Main)Application.OpenForms["Main"];
 
+        private string[] begin;
+        private string end1,end2, end3 = "";
+        private int seconds1, seconds2, seconds3 = 0;
+        private string tempText;
+
         //Class constructor, do not edit. Use form load event for initialization
         public Messages()
         {
@@ -47,7 +52,7 @@ namespace SE_Final_Project
             {
                 cboMessages.Items.Add(m);
             }
-
+            
 
             //Set initial visibility for labels to false
             lblDefault.Visible = false;
@@ -69,17 +74,52 @@ namespace SE_Final_Project
 
         private void cboMessages_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // string end1 = "";
+
+            playerMessages.Visible = true;
+            grpTextCanvas.Visible = false;
 
             SE_Final_Project.Message temp = (SE_Final_Project.Message)cboMessages.SelectedItem;
             List<TextMessage> textMessages = temp.textMessages;
+            List<VideoMessage> videoMessages = temp.videoMessages;
             foreach(var t in textMessages)
             {
                 lblDefault.Visible = true;
                 lblDefault.Text = t.text;
+                tempText = t.text;
+                
+                end1 = t.duration;
+                //end[0] = textMessages[0].duration;
             }
+            foreach (var v in videoMessages)
+            {
+                Console.WriteLine(v.filePath);
+                playerMessages.URL = v.filePath;
+               // end1 = v.endTime;
+                Console.WriteLine(v.beginTime);
+                Console.WriteLine(v.endTime);
+                //end[0] = textMessages[0].duration;
+            }
+
+            /*  Console.WriteLine(tempText);
+              Console.WriteLine(end1);*/
+
+            /*  Console.WriteLine(textMessages[0].beginTime);
+              Console.WriteLine(textMessages[0].duration);*/
+
+
+            //  begin[0] = textMessages[0].beginTime;
+            //  Console.WriteLine(textMessages[0]);
+
+            //  end[0] = textMessages[0].duration;
+            // Console.WriteLine(end[0]+ "nice nice");
+            /*  Console.WriteLine(begin[0].ToString());
+              Console.WriteLine(end[0].ToString());*/
+            timer1.Start();
               
             //Display the text message in the correct location
             //displayTextMessage();
+
         }
 
         //Getters
@@ -138,6 +178,55 @@ namespace SE_Final_Project
                 cboMessages.Items.Add(m);
             }
 
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+           /* if (incomingMessages == null)
+            {
+                Console.WriteLine("nothing here");
+                return;
+            }*/
+            seconds1++;
+            Console.WriteLine(seconds1.ToString());
+
+         /*   if (seconds1.ToString() == begin[0] ){
+                lblDefault.Text = tempText;
+            }*/
+          /*  if (seconds1.ToString().Trim('s') == end[0])
+            {
+                lblDefault.Text = "";
+            }*/
+
+         /*   if(seconds1.ToString() == end1.Trim('s'))
+            {
+                timer1.Stop();
+                seconds1 = 0;
+                lblDefault.Text = "";
+            }*/
+         if(seconds1 == 9)
+            {
+                timer1.Stop();
+                seconds1 = 0;
+            }
+        }
+
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            /*if (incomingMessages == null)
+            {
+                Console.WriteLine("nothing here");
+                return;
+            }*/
+        }
+
+        private void timer3_Tick(object sender, EventArgs e)
+        {
+           /* if (incomingMessages == null)
+            {
+                Console.WriteLine("nothing here");
+                return;
+            }*/
         }
     }
 }

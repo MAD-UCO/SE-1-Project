@@ -152,6 +152,7 @@ namespace SE_Semester_Project
                         }
 
                         temp.Add(smilMsg);
+                        Console.WriteLine(temp.ToString() +" here now");
                     }
                 }
             }
@@ -211,10 +212,13 @@ namespace SE_Semester_Project
 
             MediaMessage mediaMessage = new MediaMessage(
                 message.senderName, 
-                message.receiverName, 
-                message.GetSmilText(Environment.CurrentDirectory + "/" + message.smilFilePath), 
+                message.receiverName,
+                message.GetSmilText(Environment.CurrentDirectory + "/" + message.smilFilePath),
                 Environment.CurrentDirectory + "/" + message.smilFilePath
              );
+         /*   message.GetSmilText(Environment.CurrentDirectory + @"\" + message.smilFilePath), 
+                Environment.CurrentDirectory + @"\" + message.smilFilePath
+             );*/
 
 
             Debug.Assert(mediaMessage.senderFileName != null, "senderFileName is null");
