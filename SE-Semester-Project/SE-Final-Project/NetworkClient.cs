@@ -44,7 +44,7 @@ namespace SE_Semester_Project
         public static NetworkStream netStream;                          // Our network stream to write and get messages from
         public static string myClientName = null;      // The name of this client
 
-        private static string ipAddress = "192.168.0.101";//""127.0.0.1";                  // IP address of our server
+        private static string ipAddress = "127.0.0.1";                  // IP address of our server
         private static int portNumber = 5005;                           // The port we are connecting to
         private static bool continueLoop = false;
 
@@ -130,26 +130,17 @@ namespace SE_Semester_Project
                         foreach (KeyValuePair<string, byte[]> entry in media.videoFiles)
                         {
                             fi = new FileInfo(entry.Key);
-                            File.WriteAllBytes(fi.Name, entry.Value);
+                            File.WriteAllBytes(Environment.CurrentDirectory + "/" + fi.Name, entry.Value);
                             smilMsg.AddVideoMessage(new VideoMessage(fi.Name));
                         }
 
                         foreach (KeyValuePair<string, byte[]> entry in media.soundFiles) 
                         {
                             fi = new FileInfo(entry.Key);
-                            File.WriteAllBytes(fi.Name, entry.Value);
+                            File.WriteAllBytes(Environment.CurrentDirectory + "/" + fi.Name, entry.Value);
                             smilMsg.AddAudioMessage(new AudioMessage(fi.Name));
                         }
 
-                        foreach(KeyValuePair<string, byte[]> entry in media.imageFiles)
-                        {
-                            throw new NotImplementedException();
-                            /*
-                            fi = new FileInfo(entry.Key);
-                            File.WriteAllBytes(fi.Name, entry.Value);
-                            smilMsg.Add
-                            */
-                        }
                         Debug.Assert(File.Exists(smilMsg.smilFilePath), $"System could not locate smilMsg.smilFilePath {smilMsg.smilFilePath}");
                         temp.Add(smilMsg);
                     }
@@ -224,8 +215,6 @@ namespace SE_Semester_Project
                 mediaMessage.AddFile(FileType.VideoFile, vm.filePath, File.ReadAllBytes(vm.filePath));
             foreach (AudioMessage am in message.audioMessages)
                 mediaMessage.AddFile(FileType.AudioFile, am.filePath, File.ReadAllBytes(am.filePath));
-            foreach (ImageMessage im in message.imageMessages)
-                mediaMessage.AddFile(FileType.ImageFile, im.filePath, File.ReadAllBytes(im.filePath));
 
             SendMessage(mediaMessage);
 
