@@ -78,30 +78,12 @@ namespace SE_Semester_Project
         {
             testFunctions["TestSingleTextFileParsing"] = TestSingleTextFileParsing;
             testFunctions["TestMultipleTextFileParsing"] = TestMultipleTextFileParsing;
-            //testFunctions["TestLargeTextFileParsing"] = TestLargeTextFileParsing;
-            //testFunctions["TestSpecialCharTextFileParsing"] = TestSpecialCharTextFileParsing;
-            //testFunctions["TestParallelTextFileParsing"] = TestParallelTextFileParsing;
+           
         }
 
-        //test for no file contents
-        //test for non xml file contents
-        //test for invalid file path
+       
 
-        private static void TestGenerateNewMessage()
-        {
-
-        }
-        private static void TestEmptyMessageGeneration()
-        {
-            Message message = new Message();
-            TextMessage text = new TextMessage();
-            message.textMessages.Add(text);
-            message.GenerateMessageFile();
-            //not sure how to actually assert that this works gracefully
-            //make file manually to have the elements given from default constructor
-            //then compare the files
-            
-        }
+        
         private static void TestSingleTextFileParsing()
         {
             Message message = new Message();
@@ -120,7 +102,7 @@ namespace SE_Semester_Project
                 message.textMessages[0].duration == "10s",
                 $"Duration contents are not correct for SingleText.smil"
                 );
-            message.smilFilePath = workingDirectory + "SingleTextComparison.smil";
+            message.smilFilePath =  "SingleTextComparison.smil";
             message.GenerateMessageFile();
             byte[] inputFile = File.ReadAllBytes(workingDirectory + "SingleText.smil");
             byte[] outputFile = File.ReadAllBytes(workingDirectory + "SingleTextComparison.smil");
@@ -158,10 +140,10 @@ namespace SE_Semester_Project
                     "File parsing faile, duration contents of MultipleTexts.smil was not parsed correctly"
                     );
             }
-            message.smilFilePath = workingDirectory + "MultipleTextsComparison.smil";
+            message.smilFilePath = "MultipleTextsComparison.smil";
             message.GenerateMessageFile();
             byte[] inputFile = File.ReadAllBytes(workingDirectory + "MultipleTexts.smil");
-            byte[] outputFile = File.ReadAllBytes(workingDirectory + "MultipleTextsComparison.smil");
+            byte[] outputFile = File.ReadAllBytes( "MultipleTextsComparison.smil");
             for (int i = 0; i < inputFile.Length; i++)
             {
                 ParsingAssert(
@@ -171,56 +153,9 @@ namespace SE_Semester_Project
             }
         }
 
-        private static void TestParallelTextFileParsing()
-        {
-            if(File.Exists(workingDirectory + "ParallelTextsComparison.smil"))
-            {
-                File.Delete(workingDirectory + "ParallelTextsComparison.smil");
-            }
-
-            Message message = new Message();
-            message.ParseMessage(workingDirectory + "ParallelTexts.smil");
-            for (int i = 0; i < 100; i++)
-            {
-                ParsingAssert(
-                    message.textMessages[i].text ==$"This is a generalized test file to test parsing {i}",
-                    "File parsing failed, text contents of MultipleTexts.smil was not parsed correctly"
-                    );
-                ParsingAssert(
-                    message.textMessages[i].beginTime == $"{i}s",
-                    "File parsing failed, beginTime contents of ParallelTexts.smil was not parsed correctly"
-                    );
-                ParsingAssert(
-                    message.textMessages[i].duration == $"{i * 5}s",
-                    "File parsing faile, duration contents of ParallelTexts.smil was not parsed correctly"
-                    );
-            }
-            message.smilFilePath = workingDirectory + "ParallelTextsComparison.smil";
-            message.GenerateMessageFile();
-            byte[] inputFile = File.ReadAllBytes(workingDirectory + "ParallelTexts.smil");
-            byte[] outputFile = File.ReadAllBytes(workingDirectory + "ParallelTextsComparison.smil");
-            for (int i = 0; i < inputFile.Length; i++)
-            {
-                ParsingAssert(
-                    inputFile[i] == outputFile[i],
-                    "Error in generating new file from parsed file, file contents not the same"
-                    );
-            }
-        }
-
-        private static void TestLargeTextFileParsing()
-        {
-            //Message message = new Message();
-            //message.ParseMessage(workingDirectory + "LargeText.smil");
-        }
         
-        //this one might be the most trouble
-        private static void TestSpecialCharTextFileParsing()
-        {
-            //Message message = new Message();
-            //message.ParseMessage(workingDirectory + "SpecialCharText.smil");
-        }
-        //potentially add in video and audio tests later
+
+        
 
 
         private static void Report()
