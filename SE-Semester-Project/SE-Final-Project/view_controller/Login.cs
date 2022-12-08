@@ -97,7 +97,7 @@ namespace SE_Final_Project
         {
             NetworkClient.Shutdown();
             NetworkClient.Logout();
-            Application.Exit();
+            Environment.Exit(0);
         }
     }
 }

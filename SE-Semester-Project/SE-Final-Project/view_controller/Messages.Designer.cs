@@ -51,7 +51,7 @@
             this.cboMessages.FormattingEnabled = true;
             this.cboMessages.Location = new System.Drawing.Point(12, 214);
             this.cboMessages.Name = "cboMessages";
-            this.cboMessages.Size = new System.Drawing.Size(225, 28);
+            this.cboMessages.Size = new System.Drawing.Size(299, 28);
             this.cboMessages.TabIndex = 0;
             this.cboMessages.SelectedIndexChanged += new System.EventHandler(this.cboMessages_SelectedIndexChanged);
             // 
@@ -95,7 +95,7 @@
             // lblDefault
             // 
             this.lblDefault.AutoSize = true;
-            this.lblDefault.Location = new System.Drawing.Point(0, 0);
+            this.lblDefault.Location = new System.Drawing.Point(-1, 0);
             this.lblDefault.Name = "lblDefault";
             this.lblDefault.Size = new System.Drawing.Size(73, 25);
             this.lblDefault.TabIndex = 5;
@@ -170,7 +170,7 @@
             this.Controls.Add(this.btnBack);
             this.Controls.Add(this.cboMessages);
             this.Name = "Messages";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Messages_FormClosing);
             this.Load += new System.EventHandler(this.Messages_Load);
             this.VisibleChanged += new System.EventHandler(this.Messages_VisibleChanged);

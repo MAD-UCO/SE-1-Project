@@ -13,6 +13,9 @@ using System.Xml.Serialization;
 using System.Net;
 using static System.Net.WebRequestMethods;
 using System.Diagnostics;
+using SE_Final_Project.view_controller;
+using System.Windows.Forms.VisualStyles;
+using System.Collections;
 
 namespace SE_Final_Project
 {
@@ -27,10 +30,16 @@ namespace SE_Final_Project
         private TextMessage textMessage;
         private VideoMessage videoMessage;
         private AudioMessage audioMessage;
-        private StartTimeDialog frmStartTimeDialog = new StartTimeDialog();
-        private Duration frmDuration = new Duration();
+        private StartTimeDialog frmStartTimeDialog = (StartTimeDialog)Application.OpenForms["StartTimeDialog"];
+        private Duration frmDuration = (Duration)Application.OpenForms["frmDuration"];
         private Login login = (Login)Application.OpenForms["Login"];
+        private TextRegion region = (TextRegion)Application.OpenForms["TextRegion"];
         private Messages messages = (Messages)Application.OpenForms["Messages"];
+        List<Message> incomingMessages = new List<Message>();
+
+
+        private Timer timer;
+
 
         //constants
         private const int HeightAdjustment = 25;
@@ -50,6 +59,13 @@ namespace SE_Final_Project
             //Generate button symbols
             generateButtonSymbols();
 
+            //Initialize timer to call getNewMessages() every second
+            initializeTimer();
+
+            //Initialize messages form
+            messages = new Messages();
+
+
         }
 
         private void BtnSend_Click(object sender, EventArgs e)
@@ -62,6 +78,10 @@ namespace SE_Final_Project
             else if(frmStartTimeDialog.getSeconds() == "" || frmDuration.getSeconds() == "")
             {
                 MessageBox.Show("Missing start time or end time duration");
+            }
+            else if(region.getcboDisplayLocation().SelectedItem == null)
+            {
+                MessageBox.Show("Missing display location");
             }
             else
             {
@@ -82,7 +102,8 @@ namespace SE_Final_Project
 
                     textMessage.beginTime = frmStartTimeDialog.getSeconds();
                     textMessage.duration = frmDuration.getSeconds();
-
+                    textMessage.region = region.getLocation();
+                   
                     //store in message object
                     message.AddTextMessage(textMessage);
                 }
@@ -119,7 +140,7 @@ namespace SE_Final_Project
             }
         }
        
-        private void btnUpload_Click(object sender, EventArgs e)
+        private void BtnUpload_Click(object sender, EventArgs e)
         {
             //Create an OpenFileDialog object which provides file browser functionality
             OpenFileDialog browser = new OpenFileDialog();
@@ -138,55 +159,80 @@ namespace SE_Final_Project
             }
         }
 
-        private void btnCompose_Click(object sender, EventArgs e)
+        private void BtnCompose_Click(object sender, EventArgs e)
         {
             //Reset text box contents
             txtOutgoing.Text = "";
         }
 
-        private void btnMessages_Click(object sender, EventArgs e)
+        private void BtnMessages_Click(object sender, EventArgs e)
         {
             this.Hide();
+
+            //hide new message icon
+            btnNewMessageIcon.Visible = false;
 
             //If this is the first time navigating to messages create a new form. Else reload existing form
             if(messages == null)
             {
-                messages = new Messages();
+                //Messages form gets created early during initialization so getNewMessages() can be called immediately
                 //Set location to center of user screen (adjusted higher by 25 pixels
                 messages.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (messages.Size.Width / 2),
                     (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (messages.Size.Height / 2) - HeightAdjustment);
             }
+            messages.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (messages.Size.Width / 2),
+                    (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (messages.Size.Height / 2) - HeightAdjustment);
             messages.Show();
         }
 
-        private void btnStart_Click(object sender, EventArgs e)
+        private void BtnStart_Click(object sender, EventArgs e)
         {
-            //Set location to center of user screen (adjusted higher by 25 pixels)
-            frmStartTimeDialog.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (frmStartTimeDialog.Size.Width / 2),
-                (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (frmStartTimeDialog.Size.Height / 2) - HeightAdjustment);
-
+            if(frmStartTimeDialog == null)
+            {
+                frmStartTimeDialog = new StartTimeDialog();
+                //Set location to center of user screen (adjusted higher by 25 pixels)
+                frmStartTimeDialog.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (frmStartTimeDialog.Size.Width / 2),
+                    (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (frmStartTimeDialog.Size.Height / 2) - HeightAdjustment);
+            }
             //Display StartTimeDialog form
             frmStartTimeDialog.Show();
         }
 
-        private void btnDuration_Click(object sender, EventArgs e)
+        private void BtnDuration_Click(object sender, EventArgs e)
         {
-            //Set location to center of user screen (adjusted higher by 25 pixels)
-            frmDuration.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (frmDuration.Size.Width / 2),
-                (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (frmDuration.Size.Height / 2) - HeightAdjustment);
+            if(frmDuration == null)
+            {
+                frmDuration = new Duration();
+                //Set location to center of user screen (adjusted higher by 25 pixels)
+                frmDuration.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (frmDuration.Size.Width / 2),
+                    (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (frmDuration.Size.Height / 2) - HeightAdjustment);
 
+            }
             //Display Duration form
             frmDuration.Show();
         }
 
-        private void cboAddresses_SelectedIndexChanged(object sender, EventArgs e)
+        private void BtnRegion_Click(object sender, EventArgs e)
+        {
+            if(region == null)
+            {
+                region = new TextRegion();
+                //Set location to center of user screen (adjusted higher by 25 pixels)
+                region.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (region.Size.Width / 2),
+                    (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (region.Size.Height / 2) - HeightAdjustment);
+            }
+            //Display Duration form
+            region.Show();
+        }
+
+        private void CboAddresses_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Store selected address in a string variable
             selectedAddress = cboAddresses.SelectedItem.ToString();
         }
 
         //Add an address to the combo box that has been typed in by the user
-        private void cboAddresses_KeyUp(object sender, KeyEventArgs e)
+        private void CboAddresses_KeyUp(object sender, KeyEventArgs e)
         {
             //After the user has typed the address and pressed enter, add it to the list
             if(e.KeyCode == Keys.Enter)
@@ -197,7 +243,7 @@ namespace SE_Final_Project
             }
         }
 
-        private void cboFileList_SelectedIndexChanged(object sender, EventArgs e)
+        private void CboFileList_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Display media player for preview if audio or video file is selected.
             selectedFile = cboFileList.SelectedItem.ToString();
@@ -212,7 +258,7 @@ namespace SE_Final_Project
             }
         }
 
-        private void btnLogout_Click(object sender, EventArgs e)
+        private void BtnLogout_Click(object sender, EventArgs e)
         {
 
             //Clear old contents for new user
@@ -224,12 +270,26 @@ namespace SE_Final_Project
             NetworkClient.Logout();
         }
 
+        //Call getNewMessages() every second
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            //Add messages names to the message combo box and the objects to a hidden list
+            incomingMessages = NetworkClient.GetNewMessages();
+            foreach (var m in incomingMessages)
+            {
+                btnNewMessageIcon.Visible = true;
+                messages.getCboMessages().Items.Add(m.smilFileName + ": " + DateTime.Now.ToString());
+                messages.getMessageObjects().Add(m);
+            }
+        }
+
         //Shut down all processes when user exits program
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
+            //Shut down program
             NetworkClient.Shutdown();
             NetworkClient.Logout();
-            Application.Exit();
+            Environment.Exit(0);
         }
 
         //Getters
@@ -251,6 +311,11 @@ namespace SE_Final_Project
         public Message getMessage()
         {
             return message;
+        }
+
+        public List<Message> getIncomingMessages()
+        {
+            return incomingMessages;
         }
 
         //Operations
@@ -284,9 +349,10 @@ namespace SE_Final_Project
             cboAddresses.Items.Clear();
             cboAddresses.Text = "";
 
-            //Clear Duration.cs and StartTimeDialog.cs textboxes
+            //Clear Duration.cs, StartTimeDialog.cs, and Region.cs textboxes
             frmStartTimeDialog.getTxtSS().Text = "";
             frmDuration.getTxtSS().Text = "";
+            region.getcboDisplayLocation().Text = "";
 
             //Clear Messages.cs combo box and labels (If the form has been loaded at least once)
             if(messages != null)
@@ -298,6 +364,21 @@ namespace SE_Final_Project
                     label.Text = "";
                 }
             }
+
+            //Clear messages messageObject List
+            messages.getMessageObjects().Clear();
+        }
+
+        //Start timer to continuously call getMessages()
+        private void initializeTimer()
+        {
+            timer = new Timer();
+            timer.Tick += new EventHandler(Timer_Tick);
+
+            // 1000ms = 1s intervals
+            timer.Interval = 1000;
+            timer.Start();
+
         }
     }
 }
