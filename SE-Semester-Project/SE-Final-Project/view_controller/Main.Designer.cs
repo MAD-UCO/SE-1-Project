@@ -45,16 +45,16 @@ namespace SE_Final_Project
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnNewMessageIcon = new System.Windows.Forms.Button();
             this.pnlStartDuration = new System.Windows.Forms.TableLayoutPanel();
-            this.txtVideoDuration = new System.Windows.Forms.TextBox();
-            this.txtVideoStart = new System.Windows.Forms.TextBox();
-            this.txtAudioDuration = new System.Windows.Forms.TextBox();
-            this.txtAudioStart = new System.Windows.Forms.TextBox();
             this.txtTextDuration = new System.Windows.Forms.TextBox();
+            this.txtAudioDuration = new System.Windows.Forms.TextBox();
+            this.txtVideoDuration = new System.Windows.Forms.TextBox();
             this.txtTextStart = new System.Windows.Forms.TextBox();
-            this.chkStartDuration = new System.Windows.Forms.CheckBox();
+            this.txtAudioStart = new System.Windows.Forms.TextBox();
+            this.txtVideoStart = new System.Windows.Forms.TextBox();
             this.lblTextMessage = new System.Windows.Forms.Label();
             this.lblAudioMessage = new System.Windows.Forms.Label();
             this.lblVideoMessage = new System.Windows.Forms.Label();
+            this.chkStartDuration = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.playerMain)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.pnlStartDuration.SuspendLayout();
@@ -86,6 +86,8 @@ namespace SE_Final_Project
             // 
             // txtOutgoing
             // 
+            this.txtOutgoing.BackColor = System.Drawing.Color.LightGray;
+            this.txtOutgoing.Enabled = false;
             this.txtOutgoing.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtOutgoing.Location = new System.Drawing.Point(15, 250);
             this.txtOutgoing.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -111,7 +113,7 @@ namespace SE_Final_Project
             // 
             this.btnRegion.BackColor = System.Drawing.Color.Silver;
             this.btnRegion.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRegion.Location = new System.Drawing.Point(671, 420);
+            this.btnRegion.Location = new System.Drawing.Point(670, 419);
             this.btnRegion.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnRegion.Name = "btnRegion";
             this.btnRegion.Size = new System.Drawing.Size(100, 50);
@@ -224,19 +226,12 @@ namespace SE_Final_Project
             this.pnlStartDuration.Size = new System.Drawing.Size(488, 299);
             this.pnlStartDuration.TabIndex = 14;
             // 
-            // txtVideoDuration
+            // txtTextDuration
             // 
-            this.txtVideoDuration.Location = new System.Drawing.Point(327, 201);
-            this.txtVideoDuration.Name = "txtVideoDuration";
-            this.txtVideoDuration.Size = new System.Drawing.Size(156, 22);
-            this.txtVideoDuration.TabIndex = 8;
-            // 
-            // txtVideoStart
-            // 
-            this.txtVideoStart.Location = new System.Drawing.Point(165, 201);
-            this.txtVideoStart.Name = "txtVideoStart";
-            this.txtVideoStart.Size = new System.Drawing.Size(156, 22);
-            this.txtVideoStart.TabIndex = 7;
+            this.txtTextDuration.Location = new System.Drawing.Point(327, 3);
+            this.txtTextDuration.Name = "txtTextDuration";
+            this.txtTextDuration.Size = new System.Drawing.Size(156, 22);
+            this.txtTextDuration.TabIndex = 4;
             // 
             // txtAudioDuration
             // 
@@ -245,19 +240,12 @@ namespace SE_Final_Project
             this.txtAudioDuration.Size = new System.Drawing.Size(156, 22);
             this.txtAudioDuration.TabIndex = 6;
             // 
-            // txtAudioStart
+            // txtVideoDuration
             // 
-            this.txtAudioStart.Location = new System.Drawing.Point(165, 102);
-            this.txtAudioStart.Name = "txtAudioStart";
-            this.txtAudioStart.Size = new System.Drawing.Size(156, 22);
-            this.txtAudioStart.TabIndex = 5;
-            // 
-            // txtTextDuration
-            // 
-            this.txtTextDuration.Location = new System.Drawing.Point(327, 3);
-            this.txtTextDuration.Name = "txtTextDuration";
-            this.txtTextDuration.Size = new System.Drawing.Size(156, 22);
-            this.txtTextDuration.TabIndex = 4;
+            this.txtVideoDuration.Location = new System.Drawing.Point(327, 201);
+            this.txtVideoDuration.Name = "txtVideoDuration";
+            this.txtVideoDuration.Size = new System.Drawing.Size(156, 22);
+            this.txtVideoDuration.TabIndex = 8;
             // 
             // txtTextStart
             // 
@@ -266,17 +254,19 @@ namespace SE_Final_Project
             this.txtTextStart.Size = new System.Drawing.Size(156, 22);
             this.txtTextStart.TabIndex = 3;
             // 
-            // chkStartDuration
+            // txtAudioStart
             // 
-            this.chkStartDuration.AutoSize = true;
-            this.chkStartDuration.ForeColor = System.Drawing.Color.White;
-            this.chkStartDuration.Location = new System.Drawing.Point(672, 488);
-            this.chkStartDuration.Name = "chkStartDuration";
-            this.chkStartDuration.Size = new System.Drawing.Size(18, 17);
-            this.chkStartDuration.TabIndex = 15;
-            this.chkStartDuration.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkStartDuration.UseVisualStyleBackColor = true;
-            this.chkStartDuration.CheckedChanged += new System.EventHandler(this.ChkStartDuration_CheckedChanged);
+            this.txtAudioStart.Location = new System.Drawing.Point(165, 102);
+            this.txtAudioStart.Name = "txtAudioStart";
+            this.txtAudioStart.Size = new System.Drawing.Size(156, 22);
+            this.txtAudioStart.TabIndex = 5;
+            // 
+            // txtVideoStart
+            // 
+            this.txtVideoStart.Location = new System.Drawing.Point(165, 201);
+            this.txtVideoStart.Name = "txtVideoStart";
+            this.txtVideoStart.Size = new System.Drawing.Size(156, 22);
+            this.txtVideoStart.TabIndex = 7;
             // 
             // lblTextMessage
             // 
@@ -310,6 +300,18 @@ namespace SE_Final_Project
             this.lblVideoMessage.Size = new System.Drawing.Size(155, 25);
             this.lblVideoMessage.TabIndex = 11;
             this.lblVideoMessage.Text = "Video Message:";
+            // 
+            // chkStartDuration
+            // 
+            this.chkStartDuration.AutoSize = true;
+            this.chkStartDuration.ForeColor = System.Drawing.Color.White;
+            this.chkStartDuration.Location = new System.Drawing.Point(670, 567);
+            this.chkStartDuration.Name = "chkStartDuration";
+            this.chkStartDuration.Size = new System.Drawing.Size(18, 17);
+            this.chkStartDuration.TabIndex = 15;
+            this.chkStartDuration.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkStartDuration.UseVisualStyleBackColor = true;
+            this.chkStartDuration.CheckedChanged += new System.EventHandler(this.ChkStartDuration_CheckedChanged);
             // 
             // Main
             // 

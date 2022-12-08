@@ -39,7 +39,8 @@ namespace SE_Final_Project
         private Messages messages = (Messages)Application.OpenForms["Messages"];
         List<Message> incomingMessages = new List<Message>();
         SoundPlayer soundPlayer;
-        private Timer timer;
+        private Timer timer, timer2, timer3;
+        string filePath;
 
 
         //constants
@@ -74,6 +75,8 @@ namespace SE_Final_Project
             //Initialize text region form
             region = new TextRegion();
 
+            //Intiliaze Message object
+            message = new Message();
 
         }
 
@@ -97,50 +100,7 @@ namespace SE_Final_Project
             {
 
                 //Generate a storage location and pass to message constructor
-                String filePath = "";
-                message = new Message();
-
-                //Set sender and receiver name
-                message.setSenderName(NetworkClient.myClientName);
-                message.setReceiverName(cboAddresses.Text.ToString());
-
-                //Store message subtypes
-                if (txtOutgoing.Text != "")
-                {
-                    //Create new text message and assign start/duration
-                    textMessage = new TextMessage(txtOutgoing.Text);
-
-                    textMessage.beginTime = txtTextStart.Text + "s";
-                    textMessage.duration = txtTextDuration.Text + "s";
-                    textMessage.region = region.GetLocation();
-                   
-                    //store in message object
-                    message.AddTextMessage(textMessage);
-                }
-
-                //If a selection was made in the file list combo box
-                if (cboFileList.SelectedIndex > -1)
-                {
-                    //Check file extension from selectedFile and store in the appropriate object
-                    if (selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
-                    {
-                        audioMessage = new AudioMessage(selectedFile);
-                        audioMessage.beginTime = txtTextStart.Text + "s";
-                        audioMessage.duration = txtTextDuration.Text + "s";
-
-                        //Store in message object
-                        message.AddAudioMessage(audioMessage);
-                    }
-                    else if (selectedFile.Contains(".mp4"))
-                    {
-                        videoMessage = new VideoMessage(selectedFile);
-                        videoMessage.beginTime = txtVideoStart.Text + "s";
-                        videoMessage.duration = txtVideoDuration.Text + "s";
-
-                        //Store in message object
-                        message.AddVideoMessage(videoMessage);
-                    }
-                }
+               
 
                 //Add sender, reciever, and smilFile name(receiver + current time stamp
                 message.setSmilFilePath(filePath + cboAddresses.SelectedItem.ToString() + ".smil");
@@ -148,7 +108,7 @@ namespace SE_Final_Project
 
                 message.GenerateMessageFile();
 
-               
+                
                 //Pass message to the network client to store in outgoing queue
                 NetworkClient.SendMessage(message);
             }
@@ -177,8 +137,56 @@ namespace SE_Final_Project
         //Executes each time btnCompose is clicked by the user
         private void BtnCompose_Click(object sender, EventArgs e)
         {
-            //Reset text box contents
-            txtOutgoing.Text = "";
+            if (txtOutgoing.Enabled == false)
+            {
+                txtOutgoing.Enabled = true;
+                txtOutgoing.BackColor = Color.White;
+                return;
+            }
+            filePath = "";
+
+            //Set sender and receiver name
+            message.setSenderName(NetworkClient.myClientName);
+            message.setReceiverName(cboAddresses.Text.ToString());
+
+            //Store message subtypes
+            if (txtOutgoing.Text != "")
+            {
+                //Create new text message and assign start/duration
+                textMessage = new TextMessage(txtOutgoing.Text);
+
+                textMessage.beginTime = txtTextStart.Text + "s";
+                textMessage.duration = txtTextDuration.Text + "s";
+                textMessage.region = region.GetLocation();
+
+                //store in message object
+                message.AddTextMessage(textMessage);
+                Console.WriteLine("added succcessfully");
+            }
+
+            //If a selection was made in the file list combo box
+            if (cboFileList.SelectedIndex > -1)
+            {
+                //Check file extension from selectedFile and store in the appropriate object
+                if (selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
+                {
+                    audioMessage = new AudioMessage(selectedFile);
+                    audioMessage.beginTime = txtTextStart.Text + "s";
+                    audioMessage.duration = txtTextDuration.Text + "s";
+
+                    //Store in message object
+                    message.AddAudioMessage(audioMessage);
+                }
+                else if (selectedFile.Contains(".mp4"))
+                {
+                    videoMessage = new VideoMessage(selectedFile);
+                    videoMessage.beginTime = txtVideoStart.Text + "s";
+                    videoMessage.duration = txtVideoDuration.Text + "s";
+
+                    //Store in message object
+                    message.AddVideoMessage(videoMessage);
+                }
+            }
         }
 
         //Executes each time btnMessages is clicked by the user
