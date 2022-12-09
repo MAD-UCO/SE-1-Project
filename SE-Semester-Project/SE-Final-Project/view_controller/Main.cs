@@ -85,15 +85,17 @@ namespace SE_Final_Project
         private void BtnSend_Click(object sender, EventArgs e)
         {
             //Error handling messages for missing fields
-            if(cboAddresses.SelectedItem == null)
+            if (cboAddresses.SelectedItem == null)
             {
+                //cboAddresses.Items.Add("vt");
+
                 MessageBox.Show("Recipient Not Selected");
             }
-            else if(txtTextStart.Text == "" || txtTextDuration.Text == "")
+            else if (txtVideoStart.Text == null && (txtTextStart.Text == "" || txtTextDuration.Text == "") && txtAudioStart.Text == null)
             {
                 MessageBox.Show("Missing start time or end time duration");
             }
-            else if(region.GetcboDisplayLocation().SelectedItem == null)
+            else if(cboFileList.SelectedIndex < 0 && region.GetcboDisplayLocation().SelectedItem == null)
             {
                 MessageBox.Show("Missing display location");
             }
@@ -101,8 +103,9 @@ namespace SE_Final_Project
             {
 
                 //Generate a storage location and pass to message constructor
-                String filePath = "";
-                message = new Message();
+              //  String
+              filePath = "";
+              //  message = new Message();
 
                 //Set sender and receiver name
                 message.setSenderName(NetworkClient.myClientName);
@@ -119,7 +122,8 @@ namespace SE_Final_Project
                     textMessage.region = region.GetLocation();
                    
                     //store in message object
-                    message.AddTextMessage(textMessage);
+                 //   message.AddTextMessage(textMessage);
+                    Console.WriteLine("added at send");
                 }
 
                 //If a selection was made in the file list combo box
@@ -130,13 +134,15 @@ namespace SE_Final_Project
                     if (selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
                     {
                         audioMessage = new AudioMessage(selectedFile);
-                        audioMessage.beginTime = txtTextStart.Text + "s";
-                        audioMessage.duration = txtTextDuration.Text + "s";
+                        audioMessage.beginTime = txtAudioStart.Text + "s";
+                        audioMessage.duration = txtAudioDuration.Text + "s";
 
                         //Store in message object
                         message.AddAudioMessage(audioMessage);
+                        Console.WriteLine("added at send");
+
                     }
-                    else if (selectedFile.Contains(".mp4"))
+                     if (selectedFile.Contains(".mp4"))
                     {
                         videoMessage = new VideoMessage(selectedFile);
                         videoMessage.beginTime = txtVideoStart.Text + "s";
@@ -144,6 +150,8 @@ namespace SE_Final_Project
 
                         //Store in message object
                         message.AddVideoMessage(videoMessage);
+                        Console.WriteLine("added at send");
+
                     }
                 }
 
@@ -177,6 +185,7 @@ namespace SE_Final_Project
                 outgoingFilepaths.Add(path);
                 cboFileList.Items.Add(pathTrimmed);
                 relToAbsolute[pathTrimmed] = path;
+              //  relToAbsolute[path] = path;
             }
         }
 
@@ -189,13 +198,7 @@ namespace SE_Final_Project
                 txtOutgoing.BackColor = Color.White;
                 return;
             }
-            filePath = "";
 
-            //Set sender and receiver name
-            message.setSenderName(NetworkClient.myClientName);
-            message.setReceiverName(cboAddresses.Text.ToString());
-
-            //Store message subtypes
             if (txtOutgoing.Text != "")
             {
                 //Create new text message and assign start/duration
@@ -210,29 +213,42 @@ namespace SE_Final_Project
                 Console.WriteLine("added succcessfully");
             }
 
-            //If a selection was made in the file list combo box
-            if (cboFileList.SelectedIndex > -1)
-            {
-                //Check file extension from selectedFile and store in the appropriate object
-                if (selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
-                {
-                    audioMessage = new AudioMessage(selectedFile);
-                    audioMessage.beginTime = txtTextStart.Text + "s";
-                    audioMessage.duration = txtTextDuration.Text + "s";
+            //    filePath = "";
 
-                    //Store in message object
-                    message.AddAudioMessage(audioMessage);
-                }
-                else if (selectedFile.Contains(".mp4"))
-                {
-                    videoMessage = new VideoMessage(selectedFile);
-                    videoMessage.beginTime = txtVideoStart.Text + "s";
-                    videoMessage.duration = txtVideoDuration.Text + "s";
+            //Set sender and receiver name
+            /*    message.setSenderName(NetworkClient.myClientName);
+                message.setReceiverName(cboAddresses.Text.ToString());*/
 
-                    //Store in message object
-                    message.AddVideoMessage(videoMessage);
-                }
-            }
+            /*  //Store message subtypes
+
+
+              //If a selection was made in the file list combo box
+              if (cboFileList.SelectedIndex > -1)
+              {
+                  //Check file extension from selectedFile and store in the appropriate object
+                  if (selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
+                  {
+                      audioMessage = new AudioMessage(selectedFile);
+                      audioMessage.beginTime = txtTextStart.Text + "s";
+                      audioMessage.duration = txtTextDuration.Text + "s";
+
+                      //Store in message object
+                      message.AddAudioMessage(audioMessage);
+                      Console.WriteLine("added succcessfully");
+
+                  }
+                   if (selectedFile.Contains(".mp4"))
+                  {
+                      videoMessage = new VideoMessage(selectedFile);
+                      videoMessage.beginTime = txtVideoStart.Text + "s";
+                      videoMessage.duration = txtVideoDuration.Text + "s";
+
+                      //Store in message object
+                      message.AddVideoMessage(videoMessage);
+                      Console.WriteLine("added succcessfully");
+
+                  }
+              }*/
         }
 
         //Executes each time btnMessages is clicked by the user
@@ -317,20 +333,26 @@ namespace SE_Final_Project
         //Executes each time an item is selected in the cboFileList combo box
         private void CboFileList_SelectedIndexChanged(object sender, EventArgs e)
         {
+            string selectedFile2;
             //Display media player for preview if audio or video file is selected.
-            selectedFile = cboFileList.SelectedItem.ToString();
+              selectedFile = cboFileList.SelectedItem.ToString();
+            selectedFile2 = relToAbsolute[cboFileList.SelectedItem.ToString()];
+            Console.WriteLine(selectedFile2);
+         
+
 
             //Identify the file type and handle accordingly
-            if (selectedFile.Contains("txt"))
+            if (selectedFile2.Contains("txt"))
             {
                 playerMain.Visible = false;
                 txtOutgoing.Visible = true;
                 string viewText = File.ReadAllText(outgoingFilepaths[cboFileList.SelectedIndex]);
                 txtOutgoing.Text = viewText;
             }
-            else if (selectedFile.Contains("mp3") || selectedFile.Contains(".wav"))
+            else if (selectedFile2.Contains("mp3") || selectedFile2.Contains(".wav"))
             {
-                soundPlayer = new SoundPlayer(@"" + cboFileList.SelectedItem.ToString());
+                
+                soundPlayer = new SoundPlayer(@"" + selectedFile2);
                 soundPlayer.Play();
 
                 playerMain.Visible = false;

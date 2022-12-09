@@ -27,7 +27,11 @@ namespace SE_Final_Project
         private string[] texts = new string[3];
         private string[] textsStart = new string[3];
         private string[] textsEnd = new string[3];
-        private int secondsText, second2, seconds3 = 0;
+        private int secondsText, second2, seconds3, seconds4, seconds5 = 0;
+        private string videoBegin, videoEnd, videoURL = "";
+        private string audioBegin, audioEnd, audioURL = "";
+        private SoundPlayer soundPlayer;
+
         // private string tempText;
         private List<Timer> timers = new List<Timer>();
         Timer timer1, timer2, timer3;
@@ -65,6 +69,7 @@ namespace SE_Final_Project
             lblEast.Visible = false;
             lblWest.Visible = false;
             playerMessages.Visible = false;
+          //  textAudio.Visible = false;
 
         }
 
@@ -86,10 +91,36 @@ namespace SE_Final_Project
             List<TextMessage> textMessages = temp.textMessages;
             List<AudioMessage> audioMessages = temp.audioMessages;
             List<VideoMessage> videoMessages = temp.videoMessages;
-           /* foreach(var t in textMessages)
+            /*grpTextCanvas.Visible = false;
+            playerMessages.Visible = true;*/
+            foreach (var v in videoMessages)
             {
-                DisplayTextMessage(t);
-            }*/
+                Console.WriteLine(v.filePath);
+                // playerMessages.URL = videoMessages[0].filePath;
+                videoURL = videoMessages[0].filePath;
+                // end1 = v.endTime;
+                
+
+                videoBegin = videoMessages[0].beginTime;
+                //  begin2 = t.beginTime;
+                videoEnd = videoMessages[0].duration;
+                timer4.Start();
+            }
+            foreach (var a in audioMessages)
+            {
+                Console.WriteLine(a.filePath);
+                // playerMessages.URL = videoMessages[0].filePath;
+                audioURL = audioMessages[0].filePath;
+                // end1 = v.endTime;
+                Console.WriteLine(a.beginTime);
+                Console.WriteLine(a.duration);
+
+                audioBegin = audioMessages[0].beginTime;
+                //  begin2 = t.beginTime;
+                audioEnd = audioMessages[0].duration;
+                textAudio.Text = "AUDIO ADDED";
+                timer5.Start();
+            }
             if (textMessages.Count >= 0)
             {
 
@@ -108,7 +139,7 @@ namespace SE_Final_Project
 
                 }
             }
-            if (textMessages.Count >= 0)
+            if (textMessages.Count > 0)
             {
                 if (textMessages.Count == 1)
                 {
@@ -126,6 +157,12 @@ namespace SE_Final_Project
                     timers[2].Start();
                 }
             }
+            else
+            {
+             //   grpTextCanvas.Visible = false;
+              //  playerMessages.Visible = true;
+            }
+
         }
 
         //Executes each time the timer timerText ticks
@@ -193,6 +230,46 @@ namespace SE_Final_Project
                 {
                     lblWest.Text = "";
                 }
+            }
+        }
+
+        private void timer5_Tick(object sender, EventArgs e)
+        {
+            seconds5++;
+            Console.WriteLine(seconds5.ToString());
+
+            if (seconds5.ToString() == audioBegin.Trim('s'))
+            {
+              //  grpTextCanvas.Visible = false;
+              //  playerMessages.Visible = false;
+                textAudio.Visible = true;
+                textAudio.Text = "AUDIO PLAYING... ENJOY";
+
+                soundPlayer = new SoundPlayer(@"" + audioURL);
+              //  soundPlayer.SoundLocation = audioURL;
+                soundPlayer.Play();
+                
+
+                Console.WriteLine(seconds5.ToString() + "   seconds here at 5");
+            }
+
+
+            if (seconds5.ToString() == audioEnd.Trim('s'))
+            {
+                //lblDefault.Text = tempText;
+                Console.WriteLine("end @ 5");
+                soundPlayer.Stop();
+                textAudio.Text = "";
+
+              //  seconds5 = 0;
+            }
+
+            if (seconds5 > 11)
+            {
+                //lblDefault.Text = tempText;
+                timer5.Stop();
+                seconds5 = 0;
+                textAudio.Visible = false;
             }
         }
 
@@ -343,6 +420,39 @@ namespace SE_Final_Project
         {
             //load list and return
             return locationLabels;
+        }
+
+        private void timer4_Tick(object sender, EventArgs e)
+        {
+            seconds4++;
+            Console.WriteLine(seconds4.ToString());
+
+            if (seconds4.ToString() == videoBegin.Trim('s'))
+            {
+                playerMessages.Visible = true;
+                playerMessages.URL = videoURL;
+                playerMessages.Ctlcontrols.play();
+
+
+                Console.WriteLine(seconds4.ToString() + "seconds here at 4");
+            }
+
+
+            if (seconds4.ToString() == videoEnd.Trim('s'))
+            {
+                //lblDefault.Text = tempText;
+                Console.WriteLine("end @ 4");
+                playerMessages.Ctlcontrols.stop();
+            }
+
+            if (seconds4 > 11)
+            {
+                //lblDefault.Text = tempText;
+                timer4.Stop();
+                seconds4 = 0;
+            }
+
+          
         }
 
         //Shut down all processes when user exits program
