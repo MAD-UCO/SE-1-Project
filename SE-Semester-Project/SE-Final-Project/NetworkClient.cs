@@ -123,7 +123,7 @@ namespace SE_Semester_Project
                         MediaMessage media = (MediaMessage)(msg);
                         Debug.Assert(media.senderFileName != null, "Media.SenderFileName is null!");
                         FileInfo fi = new FileInfo(media.senderFileName);
-                        Message smilMsg = new Message($"/{myClientName}/" + fi.Name, media.smilData);
+                        Message smilMsg = new Message(fi.Name, media.smilData);
                         smilMsg.setSmilFilePath(Environment.CurrentDirectory + $"/{myClientName}/" + fi.Name);
 
 

@@ -91,7 +91,7 @@ namespace SE_Final_Project
             {
                 Console.WriteLine("Unable to generate file from text");
             }
-            this.ParseMessage(Environment.CurrentDirectory + fileName); //*****
+            this.ParseMessage(Environment.CurrentDirectory + $"{theUsername}/" + fileName); //*****
         }
         public Message(string smilFileName, string senderName, string receiverName, List<TextMessage> textMessages, List<AudioMessage> audioMessages, List<VideoMessage> videoMessages) : this(smilFileName)
         {
