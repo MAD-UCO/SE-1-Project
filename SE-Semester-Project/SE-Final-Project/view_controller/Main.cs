@@ -41,6 +41,7 @@ namespace SE_Final_Project
         SoundPlayer soundPlayer;
         private Timer timer, timer2, timer3;
         string filePath;
+        Dictionary<string, string> relToAbsolute= new Dictionary<string, string>();
 
 
         //constants
@@ -100,7 +101,51 @@ namespace SE_Final_Project
             {
 
                 //Generate a storage location and pass to message constructor
-               
+                String filePath = "";
+                message = new Message();
+
+                //Set sender and receiver name
+                message.setSenderName(NetworkClient.myClientName);
+                message.setReceiverName(cboAddresses.Text.ToString());
+
+                //Store message subtypes
+                if (txtOutgoing.Text != "")
+                {
+                    //Create new text message and assign start/duration
+                    textMessage = new TextMessage(txtOutgoing.Text);
+
+                    textMessage.beginTime = txtTextStart.Text + "s";
+                    textMessage.duration = txtTextDuration.Text + "s";
+                    textMessage.region = region.GetLocation();
+                   
+                    //store in message object
+                    message.AddTextMessage(textMessage);
+                }
+
+                //If a selection was made in the file list combo box
+                if (cboFileList.SelectedIndex > -1)
+                {
+                    selectedFile = relToAbsolute[selectedFile];
+                    //Check file extension from selectedFile and store in the appropriate object
+                    if (selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
+                    {
+                        audioMessage = new AudioMessage(selectedFile);
+                        audioMessage.beginTime = txtTextStart.Text + "s";
+                        audioMessage.duration = txtTextDuration.Text + "s";
+
+                        //Store in message object
+                        message.AddAudioMessage(audioMessage);
+                    }
+                    else if (selectedFile.Contains(".mp4"))
+                    {
+                        videoMessage = new VideoMessage(selectedFile);
+                        videoMessage.beginTime = txtVideoStart.Text + "s";
+                        videoMessage.duration = txtVideoDuration.Text + "s";
+
+                        //Store in message object
+                        message.AddVideoMessage(videoMessage);
+                    }
+                }
 
                 //Add sender, reciever, and smilFile name(receiver + current time stamp
                 message.setSmilFilePath(filePath + cboAddresses.SelectedItem.ToString() + ".smil");
@@ -131,6 +176,7 @@ namespace SE_Final_Project
             {
                 outgoingFilepaths.Add(path);
                 cboFileList.Items.Add(pathTrimmed);
+                relToAbsolute[pathTrimmed] = path;
             }
         }
 
@@ -310,6 +356,7 @@ namespace SE_Final_Project
             //Navigate back to the login form and logout user
             this.Hide();
             login.Show();
+            Message.UnsetUsername();
             NetworkClient.Logout();
         }
 

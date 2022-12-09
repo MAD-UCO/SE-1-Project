@@ -123,21 +123,21 @@ namespace SE_Semester_Project
                         MediaMessage media = (MediaMessage)(msg);
                         Debug.Assert(media.senderFileName != null, "Media.SenderFileName is null!");
                         FileInfo fi = new FileInfo(media.senderFileName);
-                        Message smilMsg = new Message("/" + fi.Name, media.smilData);
-                        smilMsg.setSmilFilePath(Environment.CurrentDirectory + "/" + fi.Name);
+                        Message smilMsg = new Message(fi.Name, media.smilData);
+                        smilMsg.setSmilFilePath(Environment.CurrentDirectory + $"/{myClientName}/" + fi.Name);
 
 
                         foreach (KeyValuePair<string, byte[]> entry in media.videoFiles)
                         {
                             fi = new FileInfo(entry.Key);
-                            File.WriteAllBytes(Environment.CurrentDirectory + "/" + fi.Name, entry.Value);
+                            File.WriteAllBytes(Environment.CurrentDirectory + $"/{myClientName}/" + fi.Name, entry.Value);
                             smilMsg.AddVideoMessage(new VideoMessage(fi.Name));
                         }
 
                         foreach (KeyValuePair<string, byte[]> entry in media.soundFiles) 
                         {
                             fi = new FileInfo(entry.Key);
-                            File.WriteAllBytes(Environment.CurrentDirectory + "/" + fi.Name, entry.Value);
+                            File.WriteAllBytes(Environment.CurrentDirectory + $"/{myClientName}/" + fi.Name, entry.Value);
                             smilMsg.AddAudioMessage(new AudioMessage(fi.Name));
                         }
 
@@ -203,8 +203,8 @@ namespace SE_Semester_Project
             MediaMessage mediaMessage = new MediaMessage(
                 message.senderName, 
                 message.receiverName, 
-                message.GetSmilText(Environment.CurrentDirectory + "/" + message.smilFilePath), 
-                Environment.CurrentDirectory + "/" + message.smilFilePath
+                message.GetSmilText(Environment.CurrentDirectory + $"/{myClientName}/" + message.smilFilePath), 
+                Environment.CurrentDirectory + $"/{myClientName}/" + message.smilFilePath
              );
 
 

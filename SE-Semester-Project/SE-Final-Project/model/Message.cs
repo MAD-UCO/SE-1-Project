@@ -30,7 +30,17 @@ namespace SE_Final_Project
         public List<VideoMessage> videoMessages { get; private set; }
         public List<ImageMessage> imageMessages  { get; private set; }
 
-        
+        public static String theUsername = "";
+
+        public static void SetUsername(string username)
+        {
+            theUsername = "/" + username;
+        }
+
+        public static void UnsetUsername()
+        {
+            theUsername = "";
+        }
 
 
 
@@ -75,13 +85,13 @@ namespace SE_Final_Project
 
             try
             {
-                File.WriteAllText(Environment.CurrentDirectory + "/" + fileName, fileStringContents);
+                File.WriteAllText(Environment.CurrentDirectory + $"{theUsername}/" + fileName, fileStringContents);
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Unable to generate file from text");
             }
-            this.ParseMessage(Environment.CurrentDirectory + fileName); //*****
+            this.ParseMessage(Environment.CurrentDirectory + $"{theUsername}/" + fileName); //*****
         }
         public Message(string smilFileName, string senderName, string receiverName, List<TextMessage> textMessages, List<AudioMessage> audioMessages, List<VideoMessage> videoMessages) : this(smilFileName)
         {
@@ -346,7 +356,7 @@ namespace SE_Final_Project
                 XmlWriterSettings settings = new XmlWriterSettings();
                 settings.Indent = true;
                 //settings.NewLineOnAttributes = true;
-                XmlWriter writer = XmlWriter.Create(Environment.CurrentDirectory + "/" + smilFilePath, settings);
+                XmlWriter writer = XmlWriter.Create(Environment.CurrentDirectory + $"{theUsername}/" + smilFilePath, settings);
 
                 writer.WriteStartElement("smil");
                 writer.WriteStartElement("head");
@@ -458,11 +468,11 @@ namespace SE_Final_Project
             
             foreach(AudioMessage audio in audioMessages)
             {
-                audio.filePath =Environment.CurrentDirectory + Path.GetFileName(audio.filePath);
+                audio.filePath =Environment.CurrentDirectory + $"{theUsername}/" + Path.GetFileName(audio.filePath);
             }
             foreach(VideoMessage video in videoMessages)
             {
-                video.filePath =Environment.CurrentDirectory + Path.GetFileName(video.filePath);
+                video.filePath =Environment.CurrentDirectory + $"{theUsername}/" + Path.GetFileName(video.filePath);
             }
 
         }
