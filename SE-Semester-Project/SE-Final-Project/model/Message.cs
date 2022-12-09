@@ -31,6 +31,7 @@ namespace SE_Final_Project
         public List<ImageMessage> imageMessages  { get; private set; }
 
         public static String theUsername = "";
+        
 
         public static void SetUsername(string username)
         {
@@ -85,7 +86,15 @@ namespace SE_Final_Project
 
             try
             {
-                File.WriteAllText(Environment.CurrentDirectory + $"{theUsername}/" + fileName, fileStringContents);
+                if(!File.Exists(Environment.CurrentDirectory + $"{theUsername}/" + fileName))
+                {
+                    File.WriteAllText(Environment.CurrentDirectory + $"{theUsername}/" + fileName, fileStringContents);
+                }
+                else
+                {
+                    fileName = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + fileName;
+                    File.WriteAllText(Environment.CurrentDirectory + $"{theUsername}/" +  fileName , fileStringContents);
+                }
             }
             catch (Exception ex)
             {
