@@ -40,6 +40,7 @@ namespace SE_Final_Project
         List<Message> incomingMessages = new List<Message>();
         SoundPlayer soundPlayer;
         private Timer timer;
+        Dictionary<string, string> relToAbsolute= new Dictionary<string, string>();
 
 
         //constants
@@ -121,6 +122,7 @@ namespace SE_Final_Project
                 //If a selection was made in the file list combo box
                 if (cboFileList.SelectedIndex > -1)
                 {
+                    selectedFile = relToAbsolute[selectedFile];
                     //Check file extension from selectedFile and store in the appropriate object
                     if (selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
                     {
@@ -171,6 +173,7 @@ namespace SE_Final_Project
             {
                 outgoingFilepaths.Add(path);
                 cboFileList.Items.Add(pathTrimmed);
+                relToAbsolute[pathTrimmed] = path;
             }
         }
 
