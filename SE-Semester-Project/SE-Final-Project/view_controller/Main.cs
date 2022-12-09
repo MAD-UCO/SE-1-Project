@@ -125,7 +125,7 @@ namespace SE_Final_Project
                  //   message.AddTextMessage(textMessage);
                     Console.WriteLine("added at send");
                 }
-
+                //change for commit
                 //If a selection was made in the file list combo box
                 if (cboFileList.SelectedIndex > -1)
                 {
