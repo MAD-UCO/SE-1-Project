@@ -79,6 +79,8 @@ namespace SE_Final_Project
             //Create a new frmMain object and display it in the current location.
             this.Hide();
             main.Show();
+            
+            
         }
 
         //Executes each time an item is selected in the drop down box cboMessages
@@ -162,6 +164,7 @@ namespace SE_Final_Project
              //   grpTextCanvas.Visible = false;
               //  playerMessages.Visible = true;
             }
+            main.message = new Message();
 
         }
 
@@ -432,6 +435,7 @@ namespace SE_Final_Project
                 playerMessages.Visible = true;
                 playerMessages.URL = videoURL;
                 playerMessages.Ctlcontrols.play();
+                textAudio.Visible = false;
 
 
                 Console.WriteLine(seconds4.ToString() + "seconds here at 4");
@@ -443,6 +447,7 @@ namespace SE_Final_Project
                 //lblDefault.Text = tempText;
                 Console.WriteLine("end @ 4");
                 playerMessages.Ctlcontrols.stop();
+
             }
 
             if (seconds4 > 11)
@@ -450,9 +455,11 @@ namespace SE_Final_Project
                 //lblDefault.Text = tempText;
                 timer4.Stop();
                 seconds4 = 0;
+                textAudio.Visible = true;
+
             }
 
-          
+
         }
 
         //Shut down all processes when user exits program

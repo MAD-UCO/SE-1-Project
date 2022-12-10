@@ -28,7 +28,7 @@ namespace SE_Final_Project
         private string selectedAddress;
         private string selectedFile;
         private List<String> outgoingFilepaths = new List<String>();
-        private Message message;
+        public Message message;
         private TextMessage textMessage;
         private VideoMessage videoMessage;
         private AudioMessage audioMessage;
@@ -51,6 +51,9 @@ namespace SE_Final_Project
         public Main()
         {
             InitializeComponent();
+            // messages = new Messages();
+
+           // ClearOldContents();
         }
 
         // Event Handlers
@@ -71,7 +74,7 @@ namespace SE_Final_Project
             InitializeTimer();
 
             //Initialize messages form
-            messages = new Messages();
+           messages = new Messages();
 
             //Initialize text region form
             region = new TextRegion();
@@ -84,6 +87,7 @@ namespace SE_Final_Project
         //Executes each time btnSend is clicked by the user
         private void BtnSend_Click(object sender, EventArgs e)
         {
+          //  message = new Message();
             //Error handling messages for missing fields
             if (cboAddresses.SelectedItem == null)
             {
@@ -197,6 +201,11 @@ namespace SE_Final_Project
                 txtOutgoing.Enabled = true;
                 txtOutgoing.BackColor = Color.White;
                 return;
+            }
+            if(playerMain.Visible == true)
+            {
+                playerMain.Visible = false;
+                txtOutgoing.Visible = true;
             }
 
             if (txtOutgoing.Text != "")
@@ -510,7 +519,7 @@ namespace SE_Final_Project
             cboFileList.Text = "";
 
             //Clear TextRegion.cs combo box text
-            region.GetcboDisplayLocation().Text = "";
+         //   region.GetcboDisplayLocation().Text = "";
 
             //Clear start time and duration text boxes
             txtTextStart.Text = "";
@@ -529,6 +538,7 @@ namespace SE_Final_Project
                 {
                     label.Text = "";
                 }
+                
             }
 
             //Clear messages messageObject List
