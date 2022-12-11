@@ -39,7 +39,7 @@ namespace SE_Final_Project
         private Messages messages = (Messages)Application.OpenForms["Messages"];
         List<Message> incomingMessages = new List<Message>();
         SoundPlayer soundPlayer;
-        private Timer timer, timer2, timer3;
+        private Timer timer;
         string filePath;
 
 
@@ -62,9 +62,6 @@ namespace SE_Final_Project
 
             //Hide table layout panel
             pnlStartDuration.Visible = false;
-
-            //Generate button symbols
-            GenerateButtonSymbols();
 
             //Initialize timer to call getNewMessages() every second
             InitializeTimer();
@@ -140,52 +137,7 @@ namespace SE_Final_Project
             if (txtOutgoing.Enabled == false)
             {
                 txtOutgoing.Enabled = true;
-                txtOutgoing.BackColor = Color.White;
                 return;
-            }
-            filePath = "";
-
-            //Set sender and receiver name
-            message.setSenderName(NetworkClient.myClientName);
-            message.setReceiverName(cboAddresses.Text.ToString());
-
-            //Store message subtypes
-            if (txtOutgoing.Text != "")
-            {
-                //Create new text message and assign start/duration
-                textMessage = new TextMessage(txtOutgoing.Text);
-
-                textMessage.beginTime = txtTextStart.Text + "s";
-                textMessage.duration = txtTextDuration.Text + "s";
-                textMessage.region = region.GetLocation();
-
-                //store in message object
-                message.AddTextMessage(textMessage);
-                Console.WriteLine("added succcessfully");
-            }
-
-            //If a selection was made in the file list combo box
-            if (cboFileList.SelectedIndex > -1)
-            {
-                //Check file extension from selectedFile and store in the appropriate object
-                if (selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
-                {
-                    audioMessage = new AudioMessage(selectedFile);
-                    audioMessage.beginTime = txtTextStart.Text + "s";
-                    audioMessage.duration = txtTextDuration.Text + "s";
-
-                    //Store in message object
-                    message.AddAudioMessage(audioMessage);
-                }
-                else if (selectedFile.Contains(".mp4"))
-                {
-                    videoMessage = new VideoMessage(selectedFile);
-                    videoMessage.beginTime = txtVideoStart.Text + "s";
-                    videoMessage.duration = txtVideoDuration.Text + "s";
-
-                    //Store in message object
-                    message.AddVideoMessage(videoMessage);
-                }
             }
         }
 
@@ -335,20 +287,6 @@ namespace SE_Final_Project
             Environment.Exit(0);
         }
 
-        //Executes each time chkStartDuration is selected or unselected by the user
-        private void ChkStartDuration_CheckedChanged(object sender, EventArgs e)
-        {
-            //Display table layout panel for users to select start and duration times
-            if (chkStartDuration.Checked)
-            {
-                pnlStartDuration.Visible = true;
-            }
-            else
-            {
-                pnlStartDuration.Visible = false;
-            }
-        }
-
         //Getters
         public string GetSelectedAddress()
         {
@@ -406,25 +344,7 @@ namespace SE_Final_Project
         }
 
         //Operations
-
-        //Generate button symbols during initialization
-        private void GenerateButtonSymbols()
-        {
-            //store compose symbol and display on btnCompose
-            int i = 11036;
-            char c = (char)i;
-            btnCompose.Text = c.ToString();
-
-            //store message symbol and display on btnMessages
-            int j = 0x00002709;
-            char msgChar = (char)j;
-            btnMessages.Text = msgChar.ToString();
-
-            //store send symbol and display on btnSend
-            int k = 8628;
-            char sndChar = (char)k;
-            btnSend.Text = sndChar.ToString();
-        }
+       
 
         //Clear old contents for all forms after logging out
         private void ClearOldContents()
@@ -478,5 +398,53 @@ namespace SE_Final_Project
 
         }
 
+        private void btnAddNew_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Message added.");
+            filePath = "";
+
+            //Set sender and receiver name
+            message.setSenderName(NetworkClient.myClientName);
+            message.setReceiverName(cboAddresses.Text.ToString());
+
+            //Store message subtypes
+            if (txtOutgoing.Text != "")
+            {
+                //Create new text message and assign start/duration
+                textMessage = new TextMessage(txtOutgoing.Text);
+
+                textMessage.beginTime = txtTextStart.Text + "s";
+                textMessage.duration = txtTextDuration.Text + "s";
+                textMessage.region = region.GetLocation();
+
+                //store in message object
+                message.AddTextMessage(textMessage);
+                Console.WriteLine("added succcessfully");
+            }
+
+            //If a selection was made in the file list combo box
+            if (cboFileList.SelectedIndex > -1)
+            {
+                //Check file extension from selectedFile and store in the appropriate object
+                if (selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
+                {
+                    audioMessage = new AudioMessage(selectedFile);
+                    audioMessage.beginTime = txtTextStart.Text + "s";
+                    audioMessage.duration = txtTextDuration.Text + "s";
+
+                    //Store in message object
+                    message.AddAudioMessage(audioMessage);
+                }
+                else if (selectedFile.Contains(".mp4"))
+                {
+                    videoMessage = new VideoMessage(selectedFile);
+                    videoMessage.beginTime = txtVideoStart.Text + "s";
+                    videoMessage.duration = txtVideoDuration.Text + "s";
+
+                    //Store in message object
+                    message.AddVideoMessage(videoMessage);
+                }
+            }
+        }
     }
 }

@@ -73,7 +73,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="model\Event.cs" />
     <Compile Include="model\AudioMessage.cs" />
     <Compile Include="model\ImageMessage.cs" />
     <Compile Include="model\ParsingTester.cs" />
@@ -184,6 +183,12 @@
   <ItemGroup>
     <Content Include="MBMICON.ico" />
     <Content Include="MovingBitMessengingIcon.ico" />
+    <None Include="Resources\Teal_Blue_Arrow_2.png" />
+    <None Include="Resources\Gree_White_Arrow.png" />
+    <None Include="Resources\Teal_Blue_Arrow.png" />
+    <None Include="Resources\Light_Blue_Arrow.png" />
+    <None Include="Resources\Blue_Arrow.png" />
+    <None Include="Resources\Arrow.png" />
     <None Include="Resources\download1.jpg" />
     <None Include="Resources\download.jpg" />
   </ItemGroup>
