@@ -13,7 +13,6 @@ using System.Xml.Serialization;
 using System.Net;
 using static System.Net.WebRequestMethods;
 using System.Diagnostics;
-using SE_Final_Project.view_controller;
 using System.Windows.Forms.VisualStyles;
 using System.Collections;
 using File = System.IO.File;
@@ -32,10 +31,7 @@ namespace SE_Final_Project
         private TextMessage textMessage;
         private VideoMessage videoMessage;
         private AudioMessage audioMessage;
-        private StartTimeDialog frmStartTimeDialog = (StartTimeDialog)Application.OpenForms["StartTimeDialog"];
-        private Duration frmDuration = (Duration)Application.OpenForms["frmDuration"];
         private Login login = (Login)Application.OpenForms["Login"];
-        private TextRegion region = (TextRegion)Application.OpenForms["TextRegion"];
         private Messages messages = (Messages)Application.OpenForms["Messages"];
         List<Message> incomingMessages = new List<Message>();
         SoundPlayer soundPlayer;
@@ -50,6 +46,12 @@ namespace SE_Final_Project
         public Main()
         {
             InitializeComponent();
+            cboRegion.Items.Add("Default");
+            cboRegion.Items.Add("Center");
+            cboRegion.Items.Add("North");
+            cboRegion.Items.Add("South");
+            cboRegion.Items.Add("East");
+            cboRegion.Items.Add("West");
         }
 
         // Event Handlers
@@ -69,9 +71,6 @@ namespace SE_Final_Project
             //Initialize messages form
             messages = new Messages();
 
-            //Initialize text region form
-            region = new TextRegion();
-
             //Intiliaze Message object
             message = new Message();
 
@@ -80,35 +79,14 @@ namespace SE_Final_Project
         //Executes each time btnSend is clicked by the user
         private void BtnSend_Click(object sender, EventArgs e)
         {
-            //Error handling messages for missing fields
-            if(cboAddresses.SelectedItem == null)
-            {
-                MessageBox.Show("Recipient Not Selected");
-            }
-            else if(txtTextStart.Text == "" || txtTextDuration.Text == "")
-            {
-                MessageBox.Show("Missing start time or end time duration");
-            }
-            else if(region.GetcboDisplayLocation().SelectedItem == null)
-            {
-                MessageBox.Show("Missing display location");
-            }
-            else
-            {
-
-                //Generate a storage location and pass to message constructor
-               
-
-                //Add sender, reciever, and smilFile name(receiver + current time stamp
+                //Set file path and file name
                 message.setSmilFilePath(filePath + cboAddresses.SelectedItem.ToString() + ".smil");
                 message.smilFileName = cboAddresses.SelectedItem.ToString();
 
                 message.GenerateMessageFile();
-
                 
                 //Pass message to the network client to store in outgoing queue
                 NetworkClient.SendMessage(message);
-            }
         }
        
         //Executes each time btnUpload is clicked by the user
@@ -162,43 +140,17 @@ namespace SE_Final_Project
             messages.Show();
         }
 
-        //Executes each time btnStart is clicked by the user
-        private void BtnStart_Click(object sender, EventArgs e)
-        {
-            if(frmStartTimeDialog == null)
-            {
-                frmStartTimeDialog = new StartTimeDialog();
-                //Set location to center of user screen (adjusted higher by 25 pixels)
-                frmStartTimeDialog.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (frmStartTimeDialog.Size.Width / 2),
-                    (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (frmStartTimeDialog.Size.Height / 2) - HeightAdjustment);
-            }
-            //Display StartTimeDialog form
-            frmStartTimeDialog.Show();
-        }
-
-        //Executes each time btnDuration is clicked by the user
-        private void BtnDuration_Click(object sender, EventArgs e)
-        {
-            if(frmDuration == null)
-            {
-                frmDuration = new Duration();
-                //Set location to center of user screen (adjusted higher by 25 pixels)
-                frmDuration.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (frmDuration.Size.Width / 2),
-                    (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (frmDuration.Size.Height / 2) - HeightAdjustment);
-
-            }
-            //Display Duration form
-            frmDuration.Show();
-        }
-
         //Executes each tiem btnRegion is clicked by the user
         private void BtnRegion_Click(object sender, EventArgs e)
         {
-            //Set location to center of user screen (adjusted higher by 25 pixels)
-            region.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (region.Size.Width / 2),
-                    (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (region.Size.Height / 2) - HeightAdjustment);
-            //Display Duration form
-            region.Show();
+            if (!pnlRegion.Visible)
+            {
+                pnlRegion.Visible = true;
+            }
+            else
+            {
+                pnlRegion.Visible = false;
+            }
         }
 
         //Executes each time an item is selected in the cboAddresses combo box
@@ -287,6 +239,79 @@ namespace SE_Final_Project
             Environment.Exit(0);
         }
 
+        //Executes each time btnDuration is clicked
+        private void btnDuration_Click(object sender, EventArgs e)
+        {
+            if (!pnlStartDuration.Visible)
+            {
+
+                pnlStartDuration.Visible = true;
+                
+            }
+            else
+            {
+                pnlStartDuration.Visible = false;
+            }
+        }
+
+        private void btnAddNew_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Message added.");
+            filePath = "";
+
+            //Set sender and receiver name
+            message.setSenderName(NetworkClient.myClientName);
+            message.setReceiverName(cboAddresses.Text.ToString());
+
+            //Store message subtypes
+            if (txtOutgoing.Text != "")
+            {
+                //Create new text message and assign start/duration
+                textMessage = new TextMessage(txtOutgoing.Text);
+
+                textMessage.beginTime = txtTextStart.Text + "s";
+                textMessage.duration = txtTextDuration.Text + "s";
+                textMessage.region = cboRegion.SelectedItem.ToString();
+
+                //store in message object
+                message.AddTextMessage(textMessage);
+                Console.WriteLine("added succcessfully");
+            }
+
+            //If a selection was made in the file list combo box
+            if (cboFileList.SelectedIndex > -1)
+            {
+                //Check file extension from selectedFile and store in the appropriate object
+                if (selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
+                {
+                    audioMessage = new AudioMessage(selectedFile);
+                    audioMessage.beginTime = txtTextStart.Text + "s";
+                    audioMessage.duration = txtTextDuration.Text + "s";
+
+                    //Store in message object
+                    message.AddAudioMessage(audioMessage);
+                }
+                else if (selectedFile.Contains(".mp4"))
+                {
+                    videoMessage = new VideoMessage(selectedFile);
+                    videoMessage.beginTime = txtVideoStart.Text + "s";
+                    videoMessage.duration = txtVideoDuration.Text + "s";
+
+                    //Store in message object
+                    message.AddVideoMessage(videoMessage);
+                }
+            }
+            //Clear out recently added meessage fields
+            txtOutgoing.Text = "";
+            cboRegion.Text = "";
+            txtTextStart.Text = "";
+            txtTextDuration.Text = "";
+
+            //Reset visibility
+            pnlRegion.Visible = false;
+            pnlStartDuration.Visible = false;
+        }
+
         //Getters
         public string GetSelectedAddress()
         {
@@ -360,9 +385,6 @@ namespace SE_Final_Project
             cboFileList.Items.Clear();
             cboFileList.Text = "";
 
-            //Clear TextRegion.cs combo box text
-            region.GetcboDisplayLocation().Text = "";
-
             //Clear start time and duration text boxes
             txtTextStart.Text = "";
             txtTextDuration.Text = "";
@@ -398,53 +420,9 @@ namespace SE_Final_Project
 
         }
 
-        private void btnAddNew_Click(object sender, EventArgs e)
+        private void cboRegion_SelectedIndexChanged(object sender, EventArgs e)
         {
-            MessageBox.Show("Message added.");
-            filePath = "";
 
-            //Set sender and receiver name
-            message.setSenderName(NetworkClient.myClientName);
-            message.setReceiverName(cboAddresses.Text.ToString());
-
-            //Store message subtypes
-            if (txtOutgoing.Text != "")
-            {
-                //Create new text message and assign start/duration
-                textMessage = new TextMessage(txtOutgoing.Text);
-
-                textMessage.beginTime = txtTextStart.Text + "s";
-                textMessage.duration = txtTextDuration.Text + "s";
-                textMessage.region = region.GetLocation();
-
-                //store in message object
-                message.AddTextMessage(textMessage);
-                Console.WriteLine("added succcessfully");
-            }
-
-            //If a selection was made in the file list combo box
-            if (cboFileList.SelectedIndex > -1)
-            {
-                //Check file extension from selectedFile and store in the appropriate object
-                if (selectedFile.Contains(".mp3") || selectedFile.Contains(".wav"))
-                {
-                    audioMessage = new AudioMessage(selectedFile);
-                    audioMessage.beginTime = txtTextStart.Text + "s";
-                    audioMessage.duration = txtTextDuration.Text + "s";
-
-                    //Store in message object
-                    message.AddAudioMessage(audioMessage);
-                }
-                else if (selectedFile.Contains(".mp4"))
-                {
-                    videoMessage = new VideoMessage(selectedFile);
-                    videoMessage.beginTime = txtVideoStart.Text + "s";
-                    videoMessage.duration = txtVideoDuration.Text + "s";
-
-                    //Store in message object
-                    message.AddVideoMessage(videoMessage);
-                }
-            }
         }
     }
 }

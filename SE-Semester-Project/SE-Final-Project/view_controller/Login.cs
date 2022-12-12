@@ -7,7 +7,9 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -23,6 +25,9 @@ namespace SE_Final_Project
         private string password = "";
         private User user;
         private Main main;
+        System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+        int ticker = 0;
+        Splash splash;
 
         //constants
         private const int HeightAdjustment = 25;
@@ -33,7 +38,17 @@ namespace SE_Final_Project
         //Class construcctor, do not edit. Use form load event for initialization
         public Login()
         {
+            Thread t = new Thread(new ThreadStart(StartForm));
+            t.Start();
+            Thread.Sleep(3000);
             InitializeComponent();
+            t.Abort();
+            this.Focus();
+        }
+
+        public void StartForm()
+        {
+            Application.Run(new Splash());
         }
 
         //Event handlers
